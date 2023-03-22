@@ -13,10 +13,7 @@ import java.util.Random;
 public class HlzRegApplication {
 
 	public static void main(String[] args) {
-//		SpringApplication.run(HlzRegApplication.class, args);
-
-
-
+		SpringApplication.run(HlzRegApplication.class, args);
 
 	}
 
