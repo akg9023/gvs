@@ -5,11 +5,19 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.nio.charset.Charset;
+import java.sql.Date;
+import java.util.Random;
+
 @SpringBootApplication
 public class HlzRegApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(HlzRegApplication.class, args);
+//		SpringApplication.run(HlzRegApplication.class, args);
+
+
+
+
 	}
 
 }
