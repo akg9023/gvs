@@ -4,76 +4,18 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.sql.Date;
-
-enum Gender{
-    MALE,
-    FEMALE
-}
-
-enum MaritialStatus{
-    UNMARRIED,
-    MARRIED,
-    DIVORCED,
-    BRAHMACHARI,
-    SANYASI
-}
-
-enum AspiringAshram{
-    BRAHMACHARI,
-    GRIHASTHA,
-    NOT_DECIDED,
-    NULL // for married,brahmachari and sanyasi
-}
-
-enum Language{
-    BENGALI,
-    ENGLISH,
-    HINDI,
-    GUJARATI,
-    KANNADA,
-    MARATHI,
-    MAITHILI,
-    ORIYA,
-    NEPALI,
-    PUNJABI
-}
-
-enum Education{
-    NO_EDUCATION,
-    PRE_PRIMARY_SCHOOL,
-    PRIMARY_SCHOOL,
-    MIDDLE_SCHOOL,
-    SECONDARY_SCHOOL,
-    HIGHER_SECONDARY_SCHOOL,
-    DIPLOMA,
-    UG,
-    PG,
-    DOCTORATE,
-    POST_DOCTORATE
-}
-
-enum Occupation{
-    EMPLOYEED_FULL_TIME,
-    EMPLOYEED_PART_TIME,
-    SELF_EMPLOYED,
-    UNEMPLOYED,
-    HOMEMAKER,
-    RETIRED,
-    STUDENT
-}
-
 @Getter
 @Setter
 @ToString
-public class DevoteeInfo {
+public class DevoteeInfoRequest {
+
     //Personal Info
     private String fname;
     private String mname;
     private String lname;
     private String initiatedName;
     private Gender gender;
-    private Date dob;
+    private String dob;  //Stringformat = <year>-<month>-<day> e.g "2020-09-08"
     private MaritialStatus maritialStatus;
     private AspiringAshram aspiringAshram; // null for married,brahmachari and sanyasi
     private String bloodGroup;
@@ -124,8 +66,7 @@ public class DevoteeInfo {
     private String mothersName;
 
     //flags
-    private boolean isApproved;
-        //handled in storing data to master db
+    private boolean isParent; // true if he has dependents
     private boolean isModified; //true when any update happen and not committed to master db
 
 }
