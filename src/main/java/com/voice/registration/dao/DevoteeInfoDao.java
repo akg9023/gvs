@@ -1,7 +1,8 @@
 package com.voice.registration.dao;
 
-import com.voice.registration.model.DevoteeInfoResponse;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface DevoteeInfoDao extends MongoRepository<DevoteeInfoResponse,String> {
+import com.voice.registration.model.DevoteeInfoResponse;
+
+public interface DevoteeInfoDao extends JpaRepository<DevoteeInfoResponse,String>  {
 }
