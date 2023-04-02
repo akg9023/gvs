@@ -16,31 +16,32 @@ public class DevoteeInfoRestController {
     DevoteeInfoDao devoteeInfoDao;
 
     @PostMapping("/saveInput")
-    public DevoteeInfoResponse insertDevoteeInfo(@RequestBody DevoteeInfoRequest input){
+    public DevoteeInfoResponse insertDevoteeInfo(@RequestBody DevoteeInfoResponse input){
+        // System.out.println("Request");
+        // System.out.println(input);
 
-        DevoteeInfoResponse devInfo = new DevoteeInfoResponse();
+        // DevoteeInfoResponse devInfo = new DevoteeInfoResponse();
 
-        //set devotee id
-        devInfo.setDevId(getRandomId());
+        // //set devotee id
+        // devInfo.setId(Long.parseLong(getRandomId()));
 
-        //set password if user is parent
-        if(input.isParent())
-            devInfo.setParentLoginPassword(getPassword(input.getDob()));
+        // //set password if user is parent
+        // if(input.isParent())
+        //     devInfo.setParentLoginPassword(getPassword(input.getDob()));
 
-        //convert dob
-        // input DOB Stringformat = <year>-<month>-<day> e.g "2020-09-08"
-        String dobInputString = input.getDob();
-        String dobYear = dobInputString.substring(0,4);
-        String dobMonth= dobInputString.substring(5,7);
-        String dobDay = dobInputString.substring(8,10);
+        // //convert dob
+        // // input DOB Stringformat = <year>-<month>-<day> e.g "2020-09-08"
+        // String dobInputString = input.getDob();
+        // String dobYear = dobInputString.substring(0,4);
+        // String dobMonth= dobInputString.substring(5,7);
+        // String dobDay = dobInputString.substring(8,10);
+        // devInfo.setDobDay(dobDay);
+        // devInfo.setDobMonth(dobMonth);
+        // devInfo.setDobYear(dobYear);
+        return devoteeInfoDao.save(input);
+        // System.out.println(deinpvoteeInfoDao);
 
-        devInfo.setDobDay(dobDay);
-        devInfo.setDobMonth(dobMonth);
-        devInfo.setDobYear(dobYear);
-
-        devoteeInfoDao.save(devInfo);
-
-        return devInfo;
+        // return ;
     }
 
     private String getPassword(String dobString){

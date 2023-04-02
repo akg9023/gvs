@@ -5,7 +5,17 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.util.Date;
+import java.util.Set;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+@Entity
 @Getter
 @Setter
 @ToString
@@ -13,7 +23,9 @@ public class DevoteeInfoResponse {
 
     // uniquely identification of every devotee
     // format - HLZ<day><month><year><hour><min><seconds> e.g HLZ200323122344
-    private String devId;
+    @Id
+    @Column(name="devotee_id")
+    private Long id;
 
     //Personal Info
     private String fname;
@@ -37,8 +49,10 @@ public class DevoteeInfoResponse {
     private String whatsappPhone;
     private String email;
     private boolean isStayingInHaldiaVoice;
-    private Address currentAddress; // null if staying in voice
-    private Address permanentAddress;
+
+    
+    @OneToMany(mappedBy = "devoteeInfoResponse")
+    private Set<Address> addresses; // null if staying in voice
 
     //Devotional Info
     private String centerConnectedTo;
@@ -65,7 +79,6 @@ public class DevoteeInfoResponse {
     private String awards;
     private String skills;
     private String currentCompany;
-    private Address officeAddress;
 
     //Family Info
     private String previousReligion;
