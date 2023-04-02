@@ -1,8 +1,13 @@
 package com.voice.registration.restController;
 
 import com.voice.registration.dao.DevoteeInfoDao;
-import com.voice.registration.model.DevoteeInfoRequest;
-import com.voice.registration.model.DevoteeInfoResponse;
+import com.voice.registration.model.DevoteeInfo;
+import com.voice.registration.utils.security.CustomSecurity;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,49 +21,57 @@ public class DevoteeInfoRestController {
     DevoteeInfoDao devoteeInfoDao;
 
     @PostMapping("/saveInput")
-    public DevoteeInfoResponse insertDevoteeInfo(@RequestBody DevoteeInfoResponse input){
-        // System.out.println("Request");
-        // System.out.println(input);
+    public DevoteeInfo insertDevoteeInfo(@RequestBody DevoteeInfo input){
 
-        // DevoteeInfoResponse devInfo = new DevoteeInfoResponse();
+        DevoteeInfo encrypted = encryptData(input);
+        return devoteeInfoDao.save(encrypted);
 
-        // //set devotee id
-        // devInfo.setId(Long.parseLong(getRandomId()));
-
-        // //set password if user is parent
-        // if(input.isParent())
-        //     devInfo.setParentLoginPassword(getPassword(input.getDob()));
-
-        // //convert dob
-        // // input DOB Stringformat = <year>-<month>-<day> e.g "2020-09-08"
-        // String dobInputString = input.getDob();
-        // String dobYear = dobInputString.substring(0,4);
-        // String dobMonth= dobInputString.substring(5,7);
-        // String dobDay = dobInputString.substring(8,10);
-        // devInfo.setDobDay(dobDay);
-        // devInfo.setDobMonth(dobMonth);
-        // devInfo.setDobYear(dobYear);
-        return devoteeInfoDao.save(input);
-        // System.out.println(deinpvoteeInfoDao);
-
-        // return ;
+        // return devoteeInfoDao.save(input);
     }
 
-    private String getPassword(String dobString){
-        String prefix = "HLZ";
-        return prefix+dobString;
+    private DevoteeInfo encryptData(DevoteeInfo input) {
+        input.setPrimaryPhone(CustomSecurity.encrypt(input.getPrimaryPhone()));
+        return input;
     }
 
-    private String getRandomId(){
-        // HLZ<8 digit unique num>
-        String prefix = "HLZ";
-        int x = (int)(System.currentTimeMillis()%Math.pow(10,8));
-        String xString = String.valueOf(x);
-        return prefix+xString;
+    @PostMapping("/doesUserExist")
+    public boolean doesExist(@RequestBody Map<String, String> input) {
+        String email = input.get("email");
+            return devoteeInfoDao.existsByEmail(email);
     }
+
+    @PostMapping("/fetchAllDepByEmail")
+    public List<DevoteeInfo> fetchDep(@RequestBody Map<String, String> input) {
+        String email = input.get("email");
+        List<DevoteeInfo> dep = devoteeInfoDao.findAllByConnectedEmail(email);
+        return dep;
+    }
+
+    // localhost:8080/v1/hlzGlobalReg/fetchAllDev
+    // localhost:8080/v1/hlzGlobalReg/saveInput
+
+
+    @PostMapping("/fetchAllDev")
+    public List<DevoteeInfo> fetchAllDev() {
+        List<DevoteeInfo> allDev = devoteeInfoDao.findAll();
+        try{
+            allDev = (List<DevoteeInfo>) allDev.stream().map(oneDev -> {
+                oneDev.setPrimaryPhone(CustomSecurity.decrypt(oneDev.getPrimaryPhone()));
+                return oneDev;
+            }).collect(Collectors.toList());
+            return allDev;
+        }
+        catch(Exception e){
+            System.out.println("Failed to decrpyt the data");
+            return List.of();
+        }
+    }
+
 
     @PostMapping("/uploadProfilePic")
     private String uploadImageGoogleDrive(){
         return "url";
     }
+
+
 }
