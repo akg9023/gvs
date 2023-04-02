@@ -24,7 +24,7 @@ public class Address {
 
     @ManyToOne
     @JoinColumn(name="devotee_id",nullable = false)
-    private DevoteeInfoResponse devoteeInfoResponse;
+    private DevoteeInfo devoteeInfoResponse;
     private String line1;
     private String line2;
     private String city;
