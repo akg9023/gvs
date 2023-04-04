@@ -63,7 +63,7 @@ public class DevoteeInfoRestController {
         }
         catch(Exception e){
             System.out.println("Failed to decrpyt the data");
-            return List.of();
+            return new ArrayList();
         }
     }
 
