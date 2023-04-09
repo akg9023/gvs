@@ -1,4 +1,4 @@
-package com.voice.registration.model;
+package com.voice.dbRegistration.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,15 +16,13 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@Entity
 public class Address {
 
-    @Id
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name="devotee_id",nullable = false)
-    private DevoteeInfo devoteeInfoResponse;
+    // @ManyToOne
+    // @JoinColumn(name="devotee_id",nullable = false)
+    // private DevoteeInfo devoteeInfoResponse;
     private String line1;
     private String line2;
     private String city;
