@@ -58,3 +58,11 @@ enum Occupation{
     RETIRED,
     STUDENT
 }
+
+enum Prividege{
+    SUPER_ADMIN,
+    ADMIN,  
+    GUARDIAN, 
+    VOLUNTEER,
+    USER
+}

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.voice.dbRegistration.dao.DevoteeInfoDao;
 import com.voice.dbRegistration.model.DevoteeInfo;
+import com.voice.dbRegistration.model.Enums;
 import com.voice.dbRegistration.utils.security.CustomSecurity;
 
 @RestController
@@ -23,6 +24,9 @@ public class DevoteeInfoRestController {
     @PostMapping("/saveInput")
     public DevoteeInfo insertDevoteeInfo(@RequestBody DevoteeInfo input) {
 
+        // dob should be in "2020-12-31" format
+        if (input.getDob().length()!=0)
+            input.setAge(Helper.calculateAge(input.getDob()));
         DevoteeInfo encrypted = encryptData(input);
         return devoteeInfoDao.save(encrypted);
         // return devoteeInfoDao.save(input);
