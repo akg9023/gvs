@@ -1,8 +1,4 @@
-package com.voice.registration.restController;
-
-import com.voice.registration.dao.DevoteeInfoDao;
-import com.voice.registration.model.DevoteeInfo;
-import com.voice.registration.utils.security.CustomSecurity;
+package com.voice.dbRegistration.restController;
 
 import java.util.List;
 import java.util.Map;
@@ -12,6 +8,9 @@ import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import com.voice.dbRegistration.dao.DevoteeInfoDao;
+import com.voice.dbRegistration.model.DevoteeInfo;
+import com.voice.dbRegistration.utils.security.CustomSecurity;
 
 @RestController
 @RequestMapping("/v1/hlzGlobalReg")
@@ -22,11 +21,10 @@ public class DevoteeInfoRestController {
     DevoteeInfoDao devoteeInfoDao;
 
     @PostMapping("/saveInput")
-    public DevoteeInfo insertDevoteeInfo(@RequestBody DevoteeInfo input){
+    public DevoteeInfo insertDevoteeInfo(@RequestBody DevoteeInfo input) {
 
         DevoteeInfo encrypted = encryptData(input);
         return devoteeInfoDao.save(encrypted);
-
         // return devoteeInfoDao.save(input);
     }
 
@@ -36,43 +34,45 @@ public class DevoteeInfoRestController {
     }
 
     @PostMapping("/doesUserExist")
-    public boolean doesExist(@RequestBody Map<String, String> input) {
+    public DevoteeInfo doesExist(@RequestBody Map<String, String> input) {
         String email = input.get("email");
-            return devoteeInfoDao.existsByEmail(email);
+        return devoteeInfoDao.findOneByEmail(email);
     }
 
-    @PostMapping("/fetchAllDepByEmail")
-    public List<DevoteeInfo> fetchDep(@RequestBody Map<String, String> input) {
-        String email = input.get("email");
-        List<DevoteeInfo> dep = devoteeInfoDao.findAllByConnectedEmail(email);
+    @PostMapping("/fetchAllDepById/{userId}")
+    public List<DevoteeInfo> fetchAllDepByConnectedId(@PathVariable("userId") String userId) {
+        List<DevoteeInfo> dep = devoteeInfoDao.findAllByConnectedTo(userId);
+        System.out.println(dep.size());
         return dep;
     }
 
     // localhost:8080/v1/hlzGlobalReg/fetchAllDev
     // localhost:8080/v1/hlzGlobalReg/saveInput
 
-
     @PostMapping("/fetchAllDev")
     public List<DevoteeInfo> fetchAllDev() {
         List<DevoteeInfo> allDev = devoteeInfoDao.findAll();
-        try{
+        try {
             allDev = (List<DevoteeInfo>) allDev.stream().map(oneDev -> {
                 oneDev.setPrimaryPhone(CustomSecurity.decrypt(oneDev.getPrimaryPhone()));
                 return oneDev;
             }).collect(Collectors.toList());
             return allDev;
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             System.out.println("Failed to decrpyt the data");
             return new ArrayList();
+
         }
     }
 
-
-    @PostMapping("/uploadProfilePic")
-    private String uploadImageGoogleDrive(){
-        return "url";
+    @PostMapping("/fetchSpecefic/{userId}")
+    public DevoteeInfo fetchSpecefic(@PathVariable("userId") String userId) {
+        return devoteeInfoDao.findOneById(userId);
     }
 
+    @PostMapping("/uploadProfilePic")
+    private String uploadImageGoogleDrive() {
+        return "url";
+    }
 
 }

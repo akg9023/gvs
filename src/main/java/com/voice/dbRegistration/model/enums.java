@@ -1,4 +1,4 @@
-package com.voice.registration.model;
+package com.voice.dbRegistration.model;
 
 enum AspiringAshram{
     BRAHMACHARI,

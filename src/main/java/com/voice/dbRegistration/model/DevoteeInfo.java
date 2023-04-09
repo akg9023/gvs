@@ -1,4 +1,4 @@
-package com.voice.registration.model;
+package com.voice.dbRegistration.model;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -27,7 +27,7 @@ public class DevoteeInfo {
     // uniquely identification of every devotee
     // format - HLZ<day><month><year><hour><min><seconds> e.g HLZ200323122344
     @Id
-    @GenericGenerator(name = "devotee_id", strategy = "com.voice.registration.utils.common.MyGenerator")
+    @GenericGenerator(name = "devotee_id", strategy = "com.voice.dbRegistration.utils.common.MyGenerator")
     @GeneratedValue(generator = "devotee_id")  
     @Column(name="devotee_id")
     private String id;
@@ -53,9 +53,22 @@ public class DevoteeInfo {
     private String email; //PII
     private boolean isStayingInHaldiaVoice;
 
-    
-    @OneToMany(mappedBy = "devoteeInfoResponse")
-    private Set<Address> addresses; //PII
+    //homeString
+    private String homeLine1;
+    private String homeLine2;
+    private String homeCity;
+    private String homeState;
+    private String homePincode;
+    private String homeCountry;
+
+     //currentString
+     private String currLine1;
+     private String currLine2;
+     private String currCity;
+     private String currState;
+     private String currPincode;
+     private String currCountry;
+
 
     //Devotional Info
     private String centerConnectedTo;
@@ -92,7 +105,7 @@ public class DevoteeInfo {
     private String mothersName;
 
     //flags
-    private String connectedEmail;
+    private String connectedTo;
     private boolean isModified; //true when any update happen and not committed to master db
 
 }

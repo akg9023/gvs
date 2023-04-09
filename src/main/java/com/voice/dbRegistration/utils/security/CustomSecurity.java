@@ -1,4 +1,4 @@
-package com.voice.registration.utils.security;
+package com.voice.dbRegistration.utils.security;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
