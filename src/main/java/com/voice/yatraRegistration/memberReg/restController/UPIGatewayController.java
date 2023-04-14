@@ -26,9 +26,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import com.voice.dbRegistration.utils.common.EnvUtils;
 import com.voice.yatraRegistration.memberReg.model.CheckStatus;
 import com.voice.yatraRegistration.memberReg.model.Response;
 import com.voice.yatraRegistration.memberReg.model.YatraCreateOrderRequest;
+
+import ch.qos.logback.classic.util.EnvUtil;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -37,8 +40,7 @@ public class UPIGatewayController {
 
     static RestTemplate restTemplate = new RestTemplate();
 
-    @Value("${UPI_GATEWAY_SECRET}")
-	String key;
+	String key = EnvUtils.UPI_GATEWAY_SECRETY;
 
     @PostMapping("/createOrder")
     public ResponseEntity sendRequest(@RequestBody YatraCreateOrderRequest upiRequest) {
