@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,7 +20,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
@@ -42,29 +46,30 @@ public class DevoteeInfo {
     private String lname;
     private String initiatedName;
     private Gender gender;
-    private String dob;
-    private String age; //calculated
+    private String odob;
+    private String cdob;
+    private String caste;
+    private String gotra;
+    private String age; // calculated
     private MaritialStatus maritialStatus;
     private AspiringAshram aspiringAshram;
     private String bloodGroup;
-    private Language language;
+    // private List<Language> language;
     private String profileImgUrl; // PII (Personally Identifiable Information)
 
     // Contact Info
     private String primaryPhone; // PII
     private String whatsappPhone; // PII
     private String email; // PII
-    private boolean isStayingInHaldiaVoice;
 
     @ManyToOne(cascade = CascadeType.ALL)
     private Address permanentAddress;
-
 
     @ManyToOne(cascade = CascadeType.ALL)
     private Address currentAddress;
 
     // Devotional Info
-    private String centerConnectedTo;
+    private String connectedTemple;
     private String facilitator; // to be fetched in UI from db
     private String counselor;
     private String spiritualMaster;
@@ -75,22 +80,19 @@ public class DevoteeInfo {
     private String yearChanting16Rounds; // must be four digit
     private String introducedBy;
     private String yearOfIntroduction; // must be four digit
-    private String placeIntroducedIn;
     private String previousCounselor;
     private String preferredServices;
     private String servicesRendered;
-    private String remarks;
 
     // Professional Info
     private Education education;
     private Occupation occupation;
     private String presentDesignation;
-    private String awards;
     private String skills;
     private String currentCompany;
+    private String officeLocation;
 
     // Family Info
-    private String previousReligion;
     private String birthCity;
     private String birthState;
     private String motherTongue;
@@ -101,7 +103,14 @@ public class DevoteeInfo {
     private String connectedTo;
     private boolean isModified; // true when any update happen and not committed to master db
 
-    //internal
+    // internal
     private Prividege prividege;
+
+    @Column(nullable = false, updatable = false)
+    @CreationTimestamp
+    private Date created_at;
+
+    private String newfield;
+
 
 }

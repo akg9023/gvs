@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.voice.dbRegistration.model.DevoteeInfo;
 
 public interface DevoteeInfoDao extends JpaRepository<DevoteeInfo, String> {
-    public DevoteeInfo findOneByEmail(String email);
+    public List<DevoteeInfo> findAllByEmail(String email);
     public DevoteeInfo findOneById(String id);
 
     public void deleteAllByEmail(String email);

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.voice.dbRegistration.dao.DevoteeInfoDao;
 import com.voice.dbRegistration.model.DevoteeInfo;
-import com.voice.dbRegistration.model.Enums;
+import com.voice.dbRegistration.service.DatabaseService;
 import com.voice.dbRegistration.utils.security.CustomSecurity;
 
 @RestController
@@ -21,14 +21,17 @@ public class DevoteeInfoRestController {
     @Autowired
     DevoteeInfoDao devoteeInfoDao;
 
+    @Autowired
+    DatabaseService databaseService;
+
     @PostMapping("/saveInput")
     public DevoteeInfo insertDevoteeInfo(@RequestBody DevoteeInfo input) {
 
-        // dob should be in "2020-12-31" format
-        if (input.getDob().length()!=0)
-            input.setAge(Helper.calculateAge(input.getDob()));
-        DevoteeInfo encrypted = encryptData(input);
-        return devoteeInfoDao.save(encrypted);
+        // dob shouldc be in "2020-12-31" format
+        if (input.getCdob().length()!=0)
+            input.setAge(Helper.calculateAge(input.getCdob()));
+        // DevoteeInfo encrypted = encryptData(input);
+        return databaseService.saveInputAndSendMessage(input);
         // return devoteeInfoDao.save(input);
     }
 
@@ -38,9 +41,9 @@ public class DevoteeInfoRestController {
     }
 
     @PostMapping("/doesUserExist")
-    public DevoteeInfo doesExist(@RequestBody Map<String, String> input) {
+    public List<DevoteeInfo> doesExist(@RequestBody Map<String, String> input) {
         String email = input.get("email");
-        return devoteeInfoDao.findOneByEmail(email);
+        return devoteeInfoDao.findAllByEmail(email);
     }
 
     @PostMapping("/fetchAllDepById/{userId}")
@@ -53,8 +56,8 @@ public class DevoteeInfoRestController {
     // localhost:8080/v1/hlzGlobalReg/fetchAllDev
     // localhost:8080/v1/hlzGlobalReg/saveInput
 
-    @PostMapping("/fetchAllDev")
-    public List<DevoteeInfo> fetchAllDev() {
+    @PostMapping("/fetchAllDevWithDecryption")
+    public List<DevoteeInfo> fetchAllDevWithDec() {
         List<DevoteeInfo> allDev = devoteeInfoDao.findAll();
         try {
             allDev = (List<DevoteeInfo>) allDev.stream().map(oneDev -> {
@@ -67,6 +70,12 @@ public class DevoteeInfoRestController {
             return new ArrayList();
 
         }
+    }
+
+    @PostMapping("/fetchAllDev")
+    public List<DevoteeInfo> fetchAllDev() {
+        List<DevoteeInfo> allDev = devoteeInfoDao.findAll();
+        return allDev;
     }
 
     @PostMapping("/fetchSpecefic/{userId}")

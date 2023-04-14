@@ -37,7 +37,7 @@ public class UPIGatewayController {
 
     static RestTemplate restTemplate = new RestTemplate();
 
-    @Value("${secretKey}")
+    @Value("${UPI_GATEWAY_SECRET}")
 	String key;
 
     @PostMapping("/createOrder")
