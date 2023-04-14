@@ -31,7 +31,7 @@ public class RegisteredMember {
     private String yatraMemRegId;
 
     //who is filling the form
-    private String userId;
+    private String userEmail;
 
     @OneToMany(mappedBy = "registeredMember",cascade = CascadeType.ALL)
     @JsonManagedReference

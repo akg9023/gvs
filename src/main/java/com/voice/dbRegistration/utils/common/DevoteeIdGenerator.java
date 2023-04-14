@@ -28,8 +28,9 @@ public class DevoteeIdGenerator implements IdentifierGenerator {
     
             if(rs.next())
             {
-                int id=rs.getInt(1)+10;
-                String generatedId = prefix +String.valueOf(year)+ String.valueOf(id);
+                int id=rs.getInt(1)+1;
+                String idString = String.format("%04d", id);
+                String generatedId = prefix +String.valueOf(year)+ idString;
                 return generatedId;
             }
         } catch (SQLException e) {
