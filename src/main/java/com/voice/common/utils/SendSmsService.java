@@ -19,8 +19,8 @@ import com.mashape.unirest.http.Unirest;
 @Service
 public class SendSmsService {
 
-	@Value("${sms.api.key}")
-	static String key;
+
+	static String key = "";
 
 	public static void sendSms(String message, String number)
 	// public static void sendSms(String message,List<String> numberList)
