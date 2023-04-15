@@ -15,13 +15,12 @@ import org.springframework.stereotype.Service;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
-import com.voice.dbRegistration.utils.common.EnvUtils;
 
 @Service
 public class SendSmsService {
 
-
-	static String key = EnvUtils.SMS_API_KEY; 
+	@Value("${sms.api.key}")
+	static String key;
 
 	public static void sendSms(String message, String number)
 	// public static void sendSms(String message,List<String> numberList)
