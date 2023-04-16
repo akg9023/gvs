@@ -1,8 +1,10 @@
 package com.voice.yatraRegistration.memberReg.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -28,18 +30,21 @@ public class RegisteredMember {
     @Id
     @GenericGenerator(name = "yatra_id", strategy = "com.voice.yatraRegistration.memberReg.utils.common.YatraMemRegIdGenerator")
     @GeneratedValue(generator = "yatra_id")  
-    private String yatraMemRegId;
+    @Column(name="yatra_mem_id")
+    private String id;
 
     //who is filling the form
-    private String userEmail;
+    private String userEmail;   
 
-    @OneToMany(mappedBy = "registeredMember",cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private List<Member> memberIdList;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Member> memberIdList = new ArrayList<>();
 
     //transaction
     private String amount;
-    private String transactionId;
-    private String upiId;
-
+    private String customerTxnId;
+    private String customerVPA;
+    private String customerEmail;
+    private String upiTxnId;
+    private String paymentStatus;
+    private String txnDate;
 }
