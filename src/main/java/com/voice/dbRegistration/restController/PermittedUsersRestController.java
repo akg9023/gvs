@@ -17,7 +17,7 @@ import com.voice.dbRegistration.model.PermittedUsers;
 
 @RestController
 @RequestMapping("/v1/hlzGlobalReg")
-@CrossOrigin("*")
+@CrossOrigin(origins = "*")
 public class PermittedUsersRestController {
 
     @Autowired
@@ -33,6 +33,7 @@ public class PermittedUsersRestController {
 		// 	permittedUsersDao.save(newPUser);
 		// }
 
+        // return null;
         return permittedUsersDao.save(user);
     }
 
