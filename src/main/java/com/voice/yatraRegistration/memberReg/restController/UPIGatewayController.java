@@ -39,7 +39,8 @@ public class UPIGatewayController {
 
     static RestTemplate restTemplate = new RestTemplate();
 
-	String key = "";
+	@Value("${upi_gateway_secret}")
+	private String key;
 
     @PostMapping("/createOrder")
     public ResponseEntity sendRequest(@RequestBody YatraCreateOrderRequest upiRequest) {

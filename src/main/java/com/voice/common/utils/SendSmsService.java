@@ -10,7 +10,9 @@ import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import com.mashape.unirest.http.HttpResponse;
@@ -19,10 +21,10 @@ import com.mashape.unirest.http.Unirest;
 @Service
 public class SendSmsService {
 
+	@Value("${sms.api.key}")
+	private String key;
 
-	static String key = "";
-
-	public static void sendSms(String message, String number)
+	public  void sendSms(String message, String number)
 	// public static void sendSms(String message,List<String> numberList)
 	{
 		// System.out.println(message);
@@ -30,7 +32,7 @@ public class SendSmsService {
 		try {
 
 			String apiKey = key;
-			String sendId = "VOICE";
+			String sendId = "FTWSMS";
 
 			// important step...
 			message = URLEncoder.encode(message, "UTF-8");

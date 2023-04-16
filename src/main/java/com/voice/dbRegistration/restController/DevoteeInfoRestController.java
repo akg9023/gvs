@@ -15,7 +15,7 @@ import com.voice.dbRegistration.utils.security.CustomSecurity;
 
 @RestController
 @RequestMapping("/v1/hlzGlobalReg")
-@CrossOrigin("*")
+@CrossOrigin(origins = "*")
 public class DevoteeInfoRestController {
 
     @Autowired

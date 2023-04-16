@@ -12,6 +12,9 @@ public class DatabaseService {
 
     @Autowired
     DevoteeInfoDao devoteeInfoDao;
+
+    @Autowired
+    SendSmsService sendSmsService;
     
     public DevoteeInfo saveInputAndSendMessage(DevoteeInfo devoteeInfo){
         DevoteeInfo devotee = devoteeInfoDao.save(devoteeInfo);
@@ -19,8 +22,8 @@ public class DatabaseService {
             "Your registration id is : "+ devotee.getId()+"\n"+
             "-in service \n"+
             "Haldia VOICE";
-          
-        SendSmsService.sendSms(message, devotee.getPrimaryPhone());
+        // SendSmsService sms = new SendSmsService();
+        sendSmsService.sendSms(message, devotee.getPrimaryPhone());
         return devotee;
     }
 }
