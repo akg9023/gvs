@@ -22,10 +22,7 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
-    @ManyToOne
-    @JsonBackReference
-    private RegisteredMember registeredMember;
-
     private String dbDevId;
+    private String dbDevName;
+    private String dbDevGender;
 }

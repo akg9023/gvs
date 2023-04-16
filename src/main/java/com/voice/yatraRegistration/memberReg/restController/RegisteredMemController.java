@@ -1,9 +1,14 @@
 package com.voice.yatraRegistration.memberReg.restController;
 
+import java.net.URI;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,11 +28,7 @@ public class RegisteredMemController {
 
     @PostMapping("/saveInput")
     public RegisteredMember insertDevoteeInfo(@RequestBody RegisteredMember input){
-        List<Member> memList = input.getMemberIdList();
-        for(int i=0;memList!=null && i<memList.size();i++){
-            memList.get(i).setRegisteredMember(input);
-        }
-        input.setMemberIdList(memList);
+        
         return regMemDao.save(input);
     }
 
@@ -35,4 +36,12 @@ public class RegisteredMemController {
     public List<RegisteredMember> fetchAll(){
         return regMemDao.findAll();
     }
+
+    @PostMapping("/fetchByClientTxnId/{clientTxnId}")
+    public RegisteredMember fetchByClientTxnId(@PathVariable String clientTxnId){
+
+        return regMemDao.findByCustomerTxnId(clientTxnId);
+    }
+   
+
 }

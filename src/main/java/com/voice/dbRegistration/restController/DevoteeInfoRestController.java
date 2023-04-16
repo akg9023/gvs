@@ -5,11 +5,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.ArrayList;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import com.voice.dbRegistration.dao.DevoteeInfoDao;
 import com.voice.dbRegistration.model.DevoteeInfo;
+import com.voice.dbRegistration.model.GetIDFnameGender;
 import com.voice.dbRegistration.service.DatabaseService;
 import com.voice.dbRegistration.utils.security.CustomSecurity;
 
@@ -75,6 +77,12 @@ public class DevoteeInfoRestController {
     @PostMapping("/fetchAllDev")
     public List<DevoteeInfo> fetchAllDev() {
         List<DevoteeInfo> allDev = devoteeInfoDao.findAll();
+        return allDev;
+    }
+
+    @PostMapping("/fetchAllDevWithLimitedData")
+    public List<GetIDFnameGender> fetchAllDevWithLimitedData() {
+        List<GetIDFnameGender> allDev = devoteeInfoDao.findAllDev();
         return allDev;
     }
 

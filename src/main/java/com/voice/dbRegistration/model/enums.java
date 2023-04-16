@@ -7,10 +7,7 @@ enum AspiringAshram{
     NULL // for married,brahmachari and sanyasi
 }
 
-enum Gender{
-    MALE,
-    FEMALE
-}
+
 
 enum MaritialStatus{
     UNMARRIED,
