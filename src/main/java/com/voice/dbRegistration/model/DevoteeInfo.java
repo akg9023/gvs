@@ -41,76 +41,69 @@ public class DevoteeInfo {
     private String id;
 
     // Personal Info
-    private String fname;
-    private String mname;
-    private String lname;
-    private String initiatedName;
-    private Gender gender;
-    private String odob;
-    private String cdob;
-    private String caste;
-    private String gotra;
+    private String fname = "";
+    private String mname = "";
+    private String lname = "";
+    private String initiatedName = "";
+    private Gender gender = Gender.MALE;
+    private String dateOfBirth = "";
     private String age; // calculated
-    private MaritialStatus maritialStatus;
-    private AspiringAshram aspiringAshram;
-    private String bloodGroup;
-    // private List<Language> language;
-    private String profileImgUrl; // PII (Personally Identifiable Information)
+    private MaritialStatus maritialStatus = MaritialStatus.UNMARRIED;
+    private String bloodGroup = "";
+    private String language = "";
+    private String profileImgUrl = ""; // PII (Personally Identifiable Information)
 
     // Contact Info
-    private String primaryPhone; // PII
-    private String whatsappPhone; // PII
-    private String email; // PII
+    private String primaryPhone=""; // PII
+    private String whatsappPhone=""; // PII
+    private String email=""; // PII
 
     @ManyToOne(cascade = CascadeType.ALL)
-    private Address permanentAddress;
+    private Address permanentAddress = new Address();
 
     @ManyToOne(cascade = CascadeType.ALL)
-    private Address currentAddress;
+    private Address currentAddress = new Address();
 
     // Devotional Info
-    private String connectedTemple;
-    private String facilitator; // to be fetched in UI from db
-    private String counselor;
-    private String spiritualMaster;
+    private String facilitator=""; // to be fetched in UI from db
+    private String spiritualMaster="";
 
     // Additional Devotional Info
-    private String chantingRounds;
-    private String yearChantingSince; // must be four digit
-    private String yearChanting16Rounds; // must be four digit
-    private String introducedBy;
-    private String yearOfIntroduction; // must be four digit
-    private String previousCounselor;
-    private String preferredServices;
-    private String servicesRendered;
+    private String chantingRounds="";
+    private String yearChantingSince=""; // must be four digit
+    private String yearChanting16Rounds=""; // must be four digit
+    private String introducedBy="";
+    private String preferredServices="";
+    private String servicesRendered="";
 
     // Professional Info
-    private Education education;
-    private Occupation occupation;
-    private String presentDesignation;
-    private String skills;
-    private String currentCompany;
-    private String officeLocation;
+    private Education education= Education.NO_EDUCATION;
+    private String degreeSpecification="";
+    private Occupation occupation=Occupation.UNEMPLOYED;
+    private String presentDesignation="";
+    private String skills="";
+    private String currentCompany="";
+    private String officeLocation="";
 
     // Family Info
-    private String birthCity;
-    private String birthState;
-    private String motherTongue;
-    private String fathersName;
-    private String mothersName;
+    private String birthCity="";
+    private String birthState="";
+    private String motherTongue="";
+    private String fathersName="";
+    private String mothersName="";
+    private String dateOfMarriage="";
+    private String spouseName="";
+    private String children="";
 
     // flags
-    private String connectedTo;
-    private boolean isModified; // true when any update happen and not committed to master db
+    private String connectedTo="";//guru or else devoteeId
+    private boolean isModified=false; // true when any update happen and not committed to master db
 
     // internal
-    private Prividege prividege;
+    private Prividege prividege=Prividege.USER;
 
     @Column(nullable = false, updatable = false)
     @CreationTimestamp
     private Date created_at;
-
-    private String newfield;
-
 
 }
