@@ -24,17 +24,14 @@ public class PermittedUsersRestController {
     PermittedUsersDao permittedUsersDao;
     
     @PostMapping("/addPermittedUser")
-    public PermittedUsers savePermittedUser(@RequestBody PermittedUsers user){
-        //one time setup        
-        // List<String> allUsersEmail = Constants.permittedUserList;
-		// for(String one:allUsersEmail){
-		// 	PermittedUsers newPUser = new PermittedUsers();
-		// 	newPUser.setEmail(one);
-		// 	permittedUsersDao.save(newPUser);
-		// }
-
-        // return null;
-        return permittedUsersDao.save(user);
+    public List<String> savePermittedUser(@RequestBody Map<String,List<String>> userMap){
+        List<String> allUsersEmail = userMap.get("email");
+		for(String one:allUsersEmail){
+			PermittedUsers newPUser = new PermittedUsers();
+			newPUser.setEmail(one);
+			permittedUsersDao.save(newPUser);
+		}
+        return allUsersEmail;
     }
 
     @PostMapping("/permittedUser")
