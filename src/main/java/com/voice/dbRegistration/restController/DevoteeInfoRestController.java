@@ -51,7 +51,6 @@ public class DevoteeInfoRestController {
     @PostMapping("/fetchAllDepById/{userId}")
     public List<DevoteeInfo> fetchAllDepByConnectedId(@PathVariable("userId") String userId) {
         List<DevoteeInfo> dep = devoteeInfoDao.findAllByConnectedTo(userId);
-        System.out.println(dep.size());
         return dep;
     }
 
