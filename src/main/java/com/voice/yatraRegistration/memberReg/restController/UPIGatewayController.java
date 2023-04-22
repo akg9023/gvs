@@ -50,6 +50,9 @@ public class UPIGatewayController {
 
     static RestTemplate restTemplate = new RestTemplate();
 
+    @Value("${upi.callback.url}")
+    private String callbackUrl;
+
     @Autowired
     private RegisterMemDao registerMemDao;
 
@@ -97,7 +100,7 @@ public class UPIGatewayController {
         jsonUpiRequest.put("customer_name", upiRequest.getCustomerName());
         jsonUpiRequest.put("customer_email", upiRequest.getCustomerEmail());
         jsonUpiRequest.put("customer_mobile", upiRequest.getCustomerMobile());
-        jsonUpiRequest.put("redirect_url", "http://127.0.0.1:8080/v1/pay/getTxn");
+        jsonUpiRequest.put("redirect_url", callbackUrl);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

@@ -100,7 +100,7 @@ public class DevoteeInfo {
     private boolean isModified=false; // true when any update happen and not committed to master db
 
     // internal
-    private Prividege prividege=Prividege.USER;
+    private Prividege priviledge=Prividege.USER;
 
     @Column(nullable = false, updatable = false)
     @CreationTimestamp
