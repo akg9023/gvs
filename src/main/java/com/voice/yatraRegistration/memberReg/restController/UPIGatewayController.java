@@ -59,6 +59,9 @@ public class UPIGatewayController {
     @Value("${upi_gateway_secret}")
     private String key;
 
+    @Value("${yatra.success.page.url}")
+    private String successUrl;
+
     @PostMapping("/createOrder")
     public ResponseEntity sendRequest(@RequestBody Map<String, Object> input) {
 
@@ -166,7 +169,7 @@ public class UPIGatewayController {
 
     @GetMapping("/success/{clientTxnId}")
     public ResponseEntity<Void> success(@PathVariable("clientTxnId") String clientTxnId){
-        return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("http://localhost:3000/paymentDetails/"+clientTxnId)).build();
+        return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(successUrl+clientTxnId)).build();
     }
 
 }
