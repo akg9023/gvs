@@ -8,7 +8,6 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,8 +28,8 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@Table(name="yatra_aug_23_reg_mem")
-public class RegisteredMember {
+@Table(name="backup_yatra_aug_23_reg_mem")
+public class BackupRegisteredMember{
     
     //detail
     @Id
@@ -40,24 +39,17 @@ public class RegisteredMember {
 
     //who is filling the form
     private String userEmail="";   
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Member> memberIdList = new ArrayList<>();
+    private String memberIdList ="";
 
     //transaction
     private String amount="";
-    private String customerTxnId="";
-    private String customerVPA="";
     private String customerEmail="";
-    private String upiTxnId="";
+    private String customerTxnId="";
     private String paymentStatus="";
-    private String txnDate="";
+    private LocalDateTime attemptDateTime;
 
-    @Column(nullable = false, updatable = false)
     @CreationTimestamp
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdDateTime;
  
-    @Column(nullable = false, updatable = false)
-    @UpdateTimestamp
-    private LocalDateTime updatedDateTime;
 }

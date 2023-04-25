@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import com.voice.dbRegistration.model.GetIDFnameGender;
+import com.voice.yatraRegistration.memberReg.dao.BackupRegisterMemDao;
 import com.voice.yatraRegistration.memberReg.dao.RegisterMemDao;
 import com.voice.yatraRegistration.memberReg.model.CheckStatus;
 import com.voice.yatraRegistration.memberReg.model.Customer;
@@ -65,6 +66,15 @@ public class UPIGatewayController {
     @Value("${register.member.amount}")
     private int perHeadRegAmount;
 
+    @Value("${register.member.exempted.age}")
+    private int exemptedAge;
+
+    @Value("${register.member.volunteer.email}")
+    private String volunteerEmail;
+
+    @Value("${register.member.volunteer.amount}")
+    private int volunteerPerHeadAmount;
+
     @PostMapping("/createOrder")
     public ResponseEntity sendRequest(@RequestBody Map<String, Object> input) {
 
@@ -73,6 +83,12 @@ public class UPIGatewayController {
         List<Map<String,Object>> devoteeList = (List<Map<String,Object>>) input.get("memberDetails");
         List<Member> membersList = new ArrayList<>();
 
+        // special consession for volunteer email id
+          if(userEmail.equals(volunteerEmail)){
+            perHeadRegAmount = volunteerPerHeadAmount;
+        }
+
+        // no charge for children under age 5
         int countChild = 0;
         for (Map<String,Object> one : devoteeList) {
             Member mem = new Member();
@@ -84,7 +100,7 @@ public class UPIGatewayController {
             
             String temp = (String) one.get("age");
             int devAge = Integer.parseInt(temp);
-            if(devAge<=5)
+            if(devAge<=exemptedAge)
                 countChild++;
         }
 
