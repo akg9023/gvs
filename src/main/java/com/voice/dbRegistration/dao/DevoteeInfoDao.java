@@ -22,6 +22,6 @@ public interface DevoteeInfoDao extends JpaRepository<DevoteeInfo, String> {
 
     List<DevoteeInfo> findAllByConnectedTo(String Id);
 
-    @Query(value = "SELECT new com.voice.dbRegistration.model.GetIDFnameGender(d.id,d.fname,d.gender) FROM DevoteeInfo d")
+    @Query(value = "SELECT new com.voice.dbRegistration.model.GetIDFnameGender(d.id,d.fname,d.gender,d.age) FROM DevoteeInfo d")
     public List<GetIDFnameGender> findAllDev();
 }

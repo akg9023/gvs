@@ -1,6 +1,7 @@
 package com.voice.dbRegistration.restController;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -9,8 +10,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.voice.dbRegistration.service.AWSS3Service;
 
+@CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/image")
+@RequestMapping("/v1/image")
 public class AmazonRestController {
     
     @Autowired
