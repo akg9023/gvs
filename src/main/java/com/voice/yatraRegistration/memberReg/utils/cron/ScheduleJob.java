@@ -4,6 +4,8 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Service
 @Log4j2
+@Transactional
 public class ScheduleJob {
 
     @Autowired
@@ -26,7 +29,7 @@ public class ScheduleJob {
     private BackupRegisterMemDao backupRegisterMemDao;
 
     // 30min
-    @Scheduled(fixedDelay = 900000)
+    @Scheduled(fixedDelay = 1800000)
     public void distributeReports() throws InterruptedException {
         int count = 0;
         log.info("Backup pending request :::::");
