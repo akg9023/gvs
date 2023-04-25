@@ -25,4 +25,5 @@ public class Member {
     private String dbDevId;
     private String dbDevName;
     private String dbDevGender;
+    private String dbDevAge;
 }

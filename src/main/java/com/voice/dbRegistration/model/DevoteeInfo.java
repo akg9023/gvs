@@ -22,6 +22,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
@@ -30,6 +31,7 @@ import org.hibernate.annotations.GenericGenerator;
 @Getter
 @Setter
 @ToString
+@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "dateOfBirth", "primaryPhone", "fname" }) })
 public class DevoteeInfo {
 
     // uniquely identification of every devotee
@@ -46,8 +48,9 @@ public class DevoteeInfo {
     private String lname = "";
     private String initiatedName = "";
     private Gender gender = Gender.MALE;
+
     private String dateOfBirth = "";
-    private String age; // calculated
+    private String age=""; // calculated
     private MaritialStatus maritialStatus = MaritialStatus.UNMARRIED;
     private String bloodGroup = "";
     private String language = "";

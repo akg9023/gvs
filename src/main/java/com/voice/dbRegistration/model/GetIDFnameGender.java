@@ -13,4 +13,5 @@ public class GetIDFnameGender {
     private String id;
     private String fname;
     private Gender gender;
+    private String age;
 }

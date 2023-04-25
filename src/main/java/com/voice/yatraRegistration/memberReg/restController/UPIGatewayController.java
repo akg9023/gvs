@@ -62,22 +62,33 @@ public class UPIGatewayController {
     @Value("${yatra.success.page.url}")
     private String successUrl;
 
+    @Value("${register.member.amount}")
+    private int perHeadRegAmount;
+
     @PostMapping("/createOrder")
     public ResponseEntity sendRequest(@RequestBody Map<String, Object> input) {
 
-        String amount = (String) input.get("amount");
         String userEmail = (String) input.get("customerEmail");
         String clientTxtId = (String) input.get("clientTransactionId");
         List<Map<String,Object>> devoteeList = (List<Map<String,Object>>) input.get("memberDetails");
         List<Member> membersList = new ArrayList<>();
 
+        int countChild = 0;
         for (Map<String,Object> one : devoteeList) {
             Member mem = new Member();
             mem.setDbDevId((String)one.get("id"));
             mem.setDbDevName((String)one.get("fname"));
             mem.setDbDevGender((String)one.get("gender"));
+            mem.setDbDevAge((String)one.get("age"));
             membersList.add(mem);
+            
+            String temp = (String) one.get("age");
+            int devAge = Integer.parseInt(temp);
+            if(devAge<=5)
+                countChild++;
         }
+
+        String amount = String.valueOf((membersList.size()-countChild)*perHeadRegAmount);
 
         RegisteredMember registeredMember = new RegisteredMember();
         registeredMember.setAmount(amount);
