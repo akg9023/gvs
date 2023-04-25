@@ -34,7 +34,7 @@ public class RegisteredMember {
     
     //detail
     @Id
-    @GeneratedValue(strategy =GenerationType.IDENTITY)
+    @GeneratedValue(strategy =GenerationType.AUTO)
     @Column(name="yatra_mem_id")
     private Long id;
 

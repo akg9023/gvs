@@ -28,7 +28,7 @@ public class Address {
     // @GenericGenerator(name = "address_id", strategy = "com.voice.dbRegistration.utils.common.AddressIdGenerator")
     // @GeneratedValue(generator = "address_id")
     @Column(name="address_id")
-    @GeneratedValue(strategy =GenerationType.IDENTITY)
+    @GeneratedValue(strategy =GenerationType.AUTO)
     private Long id;
 
     private String line1;
