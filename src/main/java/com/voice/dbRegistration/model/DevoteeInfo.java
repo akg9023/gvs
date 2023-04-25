@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -26,6 +27,7 @@ import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Getter
@@ -107,6 +109,10 @@ public class DevoteeInfo {
 
     @Column(nullable = false, updatable = false)
     @CreationTimestamp
-    private Date created_at;
+    private LocalDateTime createdDateTime;
+ 
+    @Column(nullable = false, updatable = false)
+    @UpdateTimestamp
+    private LocalDateTime updatedDateTime;
 
 }
