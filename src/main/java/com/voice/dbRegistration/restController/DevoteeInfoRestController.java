@@ -90,9 +90,9 @@ public class DevoteeInfoRestController {
         return devoteeInfoDao.findOneById(userId);
     }
 
-    @PostMapping("/uploadProfilePic")
-    private String uploadImageGoogleDrive() {
-        return "url";
+    @DeleteMapping("/deleteInfo")
+    private void deleteDevoteeInfo(@RequestBody DevoteeInfo devoteeInfo) {
+         devoteeInfoDao.delete(devoteeInfo);
     }
 
 }

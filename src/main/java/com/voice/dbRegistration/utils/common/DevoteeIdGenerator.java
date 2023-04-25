@@ -24,11 +24,12 @@ public class DevoteeIdGenerator implements IdentifierGenerator {
         try {
             Statement statement=connection.createStatement();
     
-            ResultSet rs=statement.executeQuery("select count(*)from devotee_info");
+            ResultSet rs=statement.executeQuery("select max(devotee_id)from devotee_info");
     
             if(rs.next())
             {
-                int id=rs.getInt(1)+1;
+                String temp=rs.getString(1);
+                int id = Integer.parseInt(temp.substring(5))+1;
                 String idString = String.format("%04d", id);
                 String generatedId = prefix +String.valueOf(year)+ idString;
                 return generatedId;
