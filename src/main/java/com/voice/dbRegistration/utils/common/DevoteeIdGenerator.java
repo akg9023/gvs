@@ -16,29 +16,36 @@ public class DevoteeIdGenerator implements IdentifierGenerator {
     @Override
     public Serializable generate(SharedSessionContractImplementor session, Object object)
             throws HibernateException {
-    
+
         String prefix = "HLZ";
         Connection connection = session.connection();
-        int year = Year.now().getValue()%100;
-    
+        int year = Year.now().getValue() % 100;
+
         try {
-            Statement statement=connection.createStatement();
-    
-            ResultSet rs=statement.executeQuery("select max(devotee_id)from devotee_info");
-    
-            if(rs.next())
-            {
-                String temp=rs.getString(1);
-                int id = Integer.parseInt(temp.substring(5))+1;
-                String idString = String.format("%04d", id);
-                String generatedId = prefix +String.valueOf(year)+ idString;
+            Statement statement = connection.createStatement();
+
+            ResultSet rs = statement.executeQuery("select max(devotee_id)from devotee_info");
+
+            if (rs.next()) {
+                String idString;
+                String temp = rs.getString(1);
+                int id;
+                System.out.println("TEMP ==================");
+                System.out.println(temp);
+                if (temp == null)
+                    id = 1;
+                else
+                    id = Integer.parseInt(temp.substring(5)) + 1;
+                idString = String.format("%04d", id);
+                String generatedId = prefix + String.valueOf(year) + idString;
                 return generatedId;
             }
+
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-    
+
         return null;
     }
-    }
+}
