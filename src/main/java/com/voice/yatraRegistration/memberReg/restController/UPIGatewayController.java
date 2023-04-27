@@ -77,7 +77,9 @@ public class UPIGatewayController {
 
     @PostMapping("/createOrder")
     public ResponseEntity sendRequest(@RequestBody Map<String, Object> input) {
-
+        
+        String regularAmount = perHeadRegAmount;
+        
         String userEmail = (String) input.get("customerEmail");
         String clientTxtId = (String) input.get("clientTransactionId");
         List<Map<String,Object>> devoteeList = (List<Map<String,Object>>) input.get("memberDetails");
@@ -85,7 +87,7 @@ public class UPIGatewayController {
 
         // special consession for volunteer email id
           if(userEmail.equals(volunteerEmail)){
-            perHeadRegAmount = volunteerPerHeadAmount;
+            regularAmount = volunteerPerHeadAmount;
         }
 
         // no charge for children under age 5
@@ -104,7 +106,7 @@ public class UPIGatewayController {
                 countChild++;
         }
 
-        String amount = String.valueOf((membersList.size()-countChild)*perHeadRegAmount);
+        String amount = String.valueOf((membersList.size()-countChild)*regularAmount);
 
         RegisteredMember registeredMember = new RegisteredMember();
         registeredMember.setAmount(amount);
