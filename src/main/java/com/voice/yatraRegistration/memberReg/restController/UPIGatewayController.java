@@ -78,7 +78,7 @@ public class UPIGatewayController {
     @PostMapping("/createOrder")
     public ResponseEntity sendRequest(@RequestBody Map<String, Object> input) {
         
-        String regularAmount = perHeadRegAmount;
+        int regularAmount = perHeadRegAmount;
         
         String userEmail = (String) input.get("customerEmail");
         String clientTxtId = (String) input.get("clientTransactionId");
