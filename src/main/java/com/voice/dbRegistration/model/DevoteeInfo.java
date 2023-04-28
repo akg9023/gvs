@@ -13,6 +13,8 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -49,10 +51,12 @@ public class DevoteeInfo {
     private String mname = "";
     private String lname = "";
     private String initiatedName = "";
+    @Enumerated(EnumType.STRING)
     private Gender gender = Gender.MALE;
 
     private String dateOfBirth = "";
     private String age=""; // calculated
+    @Enumerated(EnumType.STRING)
     private MaritialStatus maritialStatus = MaritialStatus.UNMARRIED;
     private String bloodGroup = "";
     private String language = "";
@@ -82,8 +86,11 @@ public class DevoteeInfo {
     private String servicesRendered="";
 
     // Professional Info
+    @Enumerated(EnumType.STRING)
     private Education education= Education.NO_EDUCATION;
     private String degreeSpecification="";
+
+    @Enumerated(EnumType.STRING)
     private Occupation occupation=Occupation.UNEMPLOYED;
     private String presentDesignation="";
     private String skills="";
@@ -91,8 +98,6 @@ public class DevoteeInfo {
     private String officeLocation="";
 
     // Family Info
-    private String birthCity="";
-    private String birthState="";
     private String motherTongue="";
     private String fathersName="";
     private String mothersName="";
@@ -105,13 +110,14 @@ public class DevoteeInfo {
     private boolean isModified=false; // true when any update happen and not committed to master db
 
     // internal
+    @Enumerated(EnumType.STRING)
     private Prividege priviledge=Prividege.USER;
 
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = true)
     @CreationTimestamp
     private LocalDateTime createdDateTime;
  
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = true)
     @UpdateTimestamp
     private LocalDateTime updatedDateTime;
 

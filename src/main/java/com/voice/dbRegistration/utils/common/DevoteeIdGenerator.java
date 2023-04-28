@@ -30,8 +30,6 @@ public class DevoteeIdGenerator implements IdentifierGenerator {
                 String idString;
                 String temp = rs.getString(1);
                 int id;
-                System.out.println("TEMP ==================");
-                System.out.println(temp);
                 if (temp == null)
                     id = 1;
                 else
