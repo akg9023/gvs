@@ -17,6 +17,8 @@ import java.time.Period;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import javax.annotation.PostConstruct;
+import java.util.TimeZone;
 
 @SpringBootApplication
 @EnableScheduling
@@ -27,6 +29,12 @@ public class HlzRegApplication {
 
 		
 	}
+	
+	  @PostConstruct
+	    public void init(){
+	      // Setting Spring Boot SetTimeZone
+	      TimeZone.setDefault(TimeZone.getTimeZone("IST"));
+	   }
 
 	
 
