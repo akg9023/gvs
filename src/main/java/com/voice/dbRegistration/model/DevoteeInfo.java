@@ -58,6 +58,10 @@ public class DevoteeInfo {
     private String age=""; // calculated
     @Enumerated(EnumType.STRING)
     private MaritialStatus maritialStatus = MaritialStatus.UNMARRIED;
+
+    @Enumerated(EnumType.STRING)
+    private MaritialStatus maritalStatus = MaritialStatus.UNMARRIED;
+
     private String bloodGroup = "";
     private String language = "";
     private String profileImgUrl = ""; // PII (Personally Identifiable Information)
