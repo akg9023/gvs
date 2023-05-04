@@ -69,6 +69,12 @@ public class UPIGatewayController {
     @Value("${register.member.exempted.age}")
     private int exemptedAge;
 
+    @Value("${register.member.teen.age}")
+    private int teenAge;
+
+    @Value("${register.member.teen.amount}")
+    private int teensAmount;
+
     @Value("${register.member.volunteer.email}")
     private String volunteerEmail;
 
@@ -92,6 +98,7 @@ public class UPIGatewayController {
 
         // no charge for children under age 5
         int countChild = 0;
+        int teens = 0;
         for (Map<String,Object> one : devoteeList) {
             Member mem = new Member();
             mem.setDbDevId((String)one.get("id"));
@@ -104,9 +111,14 @@ public class UPIGatewayController {
             int devAge = Integer.parseInt(temp);
             if(devAge<=exemptedAge)
                 countChild++;
+            else if(devAge<=teenAge){
+                teens++;
+            }
         }
 
-        String amount = String.valueOf((membersList.size()-countChild)*regularAmount);
+        int teenAmt = teens*teensAmount;
+        int adultAmount = (membersList.size()-countChild-teens)*regularAmount;
+        String amount = String.valueOf(teenAmt+adultAmount);
 
         RegisteredMember registeredMember = new RegisteredMember();
         registeredMember.setAmount(amount);
