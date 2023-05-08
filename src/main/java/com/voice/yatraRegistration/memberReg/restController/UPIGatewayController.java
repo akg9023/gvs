@@ -94,6 +94,7 @@ public class UPIGatewayController {
         // special consession for volunteer email id
           if(userEmail.equals(volunteerEmail)){
             regularAmount = volunteerPerHeadAmount;
+            teensAmount = volunteerPerHeadAmount;
         }
 
         // no charge for children under age 5
