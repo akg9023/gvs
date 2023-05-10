@@ -85,6 +85,7 @@ public class UPIGatewayController {
     public ResponseEntity sendRequest(@RequestBody Map<String, Object> input) {
         
         int regularAmount = perHeadRegAmount;
+        int teenAmountCopy = teensAmount;
         
         String userEmail = (String) input.get("customerEmail");
         String clientTxtId = (String) input.get("clientTransactionId");
@@ -94,7 +95,7 @@ public class UPIGatewayController {
         // special consession for volunteer email id
           if(userEmail.equals(volunteerEmail)){
             regularAmount = volunteerPerHeadAmount;
-            teensAmount = volunteerPerHeadAmount;
+            teenAmountCopy = volunteerPerHeadAmount;
         }
 
         // no charge for children under age 5
@@ -117,7 +118,7 @@ public class UPIGatewayController {
             }
         }
 
-        int teenAmt = teens*teensAmount;
+        int teenAmt = teens*teenAmountCopy;
         int adultAmount = (membersList.size()-countChild-teens)*regularAmount;
         String amount = String.valueOf(teenAmt+adultAmount);
 
