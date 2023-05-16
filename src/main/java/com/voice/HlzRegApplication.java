@@ -21,7 +21,7 @@ import javax.annotation.PostConstruct;
 import java.util.TimeZone;
 
 @SpringBootApplication
-@EnableScheduling
+// @EnableScheduling
 public class HlzRegApplication {
 
 	public static void main(String[] args) {
