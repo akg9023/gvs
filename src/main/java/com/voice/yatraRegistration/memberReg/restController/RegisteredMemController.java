@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.voice.yatraRegistration.memberReg.dao.RegisterMemDao;
 import com.voice.yatraRegistration.memberReg.model.Member;
 import com.voice.yatraRegistration.memberReg.model.RegisteredMember;
+import com.voice.yatraRegistration.memberReg.model.Status;
 
 @RestController
 @RequestMapping("/v1/memReg")
@@ -58,7 +59,8 @@ public class RegisteredMemController {
         List<String> result = new ArrayList();
         List<RegisteredMember> allRegMem = regMemDao.findAll();
         for (RegisteredMember one : allRegMem) {
-            if (one.getPaymentStatus().equals("success")){
+            if (one.getPaymentStatus().equalsIgnoreCase("success") ||
+                    one.getPaymentStatus().equalsIgnoreCase(Status.APPROVED.name())) {
                 List<Member> memList = one.getMemberIdList();
                 for (Member mem : memList) {
                     result.add(mem.getDbDevId());
@@ -69,8 +71,8 @@ public class RegisteredMemController {
     }
 
     @DeleteMapping("/deleteMemReg")
-    public void delete(@RequestBody RegisteredMember registeredMember){
-         regMemDao.delete(registeredMember);
+    public void delete(@RequestBody RegisteredMember registeredMember) {
+        regMemDao.delete(registeredMember);
     }
 
 }
