@@ -33,8 +33,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import com.voice.dbRegistration.model.GetIDFnameGender;
-import com.voice.yatraRegistration.memberReg.dao.BackupRegisterMemDao;
 import com.voice.yatraRegistration.memberReg.dao.RegisterMemDao;
 import com.voice.yatraRegistration.memberReg.model.CheckStatus;
 import com.voice.yatraRegistration.memberReg.model.Customer;
@@ -42,6 +40,7 @@ import com.voice.yatraRegistration.memberReg.model.Member;
 import com.voice.yatraRegistration.memberReg.model.RegisteredMember;
 import com.voice.yatraRegistration.memberReg.model.Response;
 import com.voice.yatraRegistration.memberReg.model.YatraCreateOrderRequest;
+import com.voice.yatraRegistration.memberReg.utils.common.YatraPaymentService;
 
 
 @CrossOrigin(origins = "*")
@@ -50,6 +49,9 @@ import com.voice.yatraRegistration.memberReg.model.YatraCreateOrderRequest;
 public class UPIGatewayController {
 
     static RestTemplate restTemplate = new RestTemplate();
+
+    @Autowired
+    YatraPaymentService yatraPayment;
 
     @Value("${upi.callback.url}")
     private String callbackUrl;
@@ -63,64 +65,26 @@ public class UPIGatewayController {
     @Value("${yatra.success.page.url}")
     private String successUrl;
 
-    @Value("${register.member.amount}")
-    private int perHeadRegAmount;
-
-    @Value("${register.member.exempted.age}")
-    private int exemptedAge;
-
-    @Value("${register.member.teen.age}")
-    private int teenAge;
-
-    @Value("${register.member.teen.amount}")
-    private int teensAmount;
-
-    @Value("${register.member.volunteer.email}")
-    private String volunteerEmail;
-
-    @Value("${register.member.volunteer.amount}")
-    private int volunteerPerHeadAmount;
-
     @PostMapping("/createOrder")
     public ResponseEntity sendRequest(@RequestBody Map<String, Object> input) {
         
-        int regularAmount = perHeadRegAmount;
-        int teenAmountCopy = teensAmount;
-        
+    
         String userEmail = (String) input.get("customerEmail");
         String clientTxtId = (String) input.get("clientTransactionId");
         List<Map<String,Object>> devoteeList = (List<Map<String,Object>>) input.get("memberDetails");
         List<Member> membersList = new ArrayList<>();
 
-        // special consession for volunteer email id
-          if(userEmail.equals(volunteerEmail)){
-            regularAmount = volunteerPerHeadAmount;
-            teenAmountCopy = volunteerPerHeadAmount;
-        }
-
-        // no charge for children under age 5
-        int countChild = 0;
-        int teens = 0;
+    
         for (Map<String,Object> one : devoteeList) {
             Member mem = new Member();
             mem.setDbDevId((String)one.get("id"));
             mem.setDbDevName((String)one.get("fname"));
             mem.setDbDevGender((String)one.get("gender"));
             mem.setDbDevAge((String)one.get("age"));
-            membersList.add(mem);
-            
-            String temp = (String) one.get("age");
-            int devAge = Integer.parseInt(temp);
-            if(devAge<=exemptedAge)
-                countChild++;
-            else if(devAge<=teenAge){
-                teens++;
-            }
+            membersList.add(mem);    
         }
 
-        int teenAmt = teens*teenAmountCopy;
-        int adultAmount = (membersList.size()-countChild-teens)*regularAmount;
-        String amount = String.valueOf(teenAmt+adultAmount);
+        String amount = String.valueOf(yatraPayment.calculateAmount(userEmail, devoteeList));
 
         RegisteredMember registeredMember = new RegisteredMember();
         registeredMember.setAmount(amount);
