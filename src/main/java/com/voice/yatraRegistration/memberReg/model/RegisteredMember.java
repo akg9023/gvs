@@ -21,6 +21,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
+import javax.persistence.UniqueConstraint;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -32,7 +33,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@Table(name="yatra_aug_23_reg_mem")
+@Table(name="yatra_aug_23_reg_mem",uniqueConstraints = { @UniqueConstraint(columnNames = { "upiTxnId" }) })
 public class RegisteredMember {
     
     //detail
