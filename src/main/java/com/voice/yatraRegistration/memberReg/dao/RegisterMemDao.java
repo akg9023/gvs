@@ -10,5 +10,6 @@ public interface RegisterMemDao extends JpaRepository<RegisteredMember,String> {
     public RegisteredMember findByCustomerTxnId(String customerTxnId);
     public List<RegisteredMember> findAllByUserEmail(String email);
     public List<RegisteredMember> findAllByUpiTxnId(String upiTxnId);
+    public List<RegisteredMember> findAllByPaymentStatus(String paymentStatus);
 
 }   

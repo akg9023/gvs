@@ -11,6 +11,7 @@ public interface ManualPaymentRequestDao extends JpaRepository<ManualPaymentRequ
 
     @Query(value = "SELECT m FROM ManualPaymentRequest m where m.status <> 'PENDING'")
     public List<ManualPaymentRequest> findAllNonPendingEntries();
+    public ManualPaymentRequest findByCustomerUTR(String customerUTR);
     
     
 }
