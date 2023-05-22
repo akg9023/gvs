@@ -1,6 +1,7 @@
 package com.voice.yatraRegistration.memberReg.restController;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +52,7 @@ public class ExcelUpdateDB {
         for (int i = 0; i < pendingRegMemList.size(); i++) {
             RegisteredMember temp = pendingRegMemList.get(i);
             String txnId = temp.getUpiTxnId();
+            LocalDate txnDate = temp.getCreatedDateTime().toLocalDate();
             Transaction txnDetails = extractBankTransactions.extractTransaction(txnId);
             if (txnDetails != null) {
                 int excelAmount = txnDetails.getTransactionAmount().intValue();
@@ -66,10 +68,10 @@ public class ExcelUpdateDB {
                     temp.setCustomerVPA(txnDetails.getUpiId());
                     temp.setPaymentStatus(declineDueToAmount);
                 }
-            } else {
+            } else if (!txnDate.isAfter(extractBankTransactions.getLastDate())) {
                 currentStatus = declineDueToTxnId;
                 temp.setPaymentStatus(declineDueToTxnId);
-            }
+            } else continue;
             regDao.save(temp);
 
             // send text message
@@ -78,9 +80,6 @@ public class ExcelUpdateDB {
             String message = "HareKrsna" + "\n"
                     + "TxnId: " + txnId + "\n"
                     + "Status: " + currentStatus;
-
-                System.out.println(message.length());
-
             sendSmsService.sendSms(message, phoneNo);
         }
 

@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,12 +33,29 @@ public class ExtractBankTransactions {
 
     private final InputStream transactionFileStream;
     private final Map<String, Transaction> transactions;
+    private final LocalDate lastDate;
 
     public ExtractBankTransactions(InputStream transactionFileStream) {
+
         // TODO: for multipartfile received from web, send
         // multipartfile.getInputStream() as parameter
         this.transactionFileStream = transactionFileStream;
         transactions = parseTransactions(transactionFileStream);
+
+        lastDate = findMaxDate();
+    }
+
+    public LocalDate getLastDate() {
+        return lastDate;
+    }
+
+    private LocalDate findMaxDate() {
+        LocalDate maxDate = transactions.entrySet().stream()
+                .map(Map.Entry::getValue)
+                .map((Transaction t) -> t.getTransactionDate())
+                .max(Comparator.naturalOrder()).get();
+
+        return maxDate;
     }
 
     private Map<String, Transaction> parseTransactions(InputStream transactionFileStream) {
