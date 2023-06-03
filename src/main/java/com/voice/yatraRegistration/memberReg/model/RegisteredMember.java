@@ -61,7 +61,7 @@ public class RegisteredMember {
     @CreationTimestamp
     private LocalDateTime createdDateTime;
  
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false)
     @UpdateTimestamp
     private LocalDateTime updatedDateTime;
 }
