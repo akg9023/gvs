@@ -10,30 +10,27 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.voice.yatraRegistration.accomodationReg.dao.RoomBookingDao;
 import com.voice.yatraRegistration.accomodationReg.dao.RoomDao;
+import com.voice.yatraRegistration.accomodationReg.model.RoomBooking;
 import com.voice.yatraRegistration.accomodationReg.model.RoomType;
 
 @RestController
-@RequestMapping("/v1/accomodation/rooms/")
+@RequestMapping("/v1/room/bookings/")
 @CrossOrigin("*")
-public class RoomController {
+public class RoomBookingController {
 
     @Autowired
-    RoomDao roomDao;
+    RoomBookingDao bookingDao;
 
     @PostMapping("/fetchAll")
-    public List<RoomType> fetchAllRoom(){
-        return roomDao.findAll();
+    public List<RoomBooking> fetchAllBookings(){
+        return bookingDao.findAll();
     }
 
-    @PostMapping("/saveRoom")
-    public RoomType saveRoom(@RequestBody RoomType room){
-        System.out.println();
-        return roomDao.save(room);
+    @PostMapping("/saveBooking")
+    public RoomBooking saveRoom(@RequestBody RoomBooking booking){
+        return bookingDao.save(booking);
     }
 
-    @DeleteMapping("/deleteAll")
-    public void del(){
-         roomDao.deleteAll();
-    }
 }

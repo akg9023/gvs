@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.voice.dbRegistration.model.DevoteeInfo;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -19,29 +21,11 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class Room {
+public class AccTransaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private RoomType type;
-    private String description;
-    private String price;
-    private Integer availability;
-
-
-    @Column(nullable = false, updatable = false)
-    @CreationTimestamp
-    private LocalDateTime createdDateTime;
- 
-    @Column(nullable = false)
-    @UpdateTimestamp
-    private LocalDateTime updatedDateTime;
-    
+    private String txnId;
 }
-
-enum RoomType{
-    AC,
-    NONAC
-} 
