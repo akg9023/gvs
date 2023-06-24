@@ -15,6 +15,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +30,7 @@ import com.voice.yatraRegistration.accomodationReg.model.RoomBooking;
 import com.voice.yatraRegistration.accomodationReg.model.RoomSet;
 import com.voice.yatraRegistration.accomodationReg.model.RoomType;
 import com.voice.yatraRegistration.accomodationReg.service.AsyncService;
+import com.voice.yatraRegistration.accomodationReg.service.RoomBookingService;
 import com.voice.yatraRegistration.accomodationReg.utils.Constants;
 import com.voice.yatraRegistration.memberReg.dao.MemberDao;
 import com.voice.yatraRegistration.memberReg.model.Member;
@@ -54,15 +56,12 @@ public class RoomBookingController {
     @Autowired
     AsyncService asyncService;
 
+    @Autowired
+    RoomBookingService roomBookingService;
+
     @PostMapping("/fetchAll")
     public List<RoomBooking> fetchAllBookings() {
         return bookingDao.findAll();
-    }
-
-    public RoomBooking fetchOne(Long id) {
-        RoomBooking rm = bookingDao.findOneById(id);
-        System.out.println(rm);
-        return rm;
     }
 
     @PostMapping("/saveBooking")
@@ -74,7 +73,7 @@ public class RoomBookingController {
     public Long reserveRoomAndProceedForPayment(@RequestBody RoomBooking booking) {
         // calculate amount
         try {
-            String amount = validateCountAndCalculateAmount(booking.getRoomSet());
+            String amount = roomBookingService.validateCountAndCalculateAmount(booking.getRoomSet());
 
             // @Transaction
             // check room count and give error if not found
@@ -86,7 +85,7 @@ public class RoomBookingController {
             RoomBooking bookedRoom = bookingDao.save(booking);
 
             // decrease the count
-            manageRoomCount(booking.getRoomSet(), false);
+            roomBookingService.manageRoomCount(booking.getRoomSet(), false);
             // @Transaction
 
             asyncService.waitAsync(bookedRoom.getId());
@@ -136,47 +135,28 @@ public class RoomBookingController {
         return res;
     }
 
-    public void manageRoomCount(List<RoomSet> listRoomSet, boolean toIncrease) {
-
-        // TODO - check if count is there or not
-        for (RoomSet x : listRoomSet) {
-            String roomId = x.getRoomType().getRoomId();
-            RoomType room = roomDao.findOneByRoomId(roomId);
-            if (toIncrease)
-                room.setCount(room.getCount() + 1);
-            else
-                room.setCount(room.getCount() - 1);
-            roomDao.save(room);
-        }
+    @PostMapping("/fetchAllPendingBookings")
+    public List<RoomBooking> getAllPendingBookings(){
+        return bookingDao.findAllByPaymentStatus(Constants.PENDING);
     }
 
-    public String validateCountAndCalculateAmount(List<RoomSet> listRoomSet) throws Exception {
-        System.out.println(listRoomSet.size());
-        Integer totalAmt = 0;
-        for (RoomSet x : listRoomSet) {
-
-            // room details
-            String roomId = x.getRoomType().getRoomId();
-            RoomType room = roomDao.findOneByRoomId(roomId);
-            Integer roomPrice = Integer.parseInt(room.getPrice());
-            Integer totalRoomMemCount = room.getMemberCount();
-
-            // member details
-            List<Member> members = x.getMember();
-            Integer adultMemCount = 0;
-            for (Member m : members) {
-                Member mem = memberDao.findById(m.getId()).get();
-                if (Integer.parseInt(mem.getDbDevAge()) > Constants.ADULTAGE) {
-                    adultMemCount++;
-                }
-            }
-
-            if (adultMemCount > totalRoomMemCount) {
-                throw new Exception(Constants.ERROR_MEMBER_COUNT_EXCEED + roomId);
-            }
-            totalAmt = totalAmt + (roomPrice * adultMemCount);
-        }
-
-        return String.valueOf(totalAmt);
+     @PostMapping("/approve/{id}")
+    public RoomBooking approveBooking(@PathVariable("id") Long roomBookingId){
+        RoomBooking rm = bookingDao.findOneById(roomBookingId);
+        rm.setPaymentStatus(Constants.APPROVED);
+        return bookingDao.save(rm);
     }
+
+     @PostMapping("/decline/{id}")
+    public RoomBooking declineBooking(@PathVariable("id") Long roomBookingId){
+        RoomBooking rm = bookingDao.findOneById(roomBookingId);
+
+        //increase the room count
+        roomBookingService.manageRoomCount(rm.getRoomSet(), true);
+
+        //set status as decline
+        rm.setPaymentStatus(Constants.DECLINE);
+        return bookingDao.save(rm);
+    }
+
 }
