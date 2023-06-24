@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,10 +27,12 @@ public class RoomType {
     @Id
     private String roomId;
 
+    // @Enumerated(EnumType.STRING)
     private RType type;
     private String description;
     private String price;
     private Integer count;
+    private Integer memberCount;
     private String checkInTime; //24Hrs
     private String checkOutTime; //24Hrs
 
