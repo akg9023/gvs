@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.voice.yatraRegistration.memberReg.dao.MemberDao;
 import com.voice.yatraRegistration.memberReg.dao.RegisterMemDao;
 import com.voice.yatraRegistration.memberReg.model.Member;
 import com.voice.yatraRegistration.memberReg.model.RegisteredMember;
@@ -31,6 +32,10 @@ public class RegisteredMemController {
 
     @Autowired
     private RegisterMemDao regMemDao;
+
+        
+    @Autowired
+    MemberDao memberDao;
 
     @PostMapping("/saveInput")
     public RegisteredMember insertDevoteeInfo(@RequestBody RegisteredMember input) {
@@ -74,5 +79,11 @@ public class RegisteredMemController {
     public void delete(@RequestBody RegisteredMember registeredMember) {
         regMemDao.delete(registeredMember);
     }
+
+    @PostMapping("/members")
+    public List<Member> getAllMembers(){
+        //assuming all the members here are registered .
+        return memberDao.findAll();
+    } 
 
 }

@@ -1,6 +1,8 @@
 package com.voice.yatraRegistration.accomodationReg.restController;
 
 import java.sql.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -70,9 +72,12 @@ public class RoomBookingController {
     }
 
     @PostMapping("/reserveRoomAndProceedForPayment")
-    public Long reserveRoomAndProceedForPayment(@RequestBody RoomBooking booking) {
-        // calculate amount
+    public Map<String, String> reserveRoomAndProceedForPayment(@RequestBody RoomBooking booking) {
+
+        HashMap<String, String> response = new HashMap<>();
+       
         try {
+             // calculate amount
             String amount = roomBookingService.validateCountAndCalculateAmount(booking.getRoomSet());
 
             // @Transaction
@@ -91,7 +96,9 @@ public class RoomBookingController {
             asyncService.waitAsync(bookedRoom.getId());
 
             System.out.println("Booking reserved for 5min. Please proceed for txn.");
-            return bookedRoom.getId();
+
+            response.put("bookingId",String.valueOf(bookedRoom.getId()));
+            return response;
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -140,6 +147,37 @@ public class RoomBookingController {
         return bookingDao.findAllByPaymentStatus(Constants.PENDING);
     }
 
+    @PostMapping("/fetchAllApprovedBookings")
+    public List<RoomBooking> getAllApprovedBookings(){
+        return bookingDao.findAllByPaymentStatus(Constants.APPROVED);
+    }
+
+    @PostMapping("/fetchAllPendingMembers")
+    public List<Member> getAllPendingMembers(){
+        List<Member> pendingMem = new LinkedList<>();
+        List<RoomBooking> pendingBook = bookingDao.findAllByPaymentStatus(Constants.PENDING);
+        for(RoomBooking one:pendingBook){
+            List<RoomSet> rm = one.getRoomSet();
+            for(RoomSet r:rm){
+                pendingMem.addAll(r.getMember());
+            }
+        }
+        return pendingMem;
+    }
+
+     @PostMapping("/fetchAllApprovedMembers")
+    public List<Member> getAllApprovedMembers(){
+        List<Member> approvedMem = new LinkedList<>();
+        List<RoomBooking> approvedBook = bookingDao.findAllByPaymentStatus(Constants.APPROVED);
+        for(RoomBooking one:approvedBook){
+            List<RoomSet> rm = one.getRoomSet();
+            for(RoomSet r:rm){
+                approvedMem.addAll(r.getMember());
+            }
+        }
+        return approvedMem;
+    }
+
      @PostMapping("/approve/{id}")
     public RoomBooking approveBooking(@PathVariable("id") Long roomBookingId){
         RoomBooking rm = bookingDao.findOneById(roomBookingId);
@@ -147,7 +185,7 @@ public class RoomBookingController {
         return bookingDao.save(rm);
     }
 
-     @PostMapping("/decline/{id}")
+    @PostMapping("/decline/{id}")
     public RoomBooking declineBooking(@PathVariable("id") Long roomBookingId){
         RoomBooking rm = bookingDao.findOneById(roomBookingId);
 
