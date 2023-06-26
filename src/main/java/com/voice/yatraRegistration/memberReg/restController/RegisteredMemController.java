@@ -80,10 +80,20 @@ public class RegisteredMemController {
         regMemDao.delete(registeredMember);
     }
 
-    @PostMapping("/members")
+    @PostMapping("/successMembers")
     public List<Member> getAllMembers(){
-        //assuming all the members here are registered .
-        return memberDao.findAll();
+        List<Member> result = new ArrayList();
+        List<RegisteredMember> allRegMem = regMemDao.findAll();
+        for (RegisteredMember one : allRegMem) {
+            if (one.getPaymentStatus().equalsIgnoreCase("success") ||
+                    one.getPaymentStatus().equalsIgnoreCase(Status.APPROVED.name())) {
+                List<Member> memList = one.getMemberIdList();
+                for (Member mem : memList) {
+                    result.add(mem);
+                }
+            }
+        }
+        return result;
     } 
 
 }
