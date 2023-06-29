@@ -98,6 +98,7 @@ public class RoomBookingController {
             System.out.println("Booking reserved for 5min. Please proceed for txn.");
 
             response.put("bookingId",String.valueOf(bookedRoom.getId()));
+            response.put("amount",amount);
             return response;
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -107,35 +108,34 @@ public class RoomBookingController {
     }
 
     @PostMapping("/saveTxn")
-    public RoomBooking saveTxnDetail(@RequestBody Map<String, String> req) {
+    public RoomBooking saveTxnDetail(@RequestBody Map<String, String> req) throws Exception {
 
         String bookingId = req.get("bookingId");
         // transaction
         String customerTxnId = "";
-        String customerVPA = "";
-        String customerEmail = "";
-        String upiTxnId = req.get("txnId");
+        String customerVPA = req.get("customerVPA");
+        String customerEmail = req.get("customerEmail");
+        String upiTxnId = req.get("upiTxnId");
         String txnDate = String.valueOf(LocalDateTime.now());
 
         if (bookingId == null) {
-            System.out.println("Id must be there");
-            return null;
+            throw new Exception("BookingId doesnt found.");
         }
 
         if (upiTxnId == null) {
-            System.out.println("txn Id not found");
-            return null;
+            throw new Exception("UPI txn id should be unique");
         }
 
         RoomBooking rm = bookingDao.findOneById(Long.parseLong(bookingId));
 
         if (rm.getPaymentStatus().equals(Constants.TIMEOUT)) {
-            // TODO - error
-            return null;
+            throw new Exception("Payment Timeout!!!");
         }
 
         rm.setUpiTxnId(upiTxnId);
         rm.setTxnDate(txnDate);
+        rm.setCustomerEmail(customerEmail);
+        rm.setCustomerVPA(customerVPA);
         rm.setPaymentStatus(Constants.PENDING);
 
         RoomBooking res = bookingDao.save(rm);
