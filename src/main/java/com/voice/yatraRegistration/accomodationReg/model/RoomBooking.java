@@ -48,7 +48,7 @@ public class RoomBooking {
     private String customerTxnId="";
     private String customerVPA="";
     private String customerEmail="";
-    private String upiTxnId="";
+    private String upiTxnId;
     private String paymentStatus="";
     private String txnDate="";
     

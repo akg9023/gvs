@@ -72,7 +72,7 @@ public class RoomBookingController {
     }
 
     @PostMapping("/reserveRoomAndProceedForPayment")
-    public Map<String, String> reserveRoomAndProceedForPayment(@RequestBody RoomBooking booking) {
+    public Map<String, String> reserveRoomAndProceedForPayment (@RequestBody RoomBooking booking) {
 
         HashMap<String, String> response = new HashMap<>();
        
@@ -80,24 +80,13 @@ public class RoomBookingController {
              // calculate amount
             String amount = roomBookingService.validateCountAndCalculateAmount(booking.getRoomSet());
 
-            // @Transaction
-            // check room count and give error if not found
+            Long bookingId = roomBookingService.reserveRoom(booking, amount);
 
-            // save in db with INITIATED state
-            booking.setAmount(amount);
-            booking.setUpiTxnId(UUID.randomUUID().toString()); //temp value
-            booking.setPaymentStatus(Constants.INITIATED);
-            RoomBooking bookedRoom = bookingDao.save(booking);
-
-            // decrease the count
-            roomBookingService.manageRoomCount(booking.getRoomSet(), false);
-            // @Transaction
-
-            asyncService.waitAsync(bookedRoom.getId());
+            asyncService.waitAsync(bookingId);
 
             System.out.println("Booking reserved for 5min. Please proceed for txn.");
 
-            response.put("bookingId",String.valueOf(bookedRoom.getId()));
+            response.put("bookingId",String.valueOf(bookingId));
             response.put("amount",amount);
             return response;
         } catch (Exception e) {
@@ -182,18 +171,20 @@ public class RoomBookingController {
     public RoomBooking approveBooking(@PathVariable("id") Long roomBookingId){
         RoomBooking rm = bookingDao.findOneById(roomBookingId);
         rm.setPaymentStatus(Constants.APPROVED);
+        //TODO - sms
         return bookingDao.save(rm);
     }
 
     @PostMapping("/decline/{id}")
-    public RoomBooking declineBooking(@PathVariable("id") Long roomBookingId){
+    public RoomBooking declineBooking(@PathVariable("id") Long roomBookingId,@RequestBody Map<String,String> input){
+        String pStaus = input.get("paymentStatus");
         RoomBooking rm = bookingDao.findOneById(roomBookingId);
 
         //increase the room count
         roomBookingService.manageRoomCount(rm.getRoomSet(), true);
 
         //set status as decline
-        rm.setPaymentStatus(Constants.DECLINE);
+        rm.setPaymentStatus(pStaus);
         return bookingDao.save(rm);
     }
 
