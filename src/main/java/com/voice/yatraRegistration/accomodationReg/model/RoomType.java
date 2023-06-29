@@ -33,6 +33,7 @@ public class RoomType {
     private String price;
     private Integer count;
     private Integer memberCount;
+    private Integer minMemberCount;
     private String checkInTime; //24Hrs
     private String checkOutTime; //24Hrs
 
