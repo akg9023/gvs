@@ -51,6 +51,13 @@ public class RoomBooking {
     private String upiTxnId;
     private String paymentStatus="";
     private String txnDate="";
+
+    @Column( updatable = false)
+    @CreationTimestamp
+    private LocalDateTime createdDateTime;
+ 
+    @UpdateTimestamp
+    private LocalDateTime updatedDateTime;
     
 }
 

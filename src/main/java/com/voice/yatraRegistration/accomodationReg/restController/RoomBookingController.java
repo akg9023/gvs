@@ -61,6 +61,12 @@ public class RoomBookingController {
     @Autowired
     RoomBookingService roomBookingService;
 
+    @PostMapping("/fetchAllBookingsByEmail")
+    public List<RoomBooking> fetchAllByEmail(@RequestBody Map<String, String> input) {
+         String email = input.get("email");
+        return bookingDao.findAllByCustomerEmail(email);
+    }
+
     @PostMapping("/fetchAll")
     public List<RoomBooking> fetchAllBookings() {
         return bookingDao.findAll();
@@ -138,7 +144,7 @@ public class RoomBookingController {
 
     @PostMapping("/fetchAllApprovedBookings")
     public List<RoomBooking> getAllApprovedBookings(){
-        return bookingDao.findAllByPaymentStatus(Constants.APPROVED);
+        return bookingDao.findAllByPaymentStatus(Constants.SUCCESS);
     }
 
     @PostMapping("/fetchAllDeclineBookings")
@@ -162,7 +168,7 @@ public class RoomBookingController {
      @PostMapping("/fetchAllApprovedMembers")
     public List<Member> getAllApprovedMembers(){
         List<Member> approvedMem = new LinkedList<>();
-        List<RoomBooking> approvedBook = bookingDao.findAllByPaymentStatus(Constants.APPROVED);
+        List<RoomBooking> approvedBook = bookingDao.findAllByPaymentStatus(Constants.SUCCESS);
         for(RoomBooking one:approvedBook){
             List<RoomSet> rm = one.getRoomSet();
             for(RoomSet r:rm){
@@ -175,7 +181,7 @@ public class RoomBookingController {
      @PostMapping("/approve/{id}")
     public RoomBooking approveBooking(@PathVariable("id") Long roomBookingId){
         RoomBooking rm = bookingDao.findOneById(roomBookingId);
-        rm.setPaymentStatus(Constants.APPROVED);
+        rm.setPaymentStatus(Constants.SUCCESS);
         //TODO - sms
         return bookingDao.save(rm);
     }

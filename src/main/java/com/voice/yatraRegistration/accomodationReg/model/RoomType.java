@@ -27,8 +27,7 @@ public class RoomType {
     @Id
     private String roomId;
 
-    // @Enumerated(EnumType.STRING)
-    private RType type;
+    private String type;
     private String description;
     private String price;
     private Integer count;
@@ -48,7 +47,3 @@ public class RoomType {
     
 }
 
-enum RType{
-    AC,
-    NONAC
-} 
