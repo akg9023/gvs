@@ -10,4 +10,5 @@ public interface RoomBookingDao extends JpaRepository<RoomBooking,Long> {
     public RoomBooking findOneById(Long id);
     public List<RoomBooking> findAllByPaymentStatus(String paymentStatus);
     public List<RoomBooking> findAllByPaymentStatusLike(String paymentStatus);
+    public List<RoomBooking> findAllByCustomerEmail(String customerEmail);
 }
