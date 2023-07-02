@@ -141,6 +141,11 @@ public class RoomBookingController {
         return bookingDao.findAllByPaymentStatus(Constants.APPROVED);
     }
 
+    @PostMapping("/fetchAllDeclineBookings")
+    public List<RoomBooking> getAllDeclineBookings(){
+        return bookingDao.findAllByPaymentStatusLike(Constants.DECLINE+"%");
+    }
+
     @PostMapping("/fetchAllPendingMembers")
     public List<Member> getAllPendingMembers(){
         List<Member> pendingMem = new LinkedList<>();
