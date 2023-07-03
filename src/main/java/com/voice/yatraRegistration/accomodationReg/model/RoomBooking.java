@@ -48,9 +48,12 @@ public class RoomBooking {
     private String customerTxnId="";
     private String customerVPA="";
     private String customerEmail="";
+    private String customerName="";
+    private String customerPhoneNo="";
     private String upiTxnId;
     private String paymentStatus="";
     private String txnDate="";
+    
 
     @Column( updatable = false)
     @CreationTimestamp
