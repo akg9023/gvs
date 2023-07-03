@@ -110,6 +110,8 @@ public class RoomBookingController {
         String customerTxnId = "";
         String customerVPA = req.get("customerVPA");
         String customerEmail = req.get("customerEmail");
+        String customerName = req.get("customerName");
+        String customerPhoneNo = req.get("customerPhoneNo");
         String upiTxnId = req.get("upiTxnId");
         String txnDate = String.valueOf(LocalDateTime.now());
 
@@ -132,6 +134,8 @@ public class RoomBookingController {
         rm.setCustomerEmail(customerEmail);
         rm.setCustomerVPA(customerVPA);
         rm.setPaymentStatus(Constants.PENDING);
+        rm.setCustomerName(customerName);
+        rm.setCustomerPhoneNo(customerPhoneNo);
 
         RoomBooking res = bookingDao.save(rm);
         return res;

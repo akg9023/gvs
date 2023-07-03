@@ -68,7 +68,7 @@ public class RoomBookingService {
             if (adultMemCount > totalRoomMemCount) {
                 throw new Exception(Constants.ERROR_MEMBER_COUNT_EXCEED + roomId);
             }
-            totalAmt = totalAmt + (roomPrice * adultMemCount);
+            totalAmt = totalAmt + roomPrice;
         }
 
         return String.valueOf(totalAmt);
