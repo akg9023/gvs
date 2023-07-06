@@ -1,11 +1,14 @@
 package com.voice.yatraRegistration.memberReg.restController;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -36,6 +39,10 @@ public class RegisteredMemController {
         
     @Autowired
     MemberDao memberDao;
+
+    @Value("${reg.mem.before.created.dateTime}")
+    @DateTimeFormat(iso=DateTimeFormat.ISO.DATE_TIME)
+	private LocalDateTime regMemBeforeCreateDateTime;
 
     @PostMapping("/saveInput")
     public RegisteredMember insertDevoteeInfo(@RequestBody RegisteredMember input) {
@@ -81,14 +88,15 @@ public class RegisteredMemController {
     }
 
     @PostMapping("/successMembers")
-    public List<Member> getAllMembers(){
+    public List<Member> getByCreatedDateTime(){
+        LocalDateTime beforeDateTime = regMemBeforeCreateDateTime;
         List<Member> result = new ArrayList();
-        List<RegisteredMember> allRegMem = regMemDao.findAll();
+        List<RegisteredMember> allRegMem = regMemDao.findAllByCreatedDateTimeBefore(beforeDateTime);
         for (RegisteredMember one : allRegMem) {
             if (one.getPaymentStatus().equalsIgnoreCase("success") ||
                     one.getPaymentStatus().equalsIgnoreCase(Status.APPROVED.name())) {
                 List<Member> memList = one.getMemberIdList();
-                for (Member mem : memList) {
+                for (Member mem : memList) {    
                     result.add(mem);
                 }
             }
