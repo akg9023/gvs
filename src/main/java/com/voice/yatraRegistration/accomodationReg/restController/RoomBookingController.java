@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.voice.common.utils.SendSmsService;
 import com.voice.dbRegistration.dao.DevoteeInfoDao;
 import com.voice.dbRegistration.model.DevoteeInfo;
 import com.voice.yatraRegistration.accomodationReg.dao.RoomBookingDao;
@@ -138,6 +139,7 @@ public class RoomBookingController {
         rm.setCustomerPhoneNo(customerPhoneNo);
 
         RoomBooking res = bookingDao.save(rm);
+        
         return res;
     }
 
@@ -185,9 +187,13 @@ public class RoomBookingController {
      @PostMapping("/approve/{id}")
     public RoomBooking approveBooking(@PathVariable("id") Long roomBookingId){
         RoomBooking rm = bookingDao.findOneById(roomBookingId);
+        
         rm.setPaymentStatus(Constants.SUCCESS);
-        //TODO - sms
-        return bookingDao.save(rm);
+       
+        RoomBooking roomBooked = bookingDao.save(rm);
+        SendSmsService sendSmsService = new SendSmsService();
+        sendSmsService.sendSms(Constants.SMS_APPROVED_MESSAGE,roomBooked.getCustomerPhoneNo());
+        return roomBooked;
     }
 
     @PostMapping("/decline/{id}")
@@ -200,7 +206,10 @@ public class RoomBookingController {
 
         //set status as decline
         rm.setPaymentStatus(pStaus);
-        return bookingDao.save(rm);
+        RoomBooking booked = bookingDao.save(rm);
+        SendSmsService sendSmsService = new SendSmsService();
+        sendSmsService.sendSms(Constants.SMS_DECLINE_MESSAGE,booked.getCustomerPhoneNo());
+        return booked;
     }
 
 }
