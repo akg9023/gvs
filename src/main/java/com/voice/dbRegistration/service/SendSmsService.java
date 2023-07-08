@@ -1,4 +1,4 @@
-package com.voice.common.utils;
+package com.voice.dbRegistration.service;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -24,11 +24,9 @@ public class SendSmsService {
 	@Value("${sms.api.key}")
 	private String key;
 
-	public  void sendSms(String message, String number)
-	// public static void sendSms(String message,List<String> numberList)
-	{
-		// System.out.println(message);
-		// System.out.println(number);
+	public void sendSms(String message, String number) {
+		System.out.println(key);
+
 		try {
 
 			String apiKey = key;

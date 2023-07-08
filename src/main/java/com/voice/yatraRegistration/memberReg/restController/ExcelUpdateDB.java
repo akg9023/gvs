@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.voice.common.utils.SendSmsService;
+import com.voice.dbRegistration.service.SendSmsService;
 import com.voice.yatraRegistration.memberReg.dao.ManualPaymentRequestDao;
 import com.voice.yatraRegistration.memberReg.dao.RegisterMemDao;
 import com.voice.yatraRegistration.memberReg.model.ManualPaymentRequest;

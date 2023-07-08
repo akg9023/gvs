@@ -24,9 +24,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.voice.common.utils.SendSmsService;
 import com.voice.dbRegistration.dao.DevoteeInfoDao;
 import com.voice.dbRegistration.model.DevoteeInfo;
+import com.voice.dbRegistration.service.SendSmsService;
 import com.voice.yatraRegistration.accomodationReg.dao.RoomBookingDao;
 import com.voice.yatraRegistration.accomodationReg.dao.RoomDao;
 import com.voice.yatraRegistration.accomodationReg.model.RoomBooking;
