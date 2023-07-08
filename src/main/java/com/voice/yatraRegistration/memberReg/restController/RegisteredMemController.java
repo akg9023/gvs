@@ -89,19 +89,7 @@ public class RegisteredMemController {
 
     @PostMapping("/successMembers")
     public List<Member> getByCreatedDateTime(){
-        LocalDateTime beforeDateTime = regMemBeforeCreateDateTime;
-        List<Member> result = new ArrayList();
-        List<RegisteredMember> allRegMem = regMemDao.findAllByCreatedDateTimeBefore(beforeDateTime);
-        for (RegisteredMember one : allRegMem) {
-            if (one.getPaymentStatus().equalsIgnoreCase("success") ||
-                    one.getPaymentStatus().equalsIgnoreCase(Status.APPROVED.name())) {
-                List<Member> memList = one.getMemberIdList();
-                for (Member mem : memList) {    
-                    result.add(mem);
-                }
-            }
-        }
-        return result;
+        return  memberDao.getAllSuccessMemBeforeDate();
     } 
 
 }

@@ -7,10 +7,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.voice.common.utils.SendSmsService;
 import com.voice.dbRegistration.model.PermittedUsers;
 import com.voice.dbRegistration.restController.Helper;
 import com.voice.dbRegistration.restController.PermittedUsersRestController;
+import com.voice.dbRegistration.service.SendSmsService;
 
 import java.nio.charset.Charset;
 import java.time.LocalDate;

@@ -3,7 +3,6 @@ package com.voice.dbRegistration.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.voice.common.utils.SendSmsService;
 import com.voice.dbRegistration.dao.DevoteeInfoDao;
 import com.voice.dbRegistration.model.DevoteeInfo;
 

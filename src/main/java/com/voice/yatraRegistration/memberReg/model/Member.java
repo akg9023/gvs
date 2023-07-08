@@ -5,6 +5,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedStoredProcedureQueries;
+import javax.persistence.NamedStoredProcedureQuery;
 
 import org.hibernate.tuple.GeneratedValueGeneration;
 
@@ -18,6 +20,11 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@NamedStoredProcedureQueries({
+        @NamedStoredProcedureQuery(name = "getRegisteredMembers",
+                                    procedureName = "get_registered_members",
+        resultClasses = Member.class)
+})
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
