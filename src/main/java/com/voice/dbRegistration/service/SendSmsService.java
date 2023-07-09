@@ -29,7 +29,7 @@ public class SendSmsService {
 
 		try {
 
-			String apiKey = key;
+			String apiKey = "DmQgOB3rw3DmM13V7zazDG2yioFfPXrli8y7OBU0E1T4FTJAMWLTf5BxR9KM";
 			String sendId = "FTWSMS";
 
 			// important step...
