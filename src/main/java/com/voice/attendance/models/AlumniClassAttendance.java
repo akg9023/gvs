@@ -1,4 +1,4 @@
-package com.voice.zoomJapaAttendance.models;
+package com.voice.attendance.models;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,29 +31,29 @@ import lombok.ToString;
 @ToString
 @Entity
 @NoArgsConstructor
-@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "attendance_devotee_id", "date" }) })
-public class Attendance {
+@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "alumni_class_participants_id", "date" }) })
+public class AlumniClassAttendance {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
-    
-    @ManyToOne
-    AttendanceDevotee attendanceDevotee;
 
-    //attendance
-    private String meetingName;
+    @ManyToOne
+    AlumniClassParticipants alumniClassParticipants;
+
+    // attendance
+    @Enumerated(EnumType.STRING)
+    private Status status;
+    private String reason;
     private Integer totalDuration;
-    private LocalDateTime joinTime;
-    private LocalDateTime leaveTime;
+    private String joinLeaveTime;
     private LocalDate date;
 
-    @Column( updatable = false)
+    @Column(updatable = false)
     @CreationTimestamp
     private LocalDateTime createdDateTime;
- 
+
     @UpdateTimestamp
     private LocalDateTime updatedDateTime;
-   
-}
 
+}
