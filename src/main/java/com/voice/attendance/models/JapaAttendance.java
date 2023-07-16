@@ -3,6 +3,7 @@ package com.voice.attendance.models;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -48,6 +49,8 @@ public class JapaAttendance {
     private Integer totalMinutes;
     private String duration;
     private String joinLeaveTime;
+    private LocalTime joinTime;
+    private LocalTime leaveTime;
     private LocalDate date;
 
     @Column(updatable = false)

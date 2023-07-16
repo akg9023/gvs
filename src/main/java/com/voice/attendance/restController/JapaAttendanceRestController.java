@@ -3,6 +3,7 @@ package com.voice.attendance.restController;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.tomcat.util.bcel.Const;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -46,18 +48,19 @@ public class JapaAttendanceRestController {
     JapaParticipantsDao devDao;
 
     @PostMapping("/fetchAll")
-    public List<JapaAttendance> fetchAll() {
-        return attendanceDao.findAll();
+    public List<JapaAttendance> fetchAll(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        return attendanceDao.findAllByDate(date);
     }
 
     @PostMapping("/present")
-    public List<JapaAttendance> fetchAllPresent() {
-        return attendanceDao.findAllByStatus(Status.PRESENT);
+    public List<JapaAttendance> fetchAllPresent(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        System.out.println(date);
+        return attendanceDao.findAllByStatusAndDate(Status.PRESENT,date);
     }
 
     @PostMapping("/absent")
-    public List<JapaAttendance> fetchAllAbsent() {
-        return attendanceDao.findAllByStatus(Status.ABSENT);
+    public List<JapaAttendance> fetchAllAbsent(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        return attendanceDao.findAllByStatusAndDate(Status.ABSENT,date);
     }
 
     @PostMapping("/update")
@@ -132,7 +135,8 @@ public class JapaAttendanceRestController {
         List<JapaParticipants> allRegJapaParticipants = devDao.findAll();
         String firstKey = timeHelper.keySet().iterator().next();
          LocalDate date = LocalDate.parse(timeHelper.get(firstKey).getJoinDateTime().substring(0, 8), formatter);
-        for (JapaParticipants jp : allRegJapaParticipants) {
+         DateTimeFormatter joinLeaveformatter = DateTimeFormatter.ofPattern("hh:mm:ss a");
+         for (JapaParticipants jp : allRegJapaParticipants) {
             String email = jp.getEmail().toLowerCase();
             Time devTimes = timeHelper.get(email);
             JapaAttendance newAttendance = new JapaAttendance();
@@ -145,6 +149,8 @@ public class JapaAttendanceRestController {
                 newAttendance.setTotalMinutes(totalDuration.get(email));
                 newAttendance.setDuration(calDuration(totalDuration.get(email)));
                 newAttendance.setStatus(Status.PRESENT);
+                newAttendance.setJoinTime(LocalTime.parse(join.trim(),joinLeaveformatter));
+                newAttendance.setLeaveTime(LocalTime.parse(leave.trim(),joinLeaveformatter));
 
             } else {
                 newAttendance.setStatus(Status.ABSENT);
