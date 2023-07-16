@@ -1,4 +1,4 @@
-package com.voice.zoomJapaAttendance.models;
+package com.voice.attendance.models;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ import lombok.ToString;
 @ToString
 @Entity
 @NoArgsConstructor
-public class AttendanceDevotee {
+public class JapaParticipants {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -31,6 +31,7 @@ public class AttendanceDevotee {
     @Column(unique = true)
     private String email;
     private String name;
+    @Column(unique = true)
     private String dbId;
 
 }

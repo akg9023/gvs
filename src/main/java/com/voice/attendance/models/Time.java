@@ -1,4 +1,4 @@
-package com.voice.zoomJapaAttendance.models;
+package com.voice.attendance.models;
 
 import java.time.LocalDateTime;
 
@@ -11,6 +11,6 @@ import lombok.Setter;
 @Setter
 public class Time {
     
-    LocalDateTime joinDateTime;
-    LocalDateTime leaveDateTime;
+    String joinDateTime;
+    String leaveDateTime;
 }
