@@ -22,13 +22,8 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.tomcat.util.bcel.Const;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.*;
 
 import com.voice.attendance.Constant.Constant;
 import com.voice.attendance.dao.JapaAttendanceDao;
@@ -40,6 +35,7 @@ import com.voice.attendance.models.Time;
 
 @RestController
 @RequestMapping("/v1/attendance/japa")
+@CrossOrigin(origins = "*")
 public class JapaAttendanceRestController {
     @Autowired
     JapaAttendanceDao attendanceDao;
