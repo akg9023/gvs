@@ -43,6 +43,13 @@ public class JapaAttendanceRestController {
     @Autowired
     JapaParticipantsDao devDao;
 
+    @PostMapping("/montlyDetail/{participantId}")
+    public List<JapaAttendance> fetchAll(@PathVariable String participantId,
+                        @RequestParam int month,@RequestParam int year) {
+        
+        return attendanceDao.findAllByParticipantsIdWithSpecifcMonth(Long.parseLong(participantId),month,year);
+    }
+
     @PostMapping("/fetchAll")
     public List<JapaAttendance> fetchAll(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         return attendanceDao.findAllByDate(date);

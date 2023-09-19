@@ -1,0 +1,55 @@
+#!/bin/bash
+
+export UPI_GATEWAY_SECRET=kjsdf
+export DB_DDL_AUTO=update
+export SMS_API_KEY=dummy
+export DB_HOST=3.90.214.202
+export DB_PORT=3306
+export DB_NAME=dev
+export DB_USERNAME=saurav
+export DB_PASSWORD=Govinda@108
+export AWS_ACCESS_KEY=dummy
+export AWS_SECRET_KEY=dummy
+export S3_BUCKET=db-iskconhaldia-prod
+export AWS_REGION=us-east-1
+export CALLBACK_URL=https://google.com
+export YATRA_SUCCESS_URL=dummy
+export MEM_REG_AMOUNT=2000
+export MEM_REG_EXEMPTED_AGE=5
+export MEM_REG_VOL_EMAIL=saurav109677@gmail.com
+export MEM_REG_VOL_AMOUNT=1
+export MEM_REG_TEEN_AMOUNT=1000
+export MEM_REG_TEEN_AGE=10
+export MEM_REG_BEFORE_CREATED_DATETIME=2023-05-25T23:59:59
+
+
+
+PORT=8080
+
+# Find the process ID (PID) of the Java application running on the specified port
+PID=$(sudo lsof -t -i:$PORT)
+
+if [ -z "$PID" ]; then
+    echo "No Java application found running on port $PORT."
+else
+    echo "Shutting down Java application on port $PORT..."
+    sudo kill $PID
+    echo "Java application shutdown complete."
+fi
+
+# maven clean install
+cd CopyHlzGlobalRegistration
+mvn clean install
+cd ..
+
+M2_HOME='/opt/apache-maven-3.6.3'
+PATH="$M2_HOME/bin:$PATH"
+export PATH
+
+
+
+JAVA_HOME='/opt/jdk-13.0.1'
+PATH="$JAVA_HOME/bin:$PATH"
+export PATH
+
+java -jar /root/CopyHlzGlobalRegistration/target/HlzReg-0.0.1-SNAPSHOT.jar &
