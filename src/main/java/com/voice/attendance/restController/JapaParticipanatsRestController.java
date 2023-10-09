@@ -17,6 +17,28 @@ public class JapaParticipanatsRestController {
     @Autowired
     JapaParticipantsDao devDao;
 
+    private void getAllFacilites(Long userId,List<Long> facilitesList){
+
+        List<Long> ids = devDao.findAllFacilitesId(userId);
+
+        facilitesList.addAll(0, ids);
+        for(Long id:ids){
+            getAllFacilites(id, facilitesList);
+        }
+    }
+
+    @PostMapping("/facilitesId")
+    public List<Long> getFaciliteesId(@RequestParam("loginEmail") String loginEmail){
+        JapaParticipants loginPerson = devDao.findOneByEmail(loginEmail);
+        List<Long> facilitesIdList = new ArrayList<>();
+        getAllFacilites(loginPerson.getId(),facilitesIdList);
+
+        //adding the login user in the list
+        facilitesIdList.add(0, loginPerson.getId());
+
+        return facilitesIdList;
+    }
+
     @PostMapping("/saveDevotee")
     public JapaParticipants saveDevotee(@RequestBody JapaParticipants attendanceDevotee) {
         return devDao.save(attendanceDevotee);
