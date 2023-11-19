@@ -1,7 +1,9 @@
 package com.voice.attendance.restController;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,26 +19,31 @@ public class JapaParticipanatsRestController {
     @Autowired
     JapaParticipantsDao devDao;
 
-    private void getAllFacilites(Long userId,List<Long> facilitesList){
+    private void getAllFacilites(Long userId,List<Map<String,Object>> facilitesList){
+     
+        List<Map<String,Object>> directFacilities = devDao.findAllFacilitiesId(userId);
 
-        List<Long> ids = devDao.findAllFacilitesId(userId);
-
-        facilitesList.addAll(0, ids);
-        for(Long id:ids){
-            getAllFacilites(id, facilitesList);
+        facilitesList.addAll(directFacilities);
+        for(Map<String,Object> oneMem:directFacilities){
+            getAllFacilites((Long)oneMem.get("id"),facilitesList);
         }
+
     }
 
     @PostMapping("/facilitesId")
-    public List<Long> getFaciliteesId(@RequestParam("loginEmail") String loginEmail){
+    public List<Map<String,Object>> getFaciliteesId(@RequestParam("loginEmail") String loginEmail){
         JapaParticipants loginPerson = devDao.findOneByEmail(loginEmail);
-        List<Long> facilitesIdList = new ArrayList<>();
-        getAllFacilites(loginPerson.getId(),facilitesIdList);
+        List<Map<String,Object>> facilitiesList = new ArrayList<>();
 
-        //adding the login user in the list
-        facilitesIdList.add(0, loginPerson.getId());
+        getAllFacilites(loginPerson.getId(),facilitiesList);
 
-        return facilitesIdList;
+        // adding the login user in the list
+        Map<String,Object> self = new HashMap<>();
+        self.put("id", loginPerson.getId());
+        self.put("name", loginPerson.getName());
+        facilitiesList.add(self);
+
+        return facilitiesList;
     }
 
     @PostMapping("/saveDevotee")
