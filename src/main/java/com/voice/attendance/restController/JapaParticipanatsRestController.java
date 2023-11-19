@@ -23,6 +23,10 @@ public class JapaParticipanatsRestController {
      
         List<Map<String,Object>> directFacilities = devDao.findAllFacilitiesId(userId);
 
+        if(directFacilities == null){
+           return ;
+        }
+
         facilitesList.addAll(directFacilities);
         for(Map<String,Object> oneMem:directFacilities){
             getAllFacilites((Long)oneMem.get("id"),facilitesList);
@@ -34,6 +38,10 @@ public class JapaParticipanatsRestController {
     public List<Map<String,Object>> getFaciliteesId(@RequestParam("loginEmail") String loginEmail){
         JapaParticipants loginPerson = devDao.findOneByEmail(loginEmail);
         List<Map<String,Object>> facilitiesList = new ArrayList<>();
+
+        if(loginPerson == null){
+            return null;
+        }
 
         getAllFacilites(loginPerson.getId(),facilitiesList);
 
