@@ -20,4 +20,10 @@ public interface DevoteeInfoDao extends JpaRepository<DevoteeInfo, String> {
 
     @Query(value = "SELECT new com.voice.dbRegistration.model.GetIDFnameGender(d.id,d.fname,d.gender,d.age) FROM DevoteeInfo d")
     public List<GetIDFnameGender> findAllDev();
+
+    @Query(value = "select max(d.id) FROM DevoteeInfo d")
+    public String getLastDevId();
+
+
+
 }

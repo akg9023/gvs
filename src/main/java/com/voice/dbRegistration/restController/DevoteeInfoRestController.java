@@ -9,6 +9,7 @@ import com.voice.dbRegistration.model.GetIDFnameGender;
 import com.voice.dbRegistration.service.DatabaseService;
 import com.voice.dbRegistration.utils.security.CustomSecurity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.voice.dbRegistration.dao.DevoteeInfoDao;
