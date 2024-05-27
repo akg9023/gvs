@@ -4,17 +4,17 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import com.voice.auth.model.UserAuth;
+import com.voice.auth.service.UserAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 import com.voice.yatraRegistration.memberReg.dao.MemberDao;
 import com.voice.yatraRegistration.memberReg.dao.RegisterMemDao;
@@ -34,25 +34,30 @@ public class RegisteredMemController {
     @Autowired
     MemberDao memberDao;
 
+    @Autowired
+    private UserAuthService userAuthService;
+
     @Value("${reg.mem.before.created.dateTime}")
     @DateTimeFormat(iso=DateTimeFormat.ISO.DATE_TIME)
 	private LocalDateTime regMemBeforeCreateDateTime;
 
     @PostMapping("/saveInput")
-    public RegisteredMember insertDevoteeInfo(@RequestBody RegisteredMember input) {
+    public ResponseEntity<RegisteredMember> insertDevoteeInfo(@RequestBody RegisteredMember input) {
 
-        return regMemDao.save(input);
+        RegisteredMember r=regMemDao.save(input);
+
+        return ResponseEntity.ok(r);
     }
 
-    @PostMapping("/fetchAll")
-    public List<RegisteredMember> fetchAll() {
-        return regMemDao.findAll();
+    @GetMapping("/fetchAll")
+    public ResponseEntity<List<RegisteredMember>> fetchAll() {
+        return ResponseEntity.ok(regMemDao.findAll());
     }
 
-    @PostMapping("/fetchAllByEmail")
-    public List<RegisteredMember> fetchByEmail(@RequestBody Map<String, String> input) {
-        String email = input.get("email");
-        return regMemDao.findAllByUserEmail(email);
+    @GetMapping("/fetchAllByEmail")
+    public ResponseEntity<List<RegisteredMember>> fetchByEmail(Authentication authentication) {
+         Optional<UserAuth> user=userAuthService.getUserAuthFromAuthentication(authentication);
+        return user.map(userAuth -> ResponseEntity.ok(regMemDao.findAllByUserEmail(userAuth.getUserEmail()))).orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
     }
 
     @PostMapping("/fetchByClientTxnId/{clientTxnId}")
@@ -60,8 +65,8 @@ public class RegisteredMemController {
         return regMemDao.findByCustomerTxnId(clientTxnId);
     }
 
-    @PostMapping("/fetchRegMemId")
-    public List<String> getAllRegMemDBId() {
+    @GetMapping("/fetchRegMemId")
+    public ResponseEntity<List<String>> getAllRegMemDBId() {
         List<String> result = new ArrayList();
         List<RegisteredMember> allRegMem = regMemDao.findAll();
         for (RegisteredMember one : allRegMem) {
@@ -73,7 +78,7 @@ public class RegisteredMemController {
                 }
             }
         }
-        return result;
+        return ResponseEntity.ok(result);
     }
 
     @DeleteMapping("/deleteMemReg")
@@ -81,9 +86,9 @@ public class RegisteredMemController {
         regMemDao.delete(registeredMember);
     }
 
-    @PostMapping("/successMembers")
-    public List<Member> getByCreatedDateTime(){
-        return  memberDao.getAllSuccessMemBeforeDate();
+    @GetMapping("/successMembers")
+    public ResponseEntity<List<Member>> getByCreatedDateTime(){
+        return  ResponseEntity.ok(memberDao.getAllSuccessMemBeforeDate());
     }
 
 }
