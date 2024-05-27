@@ -1,8 +1,8 @@
 package com.voice.auth.config;
 
-
-import com.voice.auth.filters.AfterAuthRateLimitFilter;
-import com.voice.auth.filters.CustomRateLimitFilter;
+//
+//import com.voice.auth.filters.AfterAuthRateLimitFilter;
+//import com.voice.auth.filters.CustomRateLimitFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -38,13 +38,13 @@ public class SecurityConfig {
 
     @Autowired
     private CustomOidcUserService customOidcUserService;
-    @Autowired
-    private CustomRateLimitFilter customRateLimitFilter;
-    @Autowired
-    private AfterAuthRateLimitFilter afterAuthRateLimitFilter;
+//    @Autowired
+//    private CustomRateLimitFilter customRateLimitFilter;
+//    @Autowired
+//    private AfterAuthRateLimitFilter afterAuthRateLimitFilter;
 
-    @Autowired
-    private ConfigUtils configurationUtils;
+//    @Autowired
+//    private ConfigUtils configurationUtils;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -66,7 +66,7 @@ public class SecurityConfig {
 //                })
 
                 .authorizeHttpRequests((authorize) -> authorize
-                                .requestMatchers("/admin/**").permitAll()
+                                .requestMatchers("/v1/hlzGlobalReg/**").hasAuthority("ROLE_USER")
                                 .anyRequest().authenticated()
 //                                .requestMatchers("/login").permitAll()
 //                                .requestMatchers("/kafka").permitAll()
@@ -84,27 +84,27 @@ public class SecurityConfig {
                     oauth2.successHandler(oAuth2LoginSuccessHandler);
                     oauth2.failureHandler(oAuth2LoginFailureHandler);
                     //oauth2.failureHandler(new OAuth2LoginFailureHandler("http://localhost:3000/login"));
-                })
-                .addFilterBefore(customRateLimitFilter, DisableEncodeUrlFilter.class)
-                .addFilterAfter(afterAuthRateLimitFilter, AuthorizationFilter.class);
+                });
+//                .addFilterBefore(customRateLimitFilter, DisableEncodeUrlFilter.class)
+//                .addFilterAfter(afterAuthRateLimitFilter, AuthorizationFilter.class);
         //.formLogin(Customizer.withDefaults());
 
         return httpSecurity.build();
     }
 
-    @Bean
-    public FilterRegistrationBean<CustomRateLimitFilter> customRateLimitFilterRegistrationBean(CustomRateLimitFilter customRateLimitFilter) {
-        FilterRegistrationBean<CustomRateLimitFilter> registrationBean = new FilterRegistrationBean<>(customRateLimitFilter);
-        registrationBean.setEnabled(false);
-        return registrationBean;
-    }
-
-    @Bean
-    public FilterRegistrationBean<AfterAuthRateLimitFilter> afterAuthRateLimitFilterRegistrationBean(AfterAuthRateLimitFilter afterAuth) {
-        FilterRegistrationBean<AfterAuthRateLimitFilter> registrationBean = new FilterRegistrationBean<>(afterAuth);
-        registrationBean.setEnabled(false);
-        return registrationBean;
-    }
+//    @Bean
+//    public FilterRegistrationBean<CustomRateLimitFilter> customRateLimitFilterRegistrationBean(CustomRateLimitFilter customRateLimitFilter) {
+//        FilterRegistrationBean<CustomRateLimitFilter> registrationBean = new FilterRegistrationBean<>(customRateLimitFilter);
+//        registrationBean.setEnabled(false);
+//        return registrationBean;
+//    }
+//
+//    @Bean
+//    public FilterRegistrationBean<AfterAuthRateLimitFilter> afterAuthRateLimitFilterRegistrationBean(AfterAuthRateLimitFilter afterAuth) {
+//        FilterRegistrationBean<AfterAuthRateLimitFilter> registrationBean = new FilterRegistrationBean<>(afterAuth);
+//        registrationBean.setEnabled(false);
+//        return registrationBean;
+//    }
 
     @Bean
     public UserDetailsService userDetailsService() {
