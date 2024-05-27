@@ -51,14 +51,14 @@ public class DevoteeInfoRestController {
         return input;
     }
 
-    @PostMapping("/doesUserExist")
-    public ResponseEntity<List<DevoteeInfo>> doesExist(Authentication authentication) {
+    @GetMapping("/doesUserExist")
+    public ResponseEntity<DevoteeInfo> doesExist(Authentication authentication) {
         Optional<UserAuth> user=userAuthService.getUserAuthFromAuthentication(authentication);
-        return user.map(userAuth -> ResponseEntity.ok(devoteeInfoDao.findAllByEmail(userAuth.getUserEmail()))).orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
+        return user.map(userAuth -> ResponseEntity.ok(devoteeInfoDao.findByEmail(userAuth.getUserEmail()))).orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
 
     }
 
-    @PostMapping("/fetchAllDepById/{userId}")
+    @GetMapping("/fetchAllDepById")
     public ResponseEntity<List<DevoteeInfo>> fetchAllDepByConnectedId(Authentication authentication) {
         Optional<UserAuth> user=userAuthService.getUserAuthFromAuthentication(authentication);
         return user.map(userAuth -> ResponseEntity.ok(devoteeInfoDao.findAllByConnectedTo(userAuth.getUserId()))).orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
