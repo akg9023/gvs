@@ -2,14 +2,20 @@ package com.voice.dbRegistration.restController;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.ArrayList;
 
+import com.voice.auth.model.UserAuth;
+import com.voice.auth.service.UserAuthService;
 import com.voice.dbRegistration.model.GetIDFnameGender;
 import com.voice.dbRegistration.service.DatabaseService;
 import com.voice.dbRegistration.utils.security.CustomSecurity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import com.voice.dbRegistration.dao.DevoteeInfoDao;
@@ -25,6 +31,9 @@ public class DevoteeInfoRestController {
 
     @Autowired
     DatabaseService databaseService;
+
+    @Autowired
+    private UserAuthService userAuthService;
 
     @PostMapping("/saveInput")
     public DevoteeInfo insertDevoteeInfo(@RequestBody DevoteeInfo input) {
@@ -43,15 +52,16 @@ public class DevoteeInfoRestController {
     }
 
     @PostMapping("/doesUserExist")
-    public List<DevoteeInfo> doesExist(@RequestBody Map<String, String> input) {
-        String email = input.get("email");
-        return devoteeInfoDao.findAllByEmail(email);
+    public ResponseEntity<List<DevoteeInfo>> doesExist(Authentication authentication) {
+        Optional<UserAuth> user=userAuthService.getUserAuthFromAuthentication(authentication);
+        return user.map(userAuth -> ResponseEntity.ok(devoteeInfoDao.findAllByEmail(userAuth.getUserEmail()))).orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
+
     }
 
     @PostMapping("/fetchAllDepById/{userId}")
-    public List<DevoteeInfo> fetchAllDepByConnectedId(@PathVariable("userId") String userId) {
-        List<DevoteeInfo> dep = devoteeInfoDao.findAllByConnectedTo(userId);
-        return dep;
+    public ResponseEntity<List<DevoteeInfo>> fetchAllDepByConnectedId(Authentication authentication) {
+        Optional<UserAuth> user=userAuthService.getUserAuthFromAuthentication(authentication);
+        return user.map(userAuth -> ResponseEntity.ok(devoteeInfoDao.findAllByConnectedTo(userAuth.getUserId()))).orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
     }
 
     // localhost:8080/v1/hlzGlobalReg/fetchAllDev
