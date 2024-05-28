@@ -9,7 +9,9 @@ import org.springframework.data.jpa.repository.Query;
 import com.voice.dbRegistration.model.DevoteeInfo;
 
 public interface DevoteeInfoDao extends JpaRepository<DevoteeInfo, String> {
-    public List<DevoteeInfo> findAllByEmail(String email);
+
+    @Query(value = "select * FROM DevoteeInfo where connectedTo like '%guru%'")
+    public DevoteeInfo findByEmail(String email);
     public DevoteeInfo findOneById(String id);
 
     public void deleteAllByEmail(String email);
