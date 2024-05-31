@@ -35,13 +35,7 @@ public class UserAuth {
     private AuthEnums.AccountStatus accountStatus;
     private LocalDateTime lastLoginTime;
     private LocalDateTime registrationDate;
-    /**
-     * Role Hierarchy - 1 is top will contain access to all below roles
-     *     1. SUPER_ADMIN
-     *     2. ADMIN
-     *     3. SUPER_USER
-     *     4. USER
-     */
+
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
             name = "user_role",
@@ -131,5 +125,13 @@ public class UserAuth {
 
     public void setTwoFaEnabled(boolean twoFaEnabled) {
         this.twoFaEnabled = twoFaEnabled;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }
