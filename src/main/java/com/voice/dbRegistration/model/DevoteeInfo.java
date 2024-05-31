@@ -1,5 +1,6 @@
 package com.voice.dbRegistration.model;
 
+import com.voice.dbRegistration.utils.common.DevoteeIdGenerator;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,7 +23,7 @@ public class DevoteeInfo {
     // uniquely identification of every devotee
     // format - HLZ<day><month><year><hour><min><seconds> e.g HLZ200323122344
     @Id
-    @GenericGenerator(name = "devotee_id", strategy = "com.voice.dbRegistration.utils.common.DevoteeIdGenerator")
+    @GenericGenerator(name = "devotee_id", type = DevoteeIdGenerator.class)
     @GeneratedValue(generator = "devotee_id")
     @Column(name = "devotee_id")
     private String id;
