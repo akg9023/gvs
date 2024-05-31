@@ -56,9 +56,9 @@ public class UserAuthController {
         List<UserAuth> userAuthList = new ArrayList<>();
         try {
             List<PermittedUsers> permittedUsersList = permittedUsersDao.findAll();
-            Role role = new Role();
-            role = roleRepository.findByName();
+            Role role = roleRepository.findByName();
             if(role == null){
+                role = new Role();
                 role.setName(ROLE_PREFIX + "USER");
                 // currently no privileges
                 role.setPrivileges(new HashSet<>());
@@ -86,11 +86,11 @@ public class UserAuthController {
                 userAuthList.add(userAuth);
 
             }
-            return userAuthList;
+
         }catch (Exception e){
             logger.error("Permitted User migration to User Auth Error {}", e.getMessage());
         }
-
+        return userAuthList;
     }
 
     /**
