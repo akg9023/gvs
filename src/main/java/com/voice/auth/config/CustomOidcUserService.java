@@ -1,6 +1,7 @@
 package com.voice.auth.config;
 
 
+import com.voice.auth.model.Role;
 import com.voice.auth.model.UserAuth;
 import com.voice.auth.service.UserAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,21 +95,29 @@ public class CustomOidcUserService implements OAuth2UserService<OidcUserRequest,
     public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
         Optional<UserAuth> userAuth = Optional.empty();
         Assert.notNull(userRequest, "userRequest cannot be null");
-        OidcUserInfo userInfo = null;
-        if (userRequest.getIdToken() != null && !userRequest.getIdToken().getEmail().isEmpty()) {
-            userAuth = userAuthService.getUserAuthByEmail(userRequest.getIdToken().getEmail());
-            if (userAuth.isEmpty()) {
-                OAuth2Error oauth2Error = new OAuth2Error(INVALID_USER);
-                throw new OAuth2AuthenticationException(oauth2Error, "User Not Allowed " + userRequest.getIdToken().getEmail());
-            }
-        }
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("UserAuth",userAuth);
-        userInfo = new OidcUserInfo(claims);
-
         //Here we need to add roles, permissions and principal
         Set<GrantedAuthority> authorities = new LinkedHashSet<>();
-        userAuth.ifPresent(test -> authorities.add(new SimpleGrantedAuthority(test.getUserRole().name())));
+        Map<String, Object> claims = new HashMap<>();
+        OidcUserInfo userInfo = null;
+        UserAuth user = null;
+        if (userRequest.getIdToken() != null && !userRequest.getIdToken().getEmail().isEmpty()) {
+            userAuth = userAuthService.getUserAuthByEmail(userRequest.getIdToken().getEmail());
+            if(userAuth.isPresent()){
+                user = userAuth.get();
+                for(Role role: user.getRoles()){
+                    authorities.add(new SimpleGrantedAuthority(role.getName()));
+                }
+
+            }
+            else {
+                user = new UserAuth();
+                user.setUserEmail(userRequest.getIdToken().getEmail());
+            }
+        }
+
+        claims.put("UserAuth",user);
+        userInfo = new OidcUserInfo(claims);
+
         authorities.add(new OidcUserAuthority(userRequest.getIdToken(), userInfo));
         OAuth2AccessToken token = userRequest.getAccessToken();
         for (String authority : token.getScopes()) {

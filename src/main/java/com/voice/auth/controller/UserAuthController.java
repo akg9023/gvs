@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/v1/auth")
+@RequestMapping("/auth")
 public class UserAuthController {
     private static final String USER_AUTH_CLAIM_KEY = "UserAuth";
     @Autowired
