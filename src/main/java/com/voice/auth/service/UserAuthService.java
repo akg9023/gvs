@@ -25,7 +25,9 @@ public class UserAuthService {
     public UserAuth saveUserAuth(UserAuth UserAuth) {
         return userAuthRepository.save(UserAuth);
     }
-
+    public List<UserAuth> saveAllUsers(List<UserAuth> userAuthList){
+        return userAuthRepository.saveAll(userAuthList);
+    }
 
     public List<UserAuth> getAllUserAuth() {
         logger.debug("UserTestService Class");
@@ -33,6 +35,7 @@ public class UserAuthService {
     }
 
     public Optional<UserAuth> getUserAuthByEmail(String userEmail) {
+
         return userAuthRepository.findByUserEmail(userEmail);
     }
     public Optional<UserAuth> getUserAuthFromAuthentication(Authentication authentication){

@@ -31,20 +31,17 @@ public class DevoteeIdGenerator implements IdentifierGenerator {
 
         if (!rs.isEmpty()) {
             String idString;
-            String temp = rs;
             int id;
-                id = Integer.parseInt(temp.substring(5)) + 1;
+                id = Integer.parseInt(rs.substring(5)) + 1;
             idString = String.format("%04d", id);
-            String generatedId = prefix + String.valueOf(year) + idString;
-            return generatedId;
+            return prefix + String.valueOf(year) + idString;
         }
         else {
             String idString;
             int id;
             id = 1;
             idString = String.format("%04d", id);
-            String generatedId = prefix + String.valueOf(year) + idString;
-            return generatedId;
+            return prefix + String.valueOf(year) + idString;
 
         }
     }

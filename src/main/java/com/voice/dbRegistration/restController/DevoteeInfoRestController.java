@@ -54,7 +54,7 @@ public class DevoteeInfoRestController {
     @GetMapping("/doesUserExist")
     public ResponseEntity<DevoteeInfo> doesExist(Authentication authentication) {
         Optional<UserAuth> user=userAuthService.getUserAuthFromAuthentication(authentication);
-        return user.map(userAuth -> ResponseEntity.ok(devoteeInfoDao.findByEmail(userAuth.getUserEmail()))).orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
+        return user.map(userAuth -> ResponseEntity.ok(devoteeInfoDao.findByEmailAndConnectedTo(userAuth.getUserEmail(),"guru"))).orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
 
     }
 
