@@ -54,7 +54,7 @@ public class SecurityConfig {
 
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+//               .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 //                .headers(headers -> {
 //                    headers.referrerPolicy(ref ->
 //                            ref.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.UNSAFE_URL)
@@ -108,7 +108,7 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return new InMemoryUserDetailsManager(User.builder().passwordEncoder((pass) -> passwordEncoder().encode(pass)).username("user").password("password").authorities("ADMIN").build());
+        return new InMemoryUserDetailsManager(User.builder().passwordEncoder((pass) -> passwordEncoder().encode(pass)).username("user").password("password").authorities("ROLE_USER").build());
     }
 
     @Bean
