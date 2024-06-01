@@ -56,7 +56,7 @@ public class UserAuthController {
         List<UserAuth> userAuthList = new ArrayList<>();
         try {
             List<PermittedUsers> permittedUsersList = permittedUsersDao.findAll();
-            Role role = roleRepository.findByName();
+            Role role = roleRepository.findByName(ROLE_PREFIX + "USER");
             if(role == null){
                 role = new Role();
                 role.setName(ROLE_PREFIX + "USER");
