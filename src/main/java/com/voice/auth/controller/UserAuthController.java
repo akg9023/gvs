@@ -75,11 +75,10 @@ public class UserAuthController {
                 if(devoteeInfo!=null){
                     userAuth.setUserId(devoteeInfo.getId());
                     userAuth.setUserName(devoteeInfo.getFname()+devoteeInfo.getLname());
+                    userAuth.setRegistrationDate(devoteeInfo.getCreatedDateTime());
                 }
                 userAuth.setVerified(false);
                 userAuth.setAccountStatus(AuthEnums.AccountStatus.ACTIVE);
-                LocalDateTime currentDateTime = LocalDateTime.now();
-                userAuth.setRegistrationDate(currentDateTime);
                 userAuth.setTwoFaEnabled(false);
                 userAuth.setRoles(Set.of(role));
 
