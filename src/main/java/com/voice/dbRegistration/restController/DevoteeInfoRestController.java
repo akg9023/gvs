@@ -39,7 +39,7 @@ public class DevoteeInfoRestController {
     public DevoteeInfo insertDevoteeInfo(@RequestBody DevoteeInfo input) {
 
         // dob shouldc be in "2020-12-31" format
-        if (input.getDateOfBirth().length()!=0)
+        if (!input.getDateOfBirth().isEmpty())
             input.setAge(Helper.calculateAge(input.getDateOfBirth()));
         // DevoteeInfo encrypted = encryptData(input);
         return databaseService.saveInputAndSendMessage(input);

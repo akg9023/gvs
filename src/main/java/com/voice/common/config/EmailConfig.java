@@ -1,4 +1,4 @@
-package com.voice.common.emailUtils;
+package com.voice.common.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
