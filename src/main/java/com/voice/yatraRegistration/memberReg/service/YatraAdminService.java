@@ -1,5 +1,7 @@
 package com.voice.yatraRegistration.memberReg.service;
 
+import com.voice.auth.dao.RoleRepository;
+import com.voice.auth.model.Role;
 import com.voice.common.model.YatraRegEmail;
 import com.voice.common.service.EmailService;
 import com.voice.dbRegistration.dao.DevoteeInfoDao;
@@ -8,20 +10,20 @@ import com.voice.dbRegistration.model.DevoteeInfo;
 import com.voice.dbRegistration.model.PermittedUsers;
 import com.voice.yatraRegistration.memberReg.dao.RegisterMemDao;
 import com.voice.yatraRegistration.memberReg.model.EmailMember;
-import com.voice.yatraRegistration.memberReg.model.Member;
-import com.voice.yatraRegistration.memberReg.model.RegisteredMember;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Service
 public class YatraAdminService {
-
+    public static final String ROLE_PREFIX = "ROLE_";
     Logger logger = LoggerFactory.getLogger(YatraAdminService.class);
     @Autowired
     private RegisterMemDao regMemDao;
@@ -34,7 +36,30 @@ public class YatraAdminService {
     @Autowired
     EmailService emailService;
 
+    @Autowired
+    RoleRepository roleRepository;
 
+    public Optional<Role> saveRole(Role role){
+        if(role!=null && role.getName().startsWith(ROLE_PREFIX)){
+            if(role.getPrivileges()==null){
+                role.setPrivileges(new HashSet<>());
+            }
+            return Optional.of(roleRepository.save(role));
+        }
+        return Optional.empty();
+    }
+    public Optional<List<DevoteeInfo>> getDevoteeInfoWithingDateRange(String startDateStr, String endDateStr){
+        try{
+            LocalDate from = LocalDate.parse(startDateStr);
+            LocalDate to = LocalDate.parse(endDateStr);
+            LocalDateTime startDate = from.atStartOfDay();
+            LocalDateTime endDate = to.atTime(LocalTime.MAX);
+            return  Optional.of(devoteeInfoDao.findAllByCreatedDateTimeBetween(startDate, endDate));
+        }catch (Exception e){
+            logger.error("Get DevoteeInfo Withing Date Range Error {}", e.getMessage());
+        }
+        return Optional.empty();
+    }
     public Map<String, EmailMember> sendEmailWithMemberDetails() {
         //Who registered his email as key
         Map<String, EmailMember> mapEmailMemberMap = new HashMap<>();
