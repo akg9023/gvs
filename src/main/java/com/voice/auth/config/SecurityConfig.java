@@ -59,7 +59,7 @@ public class SecurityConfig {
 
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
-//               .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+               .cors(cors -> cors.configurationSource(corsConfigurationSource()))
  //               .headers(headers -> {
 //                    headers.referrerPolicy(ref ->
 //                            ref.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.UNSAFE_URL)
@@ -126,11 +126,10 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+        configuration.setAllowedOrigins(List.of("http://localhost:3000","https://gaurangavedic.org.in"));
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.setAllowCredentials(true);
-        Arrays.asList();
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
