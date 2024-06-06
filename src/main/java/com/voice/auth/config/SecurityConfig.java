@@ -19,11 +19,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.AuthorizationFilter;
+import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
+import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.springframework.security.web.session.DisableEncodeUrlFilter;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -55,7 +60,7 @@ public class SecurityConfig {
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
 //               .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-//                .headers(headers -> {
+ //               .headers(headers -> {
 //                    headers.referrerPolicy(ref ->
 //                            ref.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.UNSAFE_URL)
 //                    );
@@ -63,8 +68,15 @@ public class SecurityConfig {
 //                            .contentSecurityPolicy(csp -> {
 //                                csp.policyDirectives(configurationUtils.getContentSeucurityPolicy());
 //                            });
-//                })
+ //             })
+                //This configures how many session one user can have
 
+                .sessionManagement(session -> session
+//This will prevent a user from logging in multiple times - a second login will cause the first to be invalidated.
+                .maximumSessions(1)
+ //The second login will then be rejected. By "rejected", we mean that the user will be sent to the authentication-failure-url
+ //               .maxSessionsPreventsLogin(true)
+                        )
                 .authorizeHttpRequests((authorize) -> authorize
                                 .requestMatchers("/v1/hlzGlobalReg/**").hasAuthority("ROLE_USER")
                                 .anyRequest().authenticated()
@@ -83,7 +95,7 @@ public class SecurityConfig {
                     );
                     oauth2.successHandler(oAuth2LoginSuccessHandler);
                     oauth2.failureHandler(oAuth2LoginFailureHandler);
-                    //oauth2.failureHandler(new OAuth2LoginFailureHandler("http://localhost:3000/login"));
+
                 });
 //                .addFilterBefore(customRateLimitFilter, DisableEncodeUrlFilter.class)
 //                .addFilterAfter(afterAuthRateLimitFilter, AuthorizationFilter.class);
@@ -118,7 +130,7 @@ public class SecurityConfig {
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.setAllowCredentials(true);
-
+        Arrays.asList();
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
@@ -129,5 +141,8 @@ public class SecurityConfig {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
-
+    @Bean
+    public HttpSessionEventPublisher httpSessionEventPublisher() {
+        return new HttpSessionEventPublisher();
+    }
 }

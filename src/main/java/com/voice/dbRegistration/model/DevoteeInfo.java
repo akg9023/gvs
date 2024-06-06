@@ -6,7 +6,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -38,6 +41,8 @@ public class DevoteeInfo {
 
     private String dateOfBirth = "";
     private String age=""; // calculated
+    @Transient
+    private int calculatedAge;
     @Enumerated(EnumType.STRING)
     private MaritialStatus maritialStatus = MaritialStatus.UNMARRIED;
 
@@ -107,4 +112,22 @@ public class DevoteeInfo {
     @UpdateTimestamp
     private LocalDateTime updatedDateTime;
 
+    /**
+     *
+     * @return calculate age from date of birth
+     * If date of birth not present return -1
+     */
+    public int getCalculatedAge(){
+        if(calculatedAge!=0) return calculatedAge;
+        if(!dateOfBirth.isEmpty()){
+            String dob = dateOfBirth;
+            DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
+            LocalDate birthDate = LocalDate.parse(dob, formatter);
+            LocalDate currentDate = LocalDate.now();
+            Period period = Period.between(birthDate, currentDate);
+            calculatedAge = period.getYears();
+            return calculatedAge;
+        }
+        return -1;
+    }
 }
