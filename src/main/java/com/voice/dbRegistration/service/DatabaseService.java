@@ -25,4 +25,14 @@ public class DatabaseService {
         //sendSmsService.sendSms(message, devotee.getPrimaryPhone());
         return devotee;
     }
+    public String getMaskedPrimaryPhone(String phone){
+        if(!phone.isEmpty()){
+            String maskedStr = "XXXXXX";
+            if(phone.length()==10){
+                return maskedStr+phone.substring(6);
+            }
+        }
+       return "NA";
+
+    }
 }
