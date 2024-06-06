@@ -60,7 +60,7 @@ public class SecurityConfig {
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
- //               .headers(headers -> {
+                .headers(headers -> {
 //                    headers.referrerPolicy(ref ->
 //                            ref.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.UNSAFE_URL)
 //                    );
@@ -68,7 +68,7 @@ public class SecurityConfig {
 //                            .contentSecurityPolicy(csp -> {
 //                                csp.policyDirectives(configurationUtils.getContentSeucurityPolicy());
 //                            });
- //             })
+              })
                 //This configures how many session one user can have
 
                 .sessionManagement(session -> session
@@ -126,7 +126,7 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000","https://gaurangavedic.org.in"));
+        configuration.setAllowedOrigins(List.of("http://localhost:3000","https://db.gaurangavedic.org.in","https://gaurangavedic.org.in"));
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.setAllowCredentials(true);
