@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.Query;
 import com.voice.dbRegistration.model.DevoteeInfo;
 import org.springframework.data.repository.query.Param;
 
+
 public interface DevoteeInfoDao extends JpaRepository<DevoteeInfo, String> {
 //   Todo need to check query
 //    @Query(value = "select * FROM DevoteeInfo where connectedTo like '%guru%'")
@@ -28,7 +29,7 @@ public interface DevoteeInfoDao extends JpaRepository<DevoteeInfo, String> {
     @Query(value = "SELECT new com.voice.dbRegistration.model.GetIDFnameGender(d.id,d.fname,d.gender,d.age) FROM DevoteeInfo d")
     public List<GetIDFnameGender> findAllDev();
 
-    @Query(value = "select max(d.id) FROM DevoteeInfo d")
+    @Query("select max(d.id) FROM DevoteeInfo d")
     public String getLastDevId();
 
     @Query("SELECT di FROM DevoteeInfo di WHERE di.createdDateTime >= :startDate AND di.createdDateTime <= :endDate")

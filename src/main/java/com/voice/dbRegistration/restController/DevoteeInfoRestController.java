@@ -10,6 +10,7 @@ import com.voice.auth.model.UserAuth;
 import com.voice.auth.service.UserAuthService;
 import com.voice.dbRegistration.model.GetIDFnameGender;
 import com.voice.dbRegistration.service.DatabaseService;
+import com.voice.dbRegistration.utils.common.DevoteeIdGenerator;
 import com.voice.dbRegistration.utils.security.CustomSecurity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,10 +35,13 @@ public class DevoteeInfoRestController {
 
     @Autowired
     private UserAuthService userAuthService;
+    @Autowired
+    DevoteeIdGenerator devoteeIdGenerator;
 
     @PostMapping("/saveInput")
     public DevoteeInfo insertDevoteeInfo(@RequestBody DevoteeInfo input) {
-
+        String id = devoteeIdGenerator.generate();
+        input.setId(id);
         // dob shouldc be in "2020-12-31" format
         if (!input.getDateOfBirth().isEmpty())
             input.setAge(Helper.calculateAge(input.getDateOfBirth()));

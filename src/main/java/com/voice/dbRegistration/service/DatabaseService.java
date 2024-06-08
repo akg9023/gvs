@@ -35,4 +35,7 @@ public class DatabaseService {
        return "NA";
 
     }
+    public String getLastDevId(){
+        return devoteeInfoDao.getLastDevId();
+    }
 }
