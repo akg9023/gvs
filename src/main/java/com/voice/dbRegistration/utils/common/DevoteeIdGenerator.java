@@ -7,42 +7,50 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.Year;
 
-import com.voice.dbRegistration.dao.DevoteeInfoDao;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.id.IdentifierGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class DevoteeIdGenerator implements IdentifierGenerator {
-
-    @Autowired
-    DevoteeInfoDao devInfo;
 
     @Override
     public Serializable generate(SharedSessionContractImplementor session, Object object)
             throws HibernateException {
 
         String prefix = "HLZ";
-
+        Connection connection;
+        try {
+            connection = session.getJdbcConnectionAccess().obtainConnection();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
         int year = Year.now().getValue() % 100;
 
-        String rs= devInfo.getLastDevId();
+        try {
+            Statement statement = connection.createStatement();
 
-        if (!rs.isEmpty()) {
-            String idString;
-            int id;
-                id = Integer.parseInt(rs.substring(5)) + 1;
-            idString = String.format("%04d", id);
-            return prefix + String.valueOf(year) + idString;
-        }
-        else {
-            String idString;
-            int id;
-            id = 1;
-            idString = String.format("%04d", id);
-            return prefix + String.valueOf(year) + idString;
+            ResultSet rs = statement.executeQuery("select max(devotee_id)from devotee_info");
 
+            if (rs.next()) {
+                String idString;
+                String temp = rs.getString(1);
+                int id;
+                if (temp == null)
+                    id = 1;
+                else
+                    id = Integer.parseInt(temp.substring(5)) + 1;
+                idString = String.format("%04d", id);
+                String generatedId = prefix + String.valueOf(year) + idString;
+                System.out.println(generatedId);
+                return generatedId;
+            }
+
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
+
+        return null;
     }
 }
