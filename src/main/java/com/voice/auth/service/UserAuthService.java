@@ -19,6 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.*;
 
 @Service
@@ -118,4 +119,35 @@ public class UserAuthService {
         }
         return null;
     }
+
+    /**
+     *
+     * @param email
+     * @return UserAuth
+     *
+     * When a user login in db registration UI and they register themselves for the first time
+     * at that time UserAuth table which only would have email and role needs to be updated with the HLZ id created
+     * from devoteeInfo table
+     */
+    public Optional<UserAuth> updateUserAuthWhenDevoteeInfoSaveSelf(DevoteeInfo devoteeInfo){
+        Optional<UserAuth> res = userAuthRepository.findByUserEmail(devoteeInfo.getEmail());
+        if(res.isPresent()){
+            Role role = roleRepository.findByName("ROLE_USER");
+            UserAuth userAuth = res.get();
+
+            userAuth.setUserId(devoteeInfo.getId());
+            userAuth.setUserName(devoteeInfo.getFname());
+            userAuth.setVerified(false);
+            userAuth.setTwoFaEnabled(false);
+            userAuth.setRoles(Set.of(role));
+            userAuth.setRegistrationDate(devoteeInfo.getCreatedDateTime());
+            userAuth.setAccountStatus(AuthEnums.AccountStatus.ACTIVE);
+
+           return Optional.of(userAuthRepository.save(userAuth));
+        }else{
+            logger.error("User Must be present in UserAuth table {}",devoteeInfo);
+        }
+        return Optional.empty();
+    }
+
 }

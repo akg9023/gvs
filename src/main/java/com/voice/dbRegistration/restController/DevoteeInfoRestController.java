@@ -11,6 +11,8 @@ import com.voice.auth.service.UserAuthService;
 import com.voice.dbRegistration.model.GetIDFnameGender;
 import com.voice.dbRegistration.service.DatabaseService;
 import com.voice.dbRegistration.utils.security.CustomSecurity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +27,7 @@ import com.voice.dbRegistration.model.DevoteeInfo;
 @RequestMapping("/v1/hlzGlobalReg")
 //@CrossOrigin(origins = "*")
 public class DevoteeInfoRestController {
-
+    Logger logger = LoggerFactory.getLogger(DevoteeInfoRestController.class);
     @Autowired
     DevoteeInfoDao devoteeInfoDao;
 
@@ -36,14 +38,22 @@ public class DevoteeInfoRestController {
     private UserAuthService userAuthService;
 
     @PostMapping("/saveInput")
-    public DevoteeInfo insertDevoteeInfo(@RequestBody DevoteeInfo input) {
-
+    public DevoteeInfo insertDevoteeInfo(@RequestBody DevoteeInfo input,Authentication authentication) {
+        Optional<UserAuth> user =  userAuthService.getUserAuthFromAuthentication(authentication);
         // dob shouldc be in "2020-12-31" format
         if (!input.getDateOfBirth().isEmpty())
             input.setAge(Helper.calculateAge(input.getDateOfBirth()));
         // DevoteeInfo encrypted = encryptData(input);
-        return databaseService.saveInputAndSendMessage(input);
-        // return devoteeInfoDao.save(input);
+        DevoteeInfo devoteeInfo =  databaseService.saveInputAndSendMessage(input);
+
+        if(user.isPresent()){
+            UserAuth userAuth = user.get();
+            if(userAuth.getUserEmail().equals(devoteeInfo.getEmail()) && devoteeInfo.getConnectedTo().equals("guru")){
+                Optional<UserAuth> res = userAuthService.updateUserAuthWhenDevoteeInfoSaveSelf(devoteeInfo);
+                res.ifPresent(auth -> logger.debug("UserAuth updated after devoteeInfo insert {}", auth));
+            }
+        }
+        return devoteeInfo;
     }
 
     private DevoteeInfo encryptData(DevoteeInfo input) {
