@@ -16,8 +16,6 @@ public class UserAuth {
      * DevoteeInfo table id
      */
     private String userId;
-
-    @Column(nullable = false)
     private String userName;
     private String userPassword;
     @Column(unique = true, nullable = false)
@@ -36,7 +34,7 @@ public class UserAuth {
     private LocalDateTime lastLoginTime;
     private LocalDateTime registrationDate;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),

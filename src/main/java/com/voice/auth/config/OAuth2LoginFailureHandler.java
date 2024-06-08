@@ -18,7 +18,7 @@ public class OAuth2LoginFailureHandler extends SimpleUrlAuthenticationFailureHan
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-        response.sendRedirect("http://localhost:3000/login?error=Invalid User");
+        response.sendRedirect(UI_LOGIN_FAIL+"?error=Invalid User");
 
     }
 }
