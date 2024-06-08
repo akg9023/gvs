@@ -13,7 +13,7 @@ public class Resource {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @ManyToMany(mappedBy = "resources", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "resources", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Privilege> privileges;
 
     // Constructors, getters, and setters

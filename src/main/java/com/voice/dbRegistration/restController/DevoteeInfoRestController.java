@@ -23,7 +23,7 @@ import com.voice.dbRegistration.model.DevoteeInfo;
 
 @RestController
 @RequestMapping("/v1/hlzGlobalReg")
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
 public class DevoteeInfoRestController {
 
     @Autowired
@@ -54,7 +54,13 @@ public class DevoteeInfoRestController {
     @GetMapping("/doesUserExist")
     public ResponseEntity<DevoteeInfo> doesExist(Authentication authentication) {
         Optional<UserAuth> user=userAuthService.getUserAuthFromAuthentication(authentication);
-        return user.map(userAuth -> ResponseEntity.ok(devoteeInfoDao.findByEmailAndConnectedTo(userAuth.getUserEmail(),"guru"))).orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
+        if(user.isPresent()){
+
+            DevoteeInfo devoteeInfo= devoteeInfoDao.findByEmailAndConnectedTo(user.get().getUserEmail(),"guru");
+            return ResponseEntity.ok(devoteeInfo);
+
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
     }
 

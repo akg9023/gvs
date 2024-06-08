@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.voice.auth.model.DevoteeInfoMigration;
 import com.voice.dbRegistration.model.GetIDFnameGender;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -36,5 +37,8 @@ public interface DevoteeInfoDao extends JpaRepository<DevoteeInfo, String> {
             @Param("endDate") LocalDateTime endDate
     );
 
-
+    @Query("SELECT new com.voice.auth.model.DevoteeInfoMigration(di.id, di.fname, di.email, di.createdDateTime) " +
+            "FROM DevoteeInfo di " +
+            "WHERE di.email = :email AND di.connectedTo = 'guru'")
+    public DevoteeInfoMigration getDevoteeInfoForUserAuth(@Param("email") String email);
 }
