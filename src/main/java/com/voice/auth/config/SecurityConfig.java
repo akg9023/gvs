@@ -78,8 +78,9 @@ public class SecurityConfig {
  //               .maxSessionsPreventsLogin(true)
                         )
                 .authorizeHttpRequests((authorize) -> authorize
-                                .requestMatchers("/v1/hlzGlobalReg/**").hasAuthority("ROLE_USER")
-                                .anyRequest().authenticated()
+//                                .requestMatchers("/v1/hlzGlobalReg/**").hasAuthority("ROLE_USER")
+//                                .anyRequest().authenticated()
+                                .anyRequest().permitAll()
 //                                .requestMatchers("/login").permitAll()
 //                                .requestMatchers("/kafka").permitAll()
                         //.requestMatchers("/userTest").hasAuthority("ROLE_ADMIN")
@@ -87,7 +88,7 @@ public class SecurityConfig {
 ////                        .requestMatchers("/user").hasAuthority("ROLE_USER")
 //                                .anyRequest().authenticated()
                 )
-                .httpBasic(Customizer.withDefaults())
+//                .httpBasic(Customizer.withDefaults())
                 .oauth2Login(oauth2 -> {
                     //oauth2.loginPage("http://localhost:3000/login");
                     oauth2.userInfoEndpoint(userInfo ->

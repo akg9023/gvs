@@ -13,10 +13,10 @@ public class Privilege {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @ManyToMany(mappedBy = "privileges", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "privileges", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Role> roles;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "privilege_resource",
             joinColumns = @JoinColumn(name = "privilege_id"),

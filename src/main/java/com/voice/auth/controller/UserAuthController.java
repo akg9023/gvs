@@ -3,6 +3,7 @@ package com.voice.auth.controller;
 
 import com.voice.auth.dao.RoleRepository;
 import com.voice.auth.model.AuthEnums;
+import com.voice.auth.model.DevoteeInfoMigration;
 import com.voice.auth.model.Role;
 import com.voice.auth.model.UserAuth;
 import com.voice.auth.service.UserAuthService;
@@ -27,7 +28,6 @@ import java.util.*;
 @RequestMapping("/auth")
 public class UserAuthController {
     Logger logger = LoggerFactory.getLogger(UserAuthController.class);
-
     private static final String USER_AUTH_CLAIM_KEY = "UserAuth";
     private static final String ROLE_PREFIX = "ROLE_";
     @Autowired
@@ -46,50 +46,25 @@ public class UserAuthController {
          Optional<UserAuth> user =  userAuthService.getUserAuthFromAuthentication(authentication);
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
     }
-    @GetMapping("/migrate")
-    public  List<UserAuth> migrate(){
-       List<UserAuth> userAuthList =   migratePermittedUserToUserAuth();
-       return userAuthService.saveAllUsers(userAuthList);
+    @GetMapping("/migrateUser")
+    public List<UserAuth> migrate(){
+        Optional<List<UserAuth>> res= userAuthService.migratePermittedUsersToUserAuth();
+        return res.orElse(null);
     }
-    @GetMapping("/migrateCheck")
+    @GetMapping("/migrateUserCheck")
     public List<UserAuth> migratePermittedUserToUserAuth(){
-        List<UserAuth> userAuthList = new ArrayList<>();
-        try {
-            List<PermittedUsers> permittedUsersList = permittedUsersDao.findAll();
-            Role role = roleRepository.findByName(ROLE_PREFIX + "USER");
-            if(role == null){
-                role = new Role();
-                role.setName(ROLE_PREFIX + "USER");
-                // currently no privileges
-                role.setPrivileges(new HashSet<>());
+      Optional<List<UserAuth>> res =   userAuthService.migratePermittedUsersToUserAuthCheck();
+        return res.orElse(null);
+    }
+    @PostMapping("/userWithEmail")
+    public UserAuth saveUser(@RequestParam String email){
+        return userAuthService.saveUserWithEmailOnly(email);
+    }
+    @Autowired
 
-                role = roleRepository.save(role);
-                logger.info("Role created id = {},name = {} ",role.getId(),role.getName());
-            }
+    @GetMapping("/insertAddressID")
+    public void insertAdd(){
 
-
-            for (PermittedUsers permittedUsers : permittedUsersList) {
-                UserAuth userAuth = new UserAuth();
-                userAuth.setUserEmail(permittedUsers.getEmail());
-                DevoteeInfo devoteeInfo = devoteeInfoDao.findByEmailAndConnectedTo(userAuth.getUserEmail(),"guru");
-                if(devoteeInfo!=null){
-                    userAuth.setUserId(devoteeInfo.getId());
-                    userAuth.setUserName(devoteeInfo.getFname()+devoteeInfo.getLname());
-                    userAuth.setRegistrationDate(devoteeInfo.getCreatedDateTime());
-                }
-                userAuth.setVerified(false);
-                userAuth.setAccountStatus(AuthEnums.AccountStatus.ACTIVE);
-                userAuth.setTwoFaEnabled(false);
-                userAuth.setRoles(Set.of(role));
-
-                userAuthList.add(userAuth);
-
-            }
-
-        }catch (Exception e){
-            logger.error("Permitted User migration to User Auth Error {}", e.getMessage());
-        }
-        return userAuthList;
     }
 
     /**
