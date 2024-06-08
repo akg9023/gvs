@@ -61,9 +61,9 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .headers(headers -> {
-//                    headers.referrerPolicy(ref ->
-//                            ref.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.UNSAFE_URL)
-//                    );
+                    headers.referrerPolicy(ref ->
+                            ref.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.UNSAFE_URL)
+                    );
 //                    headers.xssProtection(Customizer.withDefaults())
 //                            .contentSecurityPolicy(csp -> {
 //                                csp.policyDirectives(configurationUtils.getContentSeucurityPolicy());
@@ -78,9 +78,9 @@ public class SecurityConfig {
  //               .maxSessionsPreventsLogin(true)
                         )
                 .authorizeHttpRequests((authorize) -> authorize
-//                                .requestMatchers("/v1/hlzGlobalReg/**").hasAuthority("ROLE_USER")
-//                                .anyRequest().authenticated()
-                                .anyRequest().permitAll()
+                               .requestMatchers("/v1/hlzGlobalReg/**").hasAuthority("ROLE_USER")
+                               .anyRequest().authenticated()
+//                                .anyRequest().permitAll()
 //                                .requestMatchers("/login").permitAll()
 //                                .requestMatchers("/kafka").permitAll()
                         //.requestMatchers("/userTest").hasAuthority("ROLE_ADMIN")
