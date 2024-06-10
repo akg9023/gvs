@@ -61,12 +61,12 @@ public class DevoteeInfoRestController {
         return input;
     }
 
-    @GetMapping("/doesUserExist")
-    public ResponseEntity<DevoteeInfo> doesExist(Authentication authentication) {
+    @GetMapping("/doesUserExist/{userEmail}")
+    public ResponseEntity<DevoteeInfo> doesExist(@PathVariable String userEmail , Authentication authentication) {
         Optional<UserAuth> user=userAuthService.getUserAuthFromAuthentication(authentication);
         if(user.isPresent()){
 
-            DevoteeInfo devoteeInfo= devoteeInfoDao.findByEmailAndConnectedTo(user.get().getUserEmail(),"guru");
+            DevoteeInfo devoteeInfo= devoteeInfoDao.findByEmailAndConnectedTo(userEmail,"guru");
             return ResponseEntity.ok(devoteeInfo);
 
         }
@@ -74,10 +74,10 @@ public class DevoteeInfoRestController {
 
     }
 
-    @GetMapping("/fetchAllDepById")
-    public ResponseEntity<List<DevoteeInfo>> fetchAllDepByConnectedId(Authentication authentication) {
+    @GetMapping("/fetchAllDepById/{userId}")
+    public ResponseEntity<List<DevoteeInfo>> fetchAllDepByConnectedId(@PathVariable String userId,Authentication authentication) {
         Optional<UserAuth> user=userAuthService.getUserAuthFromAuthentication(authentication);
-        return user.map(userAuth -> ResponseEntity.ok(devoteeInfoDao.findAllByConnectedTo(userAuth.getUserId()))).orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
+        return user.map(userAuth -> ResponseEntity.ok(devoteeInfoDao.findAllByConnectedTo(userId))).orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
     }
 
     // localhost:8080/v1/hlzGlobalReg/fetchAllDev
