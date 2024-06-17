@@ -132,14 +132,19 @@ public class UserAuthService {
     public Optional<UserAuth> updateUserAuthWhenDevoteeInfoSaveSelf(DevoteeInfo devoteeInfo){
         Optional<UserAuth> res = userAuthRepository.findByUserEmail(devoteeInfo.getEmail());
         if(res.isPresent()){
-            Role role = roleRepository.findByName("ROLE_USER");
+            Set<Role> role;
             UserAuth userAuth = res.get();
+            if(userAuth.getRoles().isEmpty()){
+                 role = Set.of(roleRepository.findByName("ROLE_USER"));
+            }else{
+                role = userAuth.getRoles();
+            }
 
             userAuth.setUserId(devoteeInfo.getId());
             userAuth.setUserName(devoteeInfo.getFname());
             userAuth.setVerified(false);
             userAuth.setTwoFaEnabled(false);
-            userAuth.setRoles(Set.of(role));
+            userAuth.setRoles(role);
             userAuth.setRegistrationDate(devoteeInfo.getCreatedDateTime());
             userAuth.setAccountStatus(AuthEnums.AccountStatus.ACTIVE);
 
