@@ -38,7 +38,7 @@ public class DevoteeInfoRestController {
     private UserAuthService userAuthService;
 
     @PostMapping("/saveInput")
-    public DevoteeInfo insertDevoteeInfo(@RequestBody DevoteeInfo input,Authentication authentication) {
+    public ResponseEntity<DevoteeInfo> insertDevoteeInfo(@RequestBody DevoteeInfo input,Authentication authentication) {
         Optional<UserAuth> user =  userAuthService.getUserAuthFromAuthentication(authentication);
         // dob shouldc be in "2020-12-31" format
         if (!input.getDateOfBirth().isEmpty())
@@ -53,7 +53,7 @@ public class DevoteeInfoRestController {
                 res.ifPresent(auth -> logger.debug("UserAuth updated after devoteeInfo insert {}", auth));
             }
         }
-        return devoteeInfo;
+        return ResponseEntity.ok(devoteeInfo);
     }
 
     private DevoteeInfo encryptData(DevoteeInfo input) {
@@ -61,12 +61,12 @@ public class DevoteeInfoRestController {
         return input;
     }
 
-    @GetMapping("/doesUserExist/{userEmail}")
-    public ResponseEntity<DevoteeInfo> doesExist(@PathVariable String userEmail , Authentication authentication) {
+    @GetMapping("/doesUserExist")
+    public ResponseEntity<DevoteeInfo> doesExist(Authentication authentication) {
         Optional<UserAuth> user=userAuthService.getUserAuthFromAuthentication(authentication);
         if(user.isPresent()){
 
-            DevoteeInfo devoteeInfo= devoteeInfoDao.findByEmailAndConnectedTo(userEmail,"guru");
+            DevoteeInfo devoteeInfo= devoteeInfoDao.findByEmailAndConnectedTo(user.get().getUserEmail(),"guru");
             return ResponseEntity.ok(devoteeInfo);
 
         }
@@ -74,10 +74,10 @@ public class DevoteeInfoRestController {
 
     }
 
-    @GetMapping("/fetchAllDepById/{userId}")
-    public ResponseEntity<List<DevoteeInfo>> fetchAllDepByConnectedId(@PathVariable String userId,Authentication authentication) {
+    @GetMapping("/fetchAllDepById")
+    public ResponseEntity<List<DevoteeInfo>> fetchAllDepByConnectedId(Authentication authentication) {
         Optional<UserAuth> user=userAuthService.getUserAuthFromAuthentication(authentication);
-        return user.map(userAuth -> ResponseEntity.ok(devoteeInfoDao.findAllByConnectedTo(userId))).orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
+        return user.map(userAuth -> ResponseEntity.ok(devoteeInfoDao.findAllByConnectedTo(user.get().getUserId()))).orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
     }
 
     // localhost:8080/v1/hlzGlobalReg/fetchAllDev
