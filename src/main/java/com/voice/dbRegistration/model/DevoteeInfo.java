@@ -43,11 +43,8 @@ public class DevoteeInfo {
     private String age=""; // calculated
     @Transient
     private int calculatedAge;
-    @Enumerated(EnumType.STRING)
-    private MaritialStatus maritialStatus = MaritialStatus.UNMARRIED;
 
-    @Enumerated(EnumType.STRING)
-    private MaritialStatus maritalStatus = MaritialStatus.UNMARRIED;
+    private String maritalStatus = "";
 
     private String bloodGroup = "";
     private String language = "";
