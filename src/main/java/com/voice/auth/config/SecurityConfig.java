@@ -78,7 +78,7 @@ public class SecurityConfig {
  //               .maxSessionsPreventsLogin(true)
                         )
                 .authorizeHttpRequests((authorize) -> authorize
-                               .requestMatchers("/v1/hlzGlobalReg/**").hasAuthority("ROLE_USER")
+                               .requestMatchers("/v1/hlzGlobalReg/**","yatra/admin/**").hasAuthority("ROLE_USER")
                                .anyRequest().authenticated()
 //                                .anyRequest().permitAll()
 //                                .requestMatchers("/login").permitAll()
