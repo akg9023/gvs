@@ -55,7 +55,7 @@ public class DevoteeInfoRestController {
                 Optional<UserAuth> res = userAuthService.updateUserAuthWhenDevoteeInfoSaveSelf(devoteeInfo);
 
                if(res.isPresent()){
-                   if(userAuthService.setUserAuthFromAuthentication(authentication,res.get())){
+                   if(userAuthService.setUserAuthInSessionAuthentication(authentication,res.get())){
                        logger.info("Session updated after devoteeInfo insert {}", res.get());
                    }
                    logger.debug("UserAuth  updated after devoteeInfo insert {}", res.get());

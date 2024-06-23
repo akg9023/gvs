@@ -67,7 +67,7 @@ public class UserAuthService {
         }
         return Optional.empty();
     }
-    public boolean setUserAuthFromAuthentication(Authentication authentication,UserAuth userAuth){
+    public boolean setUserAuthInSessionAuthentication(Authentication authentication,UserAuth userAuth){
         if(authentication!=null){
             if(authentication.getPrincipal() instanceof DefaultOidcUser oidcUser){
                 Map<String, Object> claims = oidcUser.getUserInfo().getClaims();
