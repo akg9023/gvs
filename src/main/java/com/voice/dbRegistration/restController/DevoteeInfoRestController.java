@@ -44,13 +44,23 @@ public class DevoteeInfoRestController {
         if (!input.getDateOfBirth().isEmpty())
             input.setAge(Helper.calculateAge(input.getDateOfBirth()));
         // DevoteeInfo encrypted = encryptData(input);
+        if(input.getConnectedTo().isEmpty() && user.isPresent() && !user.get().getUserId().isEmpty()){
+            input.setConnectedTo(user.get().getUserId());
+        }
         DevoteeInfo devoteeInfo =  databaseService.saveInputAndSendMessage(input);
 
         if(user.isPresent()){
             UserAuth userAuth = user.get();
             if(userAuth.getUserEmail().equals(devoteeInfo.getEmail()) && devoteeInfo.getConnectedTo().equals("guru")){
                 Optional<UserAuth> res = userAuthService.updateUserAuthWhenDevoteeInfoSaveSelf(devoteeInfo);
-                res.ifPresent(auth -> logger.debug("UserAuth updated after devoteeInfo insert {}", auth));
+
+               if(res.isPresent()){
+                   if(userAuthService.setUserAuthInSessionAuthentication(authentication,res.get())){
+                       logger.info("Session updated after devoteeInfo insert {}", res.get());
+                   }
+                   logger.debug("UserAuth  updated after devoteeInfo insert {}", res.get());
+
+               }
             }
         }
         return ResponseEntity.ok(devoteeInfo);

@@ -119,10 +119,10 @@ public class SecurityConfig {
 //        return registrationBean;
 //    }
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return new InMemoryUserDetailsManager(User.builder().passwordEncoder((pass) -> passwordEncoder().encode(pass)).username("user").password("password").authorities("ROLE_USER").build());
-    }
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//        return new InMemoryUserDetailsManager(User.builder().passwordEncoder((pass) -> passwordEncoder().encode(pass)).username("user").password("password").authorities("ROLE_USER").build());
+//    }
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {

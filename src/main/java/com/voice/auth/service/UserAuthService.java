@@ -15,8 +15,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
@@ -61,6 +66,40 @@ public class UserAuthService {
             }
         }
         return Optional.empty();
+    }
+    public boolean setUserAuthInSessionAuthentication(Authentication authentication,UserAuth userAuth){
+        if(authentication!=null){
+            if(authentication.getPrincipal() instanceof DefaultOidcUser oidcUser){
+                Map<String, Object> claims = oidcUser.getUserInfo().getClaims();
+                if(claims.containsKey(USER_AUTH_CLAIM_KEY)) {
+                    Map<String, Object> mutableClaims = new HashMap<>(claims);
+
+                    // Update the mutable map
+                    mutableClaims.put(USER_AUTH_CLAIM_KEY, userAuth);
+
+                    // Create a new OidcUserInfo with the updated claims
+                    OidcUserInfo newUserInfo = new OidcUserInfo(mutableClaims);
+
+                    // If necessary, you may need to wrap oidcUser with a new instance containing updated claims
+                    // This is an example and may need adaptation
+                    DefaultOidcUser newOidcUser = new DefaultOidcUser(
+                            oidcUser.getAuthorities(),
+                            oidcUser.getIdToken(),
+                            newUserInfo
+                            //oidcUser.getNameAttributeKey()
+                    );
+
+                    // Update the authentication object if needed
+                    Authentication oldAuth =  SecurityContextHolder.getContext().getAuthentication();
+                    Authentication newAuth = new PreAuthenticatedAuthenticationToken(newOidcUser,oldAuth.getCredentials(),oldAuth.getAuthorities());
+
+                    SecurityContextHolder.getContext().setAuthentication(newAuth);
+
+                    return  true;
+                }
+            }
+        }
+        return false;
     }
     public Optional<List<UserAuth>> migratePermittedUsersToUserAuthCheck(){
       try{
@@ -134,7 +173,7 @@ public class UserAuthService {
         if(res.isPresent()){
             Set<Role> role;
             UserAuth userAuth = res.get();
-            if(userAuth.getRoles().isEmpty()){
+            if(userAuth.getRoles()==null || userAuth.getRoles().isEmpty()){
                  role = Set.of(roleRepository.findByName("ROLE_USER"));
             }else{
                 role = userAuth.getRoles();
