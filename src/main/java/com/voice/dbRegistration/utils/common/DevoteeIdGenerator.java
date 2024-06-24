@@ -10,9 +10,11 @@ import java.time.Year;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.id.IdentifierGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DevoteeIdGenerator implements IdentifierGenerator {
-
+    Logger logger = LoggerFactory.getLogger(DevoteeIdGenerator.class);
     @Override
     public Serializable generate(SharedSessionContractImplementor session, Object object)
             throws HibernateException {
@@ -47,8 +49,14 @@ public class DevoteeIdGenerator implements IdentifierGenerator {
             }
 
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.error("DevoteeIdGenerator error {} ",e.getMessage());
+        }
+        finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                logger.error("DevoteeIdGenerator connection close error {} ",e.getMessage());
+            }
         }
 
         return null;
