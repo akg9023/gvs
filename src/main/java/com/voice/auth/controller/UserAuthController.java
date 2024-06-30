@@ -46,25 +46,11 @@ public class UserAuthController {
          Optional<UserAuth> user =  userAuthService.getUserAuthFromAuthentication(authentication);
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
     }
-    @GetMapping("/migrateUser")
-    public List<UserAuth> migrate(){
-        Optional<List<UserAuth>> res= userAuthService.migratePermittedUsersToUserAuth();
-        return res.orElse(null);
-    }
-    @GetMapping("/migrateUserCheck")
-    public List<UserAuth> migratePermittedUserToUserAuth(){
-      Optional<List<UserAuth>> res =   userAuthService.migratePermittedUsersToUserAuthCheck();
-        return res.orElse(null);
-    }
+
     @PostMapping("/userWithEmail")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public UserAuth saveUser(@RequestParam String email){
         return userAuthService.saveUserWithEmailOnly(email);
-    }
-    @Autowired
-
-    @GetMapping("/insertAddressID")
-    public void insertAdd(){
-
     }
 
     /**
