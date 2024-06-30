@@ -101,47 +101,7 @@ public class UserAuthService {
         }
         return false;
     }
-    public Optional<List<UserAuth>> migratePermittedUsersToUserAuthCheck(){
-      try{
-          List<PermittedUsers> permittedUsersList =  permittedUsersDao.findAll();
-          List<UserAuth> userAuthList = new ArrayList<>();
-          Role role = roleRepository.findByName("ROLE_USER");
-          for(PermittedUsers user: permittedUsersList){
-              UserAuth userAuth = new UserAuth();
-              DevoteeInfoMigration devoteeInfo = devoteeInfoDao.getDevoteeInfoForUserAuth(user.getEmail());
-              if(devoteeInfo!=null){
-                  userAuth.setUserEmail(user.getEmail());
-                  userAuth.setUserId(devoteeInfo.getId());
-                  userAuth.setUserName(devoteeInfo.getFname());
-                  userAuth.setVerified(false);
-                  userAuth.setTwoFaEnabled(false);
-                  userAuth.setRoles(Set.of(role));
-                  userAuth.setRegistrationDate(devoteeInfo.getCreatedDateTime());
-                  userAuth.setAccountStatus(AuthEnums.AccountStatus.ACTIVE);
-                  userAuthList.add(userAuth);
-              }else{
-                  userAuth.setUserName("");
-                  userAuth.setUserEmail(user.getEmail());
-                  userAuth.setVerified(false);
-                  userAuth.setTwoFaEnabled(false);
-                  userAuth.setRoles(Set.of(role));
-                  userAuth.setAccountStatus(AuthEnums.AccountStatus.ACTIVE);
-                  userAuthList.add(userAuth);
-              }
-          }
-          return Optional.of(userAuthList);
-      }catch (Exception e){
-          logger.error("Migrate Permitted Users to UserAuth Error {}",e.getMessage());
-      }
-       return Optional.empty();
-    }
-    public Optional<List<UserAuth>> migratePermittedUsersToUserAuth(){
-        Optional<List<UserAuth>> res = migratePermittedUsersToUserAuthCheck();
-        if(res.isPresent() && !res.get().isEmpty()){
-            return Optional.of(userAuthRepository.saveAll(res.get()));
-        }
-        return Optional.empty();
-    }
+
     public UserAuth saveUserWithEmailOnly(String email){
         try{
             UserAuth userAuth = new UserAuth();
@@ -161,7 +121,7 @@ public class UserAuthService {
 
     /**
      *
-     * @param email
+     * @param DevoteeInfo
      * @return UserAuth
      *
      * When a user login in db registration UI and they register themselves for the first time
