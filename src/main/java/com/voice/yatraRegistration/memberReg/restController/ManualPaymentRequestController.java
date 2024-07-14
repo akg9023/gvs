@@ -17,8 +17,8 @@ import com.voice.yatraRegistration.memberReg.dao.ManualPaymentRequestDao;
 import com.voice.yatraRegistration.memberReg.dao.RegisterMemDao;
 import com.voice.yatraRegistration.memberReg.model.RegisteredMember;
 
-@RestController
-@RequestMapping("/v1/manualPayment")
+//@RestController
+//@RequestMapping("/v1/manualPayment")
 @CrossOrigin("*")
 public class ManualPaymentRequestController {
 

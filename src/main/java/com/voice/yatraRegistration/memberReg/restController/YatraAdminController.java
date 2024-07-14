@@ -20,12 +20,18 @@ public class YatraAdminController {
 
     @Autowired
     private YatraAdminService yatraAdminService;
-    @GetMapping("/sendEmail")
-    public ResponseEntity<Map<String, EmailMember>> sendEmailWithMemberId(){
-
-            return ResponseEntity.ok(yatraAdminService.sendEmailWithMemberDetails());
-
-    }
+//    @GetMapping("/sendEmail")
+//    public ResponseEntity<Map<String, EmailMember>> sendEmailWithMemberId(){
+//
+//            return ResponseEntity.ok(yatraAdminService.sendEmailWithMemberDetails());
+//
+//    }
+//    @GetMapping("/sendTmpEmail")
+//    public ResponseEntity<Map<String, EmailMember>> sendTMPIdEmailWithMemberId(){
+//
+//        return ResponseEntity.ok(yatraAdminService.sendEmailWithMemberDetailsForTMPId());
+//
+//    }
 
     /**
      *
@@ -34,7 +40,7 @@ public class YatraAdminController {
      */
     @GetMapping("/dbRegWithin")
     public ResponseEntity<List<DevoteeInfo>> getDevoteeInfoWithingDateRange( @RequestParam String startDate, @RequestParam String endDate){
-        Optional<List<DevoteeInfo>> result = yatraAdminService.getDevoteeInfoWithingDateRange(startDate, endDate);
+        Optional<List<DevoteeInfo>> result = yatraAdminService.getDevoteeInfoWithinDateRange(startDate, endDate);
         return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.badRequest().build());
     }
     @PostMapping("/role")

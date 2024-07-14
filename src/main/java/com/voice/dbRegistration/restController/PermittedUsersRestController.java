@@ -14,33 +14,33 @@ import org.springframework.web.bind.annotation.RestController;
 import com.voice.dbRegistration.dao.PermittedUsersDao;
 
 
-@RestController
-@RequestMapping("/v1/hlzGlobalReg")
+//@RestController
+//@RequestMapping("/v1/hlzGlobalReg")
 @CrossOrigin(origins = "*")
 public class PermittedUsersRestController {
 
     @Autowired
     PermittedUsersDao permittedUsersDao;
 
-    @PostMapping("/addPermittedUser")
-    public List<String> savePermittedUser(@RequestBody Map<String,List<String>> userMap){
-        List<String> allUsersEmail = userMap.get("email");
-		for(String one:allUsersEmail){
-			PermittedUsers newPUser = new PermittedUsers();
-			newPUser.setEmail(one);
-			permittedUsersDao.save(newPUser);
-		}
-        return allUsersEmail;
-    }
-
-    @PostMapping("/permittedUser")
-    public List<PermittedUsers> getAllPermittedUser(){
-        return permittedUsersDao.findAll();
-    }
-
-    @PostMapping("/checkPermission")
-    public boolean isPermittedUser(@RequestBody Map<String, String> input) {
-        String email = input.get("email");
-        return permittedUsersDao.getByEmail(email)!=null?true:false;
-    }
+//    @PostMapping("/addPermittedUser")
+//    public List<String> savePermittedUser(@RequestBody Map<String,List<String>> userMap){
+//        List<String> allUsersEmail = userMap.get("email");
+//		for(String one:allUsersEmail){
+//			PermittedUsers newPUser = new PermittedUsers();
+//			newPUser.setEmail(one);
+//			permittedUsersDao.save(newPUser);
+//		}
+//        return allUsersEmail;
+//    }
+//
+//    @PostMapping("/permittedUser")
+//    public List<PermittedUsers> getAllPermittedUser(){
+//        return permittedUsersDao.findAll();
+//    }
+//
+//    @PostMapping("/checkPermission")
+//    public boolean isPermittedUser(@RequestBody Map<String, String> input) {
+//        String email = input.get("email");
+//        return permittedUsersDao.getByEmail(email)!=null?true:false;
+//    }
 }
