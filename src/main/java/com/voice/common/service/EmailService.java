@@ -83,26 +83,28 @@ public class EmailService {
     }
     public void sendHtmlEmail(String to, String subject, String htmlString)  {
         try{
-            String toRecipient = "ved.giav@gmail.com";
-            String subjectEmail = "Test email from GVS";
-            String[] activeProfiles = environment.getActiveProfiles();
-            if (Arrays.asList(activeProfiles).contains(SPRING_PROFILES_ACTIVE_PROD))
-           {
-                 toRecipient = to;
-                 subjectEmail = subject;
-                 logger.info("Send Email Prod Profile active");
-            }
-            logger.info("Send Email Dev Profile active");
+            //            String toRecipient = "ved.giav@gmail.com";
+//            String subjectEmail = "Test email from GVS";
+//            String[] activeProfiles = environment.getActiveProfiles();
+//            if (Arrays.asList(activeProfiles).contains(SPRING_PROFILES_ACTIVE_PROD))
+//           {
+//                 toRecipient = to;
+//                 subjectEmail = subject;
+//                 logger.info("Send Email Prod Profile active");
+//            }
+//            logger.info("Send Email Dev Profile active");
             MimeMessage message = mailSender.createMimeMessage();
 
-            message.setFrom(new InternetAddress("ved.srav@gmail.com"));
-            message.setRecipients(MimeMessage.RecipientType.TO, toRecipient);
-            message.setSubject(subjectEmail);
+            message.setFrom(new InternetAddress("yatra.gaurangavedic@gmail.com"));
+            message.setRecipients(MimeMessage.RecipientType.TO, to);
+           // message.setRecipients(MimeMessage.RecipientType.TO, "akg9023@gmail.com");
+           // message.setRecipients(MimeMessage.RecipientType.TO, "ved.srav@gmail.com");
+            message.setSubject(subject);
 
 //            String htmlContent = "<h1>This is a test Spring Boot email</h1>" +
 //                    "<p>It can contain <strong>HTML</strong> content.</p>";
             message.setContent(htmlString, "text/html; charset=utf-8");
-
+            System.out.println("TMP Email Sent to " +to);
             mailSender.send(message);
         }catch (MessagingException e){
             logger.error("Html Email sending error {}",e.getMessage());
@@ -115,11 +117,31 @@ public class EmailService {
         if(member!=null) {
             Map<String, YatraRegEmail> dbMap = member.getDbRegistrationMemberMap();
             Map<String, YatraRegEmail> yatraMap = member.getYatraRegistrationMemberMap();
+            Map<String, YatraRegEmail> tmpRegMap = member.getTmpIdRegistrationMemberMap();
+
+            if(tmpRegMap!=null){
+                for(Map.Entry<String, YatraRegEmail> tmpReg: tmpRegMap.entrySet()){
+                    YatraRegEmail d = tmpReg.getValue();
+                    if (d != null) {
+
+                        builder.append("<tr>")
+                                .append("<td>").append(d.getDevoteeId()).append("</td>")
+                                .append("<td>").append(d.getName()).append("</td>")
+                                .append("<td>").append(d.getCalculatedAge()).append("</td>")
+                                .append("<td>").append(d.getGender()).append("</td>")
+                                .append("<td>").append(d.getCurrentCity()).append("</td>")
+                                .append("<td>").append(databaseService.getMaskedPrimaryPhone(d.getContact())).append("</td>")
+                                //.append("<td>").append(registrationName).append("</td>")
+                                .append("</tr>");
+                        builder.append("\n");
+                    }
+                }
+            }
 
             if(yatraMap!=null){
             for (Map.Entry<String, YatraRegEmail> yatra : yatraMap.entrySet()) {
                 String registrationName = "Yatra Registration";
-                if (!dbMap.isEmpty()) {
+                if (dbMap!=null && !dbMap.isEmpty()) {
                     if (dbMap.containsKey(yatra.getKey())) {
                         dbMap.remove(yatra.getKey());
                         registrationName = "Yatra and Db Registration";
@@ -129,13 +151,13 @@ public class EmailService {
                 if (d != null) {
 
                     builder.append("<tr>")
-                            .append("<td>").append(d.getMemberId()).append("</td>")
-                            .append("<td>").append(d.getFname()).append(" ").append(d.getLname()).append("</td>")
+                            .append("<td>").append(d.getDevoteeId()).append("</td>")
+                            .append("<td>").append(d.getName()).append("</td>")
                             .append("<td>").append(d.getCalculatedAge()).append("</td>")
                             .append("<td>").append(d.getGender()).append("</td>")
-                            .append("<td>").append(d.getCity()).append("</td>")
-                            .append("<td>").append(databaseService.getMaskedPrimaryPhone(d.getPrimaryPhone())).append("</td>")
-                            .append(registrationName)
+                            .append("<td>").append(d.getCurrentCity()).append("</td>")
+                            .append("<td>").append(databaseService.getMaskedPrimaryPhone(d.getContact())).append("</td>")
+                            //.append("<td>").append(registrationName).append("</td>")
                             .append("</tr>");
                     builder.append("\n");
                 }
@@ -147,13 +169,13 @@ public class EmailService {
                     YatraRegEmail d = db.getValue();
                     if(d!=null){
                         builder.append("<tr>")
-                                .append("<td>").append(d.getMemberId()).append("</td>")
-                                .append("<td>").append(d.getFname()).append(" ").append(d.getLname()).append("</td>")
+                                .append("<td>").append(d.getDevoteeId()).append("</td>")
+                                .append("<td>").append(d.getName()).append("</td>")
                                 .append("<td>").append(d.getCalculatedAge()).append("</td>")
                                 .append("<td>").append(d.getGender()).append("</td>")
-                                .append("<td>").append(d.getCity()).append("</td>")
-                                .append("<td>").append(databaseService.getMaskedPrimaryPhone(d.getPrimaryPhone())).append("</td>")
-                                .append("DB Registration")
+                                .append("<td>").append(d.getCurrentCity()).append("</td>")
+                                .append("<td>").append(databaseService.getMaskedPrimaryPhone(d.getContact())).append("</td>")
+                                //.append("<td>").append("DB Registration").append("</td>")
                                 .append("</tr>");
                         builder.append("\n");
                     }
@@ -168,66 +190,401 @@ public class EmailService {
     public void sendEmailHelperRegistration(Map<String, EmailMember> map) {
         try {
             map.forEach((email, emailMember) -> {
-                String memberString = getEmailStringRegistration(emailMember);
-                String htmlContent = "";
-                String dearHead = "";
-                if (!memberString.isEmpty()) {
+                if(!email.isEmpty()) {
+                    String memberString = getEmailStringRegistration(emailMember);
+                    String htmlContent = "";
+                    String dearHead = "";
+                    if (!memberString.isEmpty()) {
 
-                    htmlContent =
-                            "<html>" +
-                                    "<head>" +
-                                    "<style>\n" +
-                                    "        table {\n" +
-                                    "            border-collapse: collapse;\n" +
-                                    "        }\n" +
-                                    "        th, td {\n" +
-                                    "            border: 1px solid black;\n" +
-                                    "            padding: 10px;\n" +
-                                    "        }\n" +
-                                    "    </style>"+
-                                    "</head>" +
-                                    "<body>"+
-                                    "<h3>Dear " + emailMember.getUserFname()+ " " + emailMember.getUserLname() + "</h3>" +
-                            "<p><h4>" + "Last Year Yatra Registration Details" + "</h4></p>" +
-                            "<p>Your Id:  " + emailMember.getId() + "</p>" +
-                            "<p><h4>" + "Member Registration Details" + "</h4></p>" +
-                            "<table>\n" +
-                            "    <thead>\n" +
-                            "        <tr>\n" +
-                            "            <th>Id</th>\n" +
-                            "            <th>Name</th>\n" +
-                            "            <th>Age</th>\n" +
-                            "            <th>Gender</th>\n" +
-                            "            <th>City</th>\n" +
-                            "            <th>Contact</th>\n" +
-                                    "            <th>Remarks</th>\n" +
-                            "        </tr>\n" +
-                            "    </thead>\n" +
-                            "    <tbody>\n" +
-                                    memberString +
-                            "    </tbody>\n" +
-                            "</table>\n" +
-//                            "<p>"+memberString+ "</p><br>"+
-                            "<p><h2>Yatra Team</h2></p>" +
-                            "<p>Contact: 1234</p>"+
-                                    "</body>"+
-                                    "</html>"
+                        htmlContent = getHtmlEmailTemplate(memberString)
 
-                    ;
-                } else {
-                    htmlContent = "<h3>Dear Devotee " + "</h3>" +
-                            "<p><h4>" + "Last Year Yatra Registration Details" + "</h4></p>" +
-                            "<p>Your Id" + emailMember.getId() + "</p>" +
-                            "<p><h3>Yatra Team</h3></p>" +
-                            "<p>Contact: 1234</p>"
-                    ;
-                }
-                sendHtmlEmail(email, "Yatra Registration Details", htmlContent);
 
-            });
+                        ;
+                    }
+                    sendHtmlEmail(email, "GVS Yatra Registration Details", htmlContent);
+                    return;
+
+                }});
 
         } catch (Exception e) {
             logger.error("Send email helper error {}", e.getMessage());
         }
+    }
+    public void sendTMPIdEmailHelperRegistration(Map<String, EmailMember> map)
+        {
+            try {
+                map.forEach((email, emailMember) -> {
+                    if(!email.isEmpty()) {
+                        String memberString = getEmailStringRegistration(emailMember);
+                        String htmlContent = "";
+                        if (!memberString.isEmpty()) {
+
+                            htmlContent = getHtmlEmailTemplateForTMPId(memberString)
+
+
+                            ;
+                        }
+                        sendHtmlEmail(email, "GVS Yatra Registration Details", htmlContent);
+
+                    }});
+
+            } catch (Exception e) {
+                logger.error("Send email helper error {}", e.getMessage());
+            }
+        }
+
+    public String getHtmlEmailTemplate(String memberString){
+        return "<!DOCTYPE html>\n" +
+                "<html lang=\"en\">\n" +
+                "\n" +
+                "<head>\n" +
+                "    <meta charset=\"UTF-8\">\n" +
+                "    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n" +
+                "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+                "    <title>GVS Dham Yatra Invitation</title>\n" +
+                "    <style>\n" +
+                "        body {\n" +
+                "            font-family: Arial, sans-serif;\n" +
+                "            line-height: 1.6;\n" +
+                "            margin: 0;\n" +
+                "            padding: 0;\n" +
+                "            background-color: #f2f2f2;\n" +
+                "        }\n" +
+                "\n" +
+                "        .container {\n" +
+                "            width: 100%;\n" +
+                "            max-width: 800px;\n" +
+                "            margin: 20px auto;\n" +
+                "            background-color: #ffffff;\n" +
+                "            padding: 20px;\n" +
+                "            border-radius: 10px;\n" +
+                "            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);\n" +
+                "        }\n" +
+                "\n" +
+                "        .header {\n" +
+                "            background-color: #590099;\n" +
+                "            font-size: large;\n" +
+                "            color: #ffffff;\n" +
+                "            text-align: center;\n" +
+                "            padding: 20px;\n" +
+                "            border-top-left-radius: 10px;\n" +
+                "            border-top-right-radius: 10px;\n" +
+                "        }\n" +
+                "\n" +
+                "        .content {\n" +
+                "            padding: 10px;\n" +
+                "            background-color: #f9f9f9;\n" +
+                "            border-radius: 5px;\n" +
+                "            overflow-x: auto;\n" +
+                "        }\n" +
+                "\n" +
+                "        .button {\n" +
+                "            display: inline-block;\n" +
+                "            background-color: #006699;\n" +
+                "            color: #ffffff;\n" +
+                "            text-decoration: none;\n" +
+                "            padding: 10px 20px;\n" +
+                "            border-radius: 5px;\n" +
+                "            margin-top: 20px;\n" +
+                "        }\n" +
+                "\n" +
+                "        .button:hover {\n" +
+                "            background-color: #005580;\n" +
+                "        }\n" +
+                "\n" +
+                "        .footer {\n" +
+                "            text-align: left;\n" +
+                "            margin-top: 20px;\n" +
+                "            font-size: 12px;\n" +
+                "            color: #666666;\n" +
+                "            background-color: #f2f2f2;\n" +
+                "            padding: 10px;\n" +
+                "            border-radius: 0 0 10px 10px;\n" +
+                "        }\n" +
+                "\n" +
+                "        table {\n" +
+                "            width: 100%;\n" +
+                "            border-collapse: collapse;\n" +
+                "            background-color: #ffffff;\n" +
+                "            border-radius: 5px;\n" +
+                "            table-layout: fixed;\n" +
+                "        }\n" +
+                "\n" +
+                "        th, td {\n" +
+                "            padding: 8px;\n" +
+                "            text-align: left;\n" +
+                "            font-size: 13px; /* Default font size */\n" +
+                "            word-wrap: break-word;\n" +
+                "        }\n" +
+                "\n" +
+                "        th {\n" +
+                "            background-color: #006699;\n" +
+                "            color: #ffffff;\n" +
+                "            font-weight: bold;\n" +
+                "        }\n" +
+                "\n" +
+                "        td {\n" +
+                "            padding-top: 8px;\n" +
+                "            padding-bottom: 8px;\n" +
+                "        }\n" +
+                "\n" +
+                "        tr:nth-child(even) {\n" +
+                "            background-color: #f2f2f2;\n" +
+                "        }\n" +
+                "\n" +
+                "        tr:nth-child(odd) {\n" +
+                "            background-color: #e0e0e0;\n" +
+                "        }\n" +
+                "\n" +
+                "       \n" +
+                "        .age{\n" +
+                "            width: 50px;\n" +
+                "        }\n" +
+                "        .gender{\n" +
+                "            width: 60px;\n" +
+                "        }\n" +
+                "        .id{\n" +
+                "            width: 100px;\n" +
+                "        }\n" +
+                "\n" +
+                "        @media screen and (max-width: 600px) {\n" +
+                "            .container {\n" +
+                "                padding: 9px;\n" +
+                "            }\n" +
+                "\n" +
+                "            th, td {\n" +
+                "                font-size: 10px; /* Reduced font size for smaller screens */\n" +
+                "                padding: 3px; /* Reduced padding for better mobile view */\n" +
+                "            }\n" +
+                "            .age{\n" +
+                "                width: 25px;\n" +
+                "            }\n" +
+                "            .gender{\n" +
+                "                width: 37px;\n" +
+                "            }\n" +
+                "            .id{\n" +
+                "                width: 60px;\n" +
+                "            }\n" +
+                "        }\n" +
+                "    </style>\n" +
+                "</head>\n" +
+                "\n" +
+                "<body>\n" +
+                "    <div class=\"container\">\n" +
+                "        <div class=\"header\">\n" +
+                "            <h2 style=\"margin: 0;\">Gauranga Vedic Society</h2>\n" +
+                "        </div>\n" +
+                "        <div class=\"content\">\n" +
+                "            <p>Hare Krishna,</p>\n" +
+                "            <p>We extend our heartfelt gratitude for giving us the opportunity to serve you with your family in last year's Vrindavan yatra. If you missed it, we have got you covered.</p>\n" +
+                "            <p>We are excited to announce our upcoming annual yatra in Chitrakoot Dham, scheduled from <strong>20th November 2024 to 24th November 2024</strong>. Your presence would mean a lot to us.</p>\n" +
+                "            <p>For registration of previously enrolled members, please use the corresponding HLZ ids from last year. For enrolling new members, please visit our new website <a href=\"https://www.gaurangavedic.org.in/yatra\">https://www.gaurangavedic.org.in/yatra</a>.</p>\n" +
+                "                <p> Here are the details of your enrolled members:</p>\n" +
+                "            \n" +
+                "            <table>\n" +
+                "                <thead>\n" +
+                "                    <tr>\n" +
+                "                        <th class=\"id\">Id</th>\n" +
+                "                        <th>Name</th>\n" +
+                "                        <th class=\"age\">Age</th>\n" +
+                "                        <th class=\"gender\">Gender</th>\n" +
+                "                        <th>City</th>\n" +
+                "                        <th class=\"name-column\">Contact</th>\n" +
+                "                    </tr>\n" +
+                "                </thead>\n" +
+                "                <tbody>\n" +
+                                    memberString+
+                "                </tbody>\n" +
+                "            </table>\n" +
+                "            \n" +
+                "            <p style=\"margin-top: 20px;\">If you have any queries, please WhatsApp the registration desk <a href=\"https://wa.me/918986472757\">here</a>.</p><p>We look forward to seeing you in Chitrakoot Dham.</p>\n" +
+                "            <p>In your service,<br>\n" +
+                "                GVS Dham Yatra Committee\n" +
+                "            </p>\n" +
+                "            <p></p>\n" +
+                "            <p><a href=\"https://gaurangavedic.org.in\" style=\"color: #006699; text-decoration: none;\" target=\"_blank\">https://gaurangavedic.org.in</a></p>\n" +
+                "        </div>\n" +
+                "    </div>\n" +
+                "</body>\n" +
+                "\n" +
+                "</html>\n";
+    }
+    public String getHtmlEmailTemplateForTMPId(String memberString){
+        return "<!DOCTYPE html>\n" +
+                "<html lang=\"en\">\n" +
+                "\n" +
+                "<head>\n" +
+                "    <meta charset=\"UTF-8\">\n" +
+                "    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n" +
+                "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+                "    <title>GVS Dham Yatra Invitation</title>\n" +
+                "    <style>\n" +
+                "        body {\n" +
+                "            font-family: Arial, sans-serif;\n" +
+                "            line-height: 1.6;\n" +
+                "            margin: 0;\n" +
+                "            padding: 0;\n" +
+                "            background-color: #f2f2f2;\n" +
+                "        }\n" +
+                "\n" +
+                "        .container {\n" +
+                "            width: 100%;\n" +
+                "            max-width: 800px;\n" +
+                "            margin: 20px auto;\n" +
+                "            background-color: #ffffff;\n" +
+                "            padding: 20px;\n" +
+                "            border-radius: 10px;\n" +
+                "            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);\n" +
+                "        }\n" +
+                "\n" +
+                "        .header {\n" +
+                "            background-color: #590099;\n" +
+                "            font-size: large;\n" +
+                "            color: #ffffff;\n" +
+                "            text-align: center;\n" +
+                "            padding: 20px;\n" +
+                "            border-top-left-radius: 10px;\n" +
+                "            border-top-right-radius: 10px;\n" +
+                "        }\n" +
+                "\n" +
+                "        .content {\n" +
+                "            padding: 10px;\n" +
+                "            background-color: #f9f9f9;\n" +
+                "            border-radius: 5px;\n" +
+                "            overflow-x: auto;\n" +
+                "        }\n" +
+                "\n" +
+                "        .button {\n" +
+                "            display: inline-block;\n" +
+                "            background-color: #006699;\n" +
+                "            color: #ffffff;\n" +
+                "            text-decoration: none;\n" +
+                "            padding: 10px 20px;\n" +
+                "            border-radius: 5px;\n" +
+                "            margin-top: 20px;\n" +
+                "        }\n" +
+                "\n" +
+                "        .button:hover {\n" +
+                "            background-color: #005580;\n" +
+                "        }\n" +
+                "\n" +
+                "        .footer {\n" +
+                "            text-align: left;\n" +
+                "            margin-top: 20px;\n" +
+                "            font-size: 12px;\n" +
+                "            color: #666666;\n" +
+                "            background-color: #f2f2f2;\n" +
+                "            padding: 10px;\n" +
+                "            border-radius: 0 0 10px 10px;\n" +
+                "        }\n" +
+                "\n" +
+                "        table {\n" +
+                "            width: 100%;\n" +
+                "            border-collapse: collapse;\n" +
+                "            background-color: #ffffff;\n" +
+                "            border-radius: 5px;\n" +
+                "            table-layout: fixed;\n" +
+                "        }\n" +
+                "\n" +
+                "        th, td {\n" +
+                "            padding: 8px;\n" +
+                "            text-align: left;\n" +
+                "            font-size: 13px; /* Default font size */\n" +
+                "            word-wrap: break-word;\n" +
+                "        }\n" +
+                "\n" +
+                "        th {\n" +
+                "            background-color: #006699;\n" +
+                "            color: #ffffff;\n" +
+                "            font-weight: bold;\n" +
+                "        }\n" +
+                "\n" +
+                "        td {\n" +
+                "            padding-top: 8px;\n" +
+                "            padding-bottom: 8px;\n" +
+                "        }\n" +
+                "\n" +
+                "        tr:nth-child(even) {\n" +
+                "            background-color: #f2f2f2;\n" +
+                "        }\n" +
+                "\n" +
+                "        tr:nth-child(odd) {\n" +
+                "            background-color: #e0e0e0;\n" +
+                "        }\n" +
+                "\n" +
+                "       \n" +
+                "        .age{\n" +
+                "            width: 50px;\n" +
+                "        }\n" +
+                "        .gender{\n" +
+                "            width: 60px;\n" +
+                "        }\n" +
+                "        .id{\n" +
+                "            width: 100px;\n" +
+                "        }\n" +
+                "\n" +
+                "        @media screen and (max-width: 600px) {\n" +
+                "            .container {\n" +
+                "                padding: 9px;\n" +
+                "            }\n" +
+                "\n" +
+                "            th, td {\n" +
+                "                font-size: 10px; /* Reduced font size for smaller screens */\n" +
+                "                padding: 3px; /* Reduced padding for better mobile view */\n" +
+                "            }\n" +
+                "            .age{\n" +
+                "                width: 25px;\n" +
+                "            }\n" +
+                "            .gender{\n" +
+                "                width: 37px;\n" +
+                "            }\n" +
+                "            .id{\n" +
+                "                width: 60px;\n" +
+                "            }\n" +
+                "        }\n" +
+                "    </style>\n" +
+                "</head>\n" +
+                "\n" +
+                "<body>\n" +
+                "    <div class=\"container\">\n" +
+                "        <div class=\"header\">\n" +
+                "            <h2 style=\"margin: 0;\">Gauranga Vedic Society</h2>\n" +
+                "        </div>\n" +
+                "        <div class=\"content\">\n" +
+                "            <p>Hare Krishna,</p>\n" +
+                "            <p>We extend our heartfelt gratitude for giving us the opportunity to serve you with your family in last year's Vrindavan yatra. If you missed it, we have got you covered.</p>\n" +
+                "            <p>We are excited to announce our upcoming annual yatra in Chitrakoot Dham, scheduled from <strong>20th November 2024 to 24th November 2024</strong>. Your presence would mean a lot to us.</p>\n" +
+                "            <p>All members with TMP ID are invalid from this year and won't be allowed to register for the camp. Therefore we request you to enroll them as new members. </p>" +
+                "<p>For enrolling new members, please visit our new website <a href=\"https://www.gaurangavedic.org.in/yatra\">https://www.gaurangavedic.org.in/yatra</a>.</p>\n" +
+                "<p>Go to Database Entry fill the registration form and get HLZ ID. With this HLZ Id of members you will be able to do camp registration.  </p>"+
+                "                <p> Here are the details of your TMP Id members:</p>\n" +
+                "            \n" +
+                "            <table>\n" +
+                "                <thead>\n" +
+                "                    <tr>\n" +
+                "                        <th class=\"id\">Id</th>\n" +
+                "                        <th>Name</th>\n" +
+                "                        <th class=\"age\">Age</th>\n" +
+                "                        <th class=\"gender\">Gender</th>\n" +
+                "                        <th>City</th>\n" +
+                "                        <th class=\"name-column\">Contact</th>\n" +
+                "                    </tr>\n" +
+                "                </thead>\n" +
+                "                <tbody>\n" +
+                memberString+
+                "                </tbody>\n" +
+                "            </table>\n" +
+                "            \n" +
+                "            <p style=\"margin-top: 20px;\">If you have any queries, please WhatsApp the registration desk <a href=\"https://wa.me/918986472757\">here</a>.</p><p>We look forward to seeing you in Chitrakoot Dham.</p>\n" +
+                "            <p>In your service,<br>\n" +
+                "                GVS Dham Yatra Committee\n" +
+                "            </p>\n" +
+                "            <p></p>\n" +
+                "            <p><a href=\"https://gaurangavedic.org.in\" style=\"color: #006699; text-decoration: none;\" target=\"_blank\">https://gaurangavedic.org.in</a></p>\n" +
+                "        </div>\n" +
+                "    </div>\n" +
+                "</body>\n" +
+                "\n" +
+                "</html>\n";
     }
 }
