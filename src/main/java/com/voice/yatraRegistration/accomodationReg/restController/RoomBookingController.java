@@ -29,8 +29,8 @@ import com.voice.dbRegistration.dao.DevoteeInfoDao;
 import com.voice.yatraRegistration.memberReg.dao.MemberDao;
 import com.voice.yatraRegistration.memberReg.model.Member;
 
-@RestController
-@RequestMapping("/v1/room/bookings/")
+//@RestController
+//@RequestMapping("/v1/room/bookings/")
 @CrossOrigin("*")
 @EnableAsync
 public class RoomBookingController {

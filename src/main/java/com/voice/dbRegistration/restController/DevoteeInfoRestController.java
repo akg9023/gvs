@@ -93,42 +93,42 @@ public class DevoteeInfoRestController {
     // localhost:8080/v1/hlzGlobalReg/fetchAllDev
     // localhost:8080/v1/hlzGlobalReg/saveInput
 
-    @PostMapping("/fetchAllDevWithDecryption")
-    public List<DevoteeInfo> fetchAllDevWithDec() {
-        List<DevoteeInfo> allDev = devoteeInfoDao.findAll();
-        try {
-            allDev = (List<DevoteeInfo>) allDev.stream().map(oneDev -> {
-                oneDev.setPrimaryPhone(CustomSecurity.decrypt(oneDev.getPrimaryPhone()));
-                return oneDev;
-            }).collect(Collectors.toList());
-            return allDev;
-        } catch (Exception e) {
-            System.out.println("Failed to decrpyt the data");
-            return new ArrayList();
-
-        }
-    }
-
-    @PostMapping("/fetchAllDev")
-    public List<DevoteeInfo> fetchAllDev() {
-        List<DevoteeInfo> allDev = devoteeInfoDao.findAll();
-        return allDev;
-    }
-
-    @PostMapping("/fetchAllDevWithLimitedData")
-    public List<GetIDFnameGender> fetchAllDevWithLimitedData() {
-        List<GetIDFnameGender> allDev = devoteeInfoDao.findAllDev();
-        return allDev;
-    }
-
-    @PostMapping("/fetchSpecefic/{userId}")
-    public DevoteeInfo fetchSpecefic(@PathVariable("userId") String userId) {
-        return devoteeInfoDao.findOneById(userId);
-    }
-
-    @DeleteMapping("/deleteInfo")
-    private void deleteDevoteeInfo(@RequestBody DevoteeInfo devoteeInfo) {
-         devoteeInfoDao.delete(devoteeInfo);
-    }
+//    @PostMapping("/fetchAllDevWithDecryption")
+//    public List<DevoteeInfo> fetchAllDevWithDec() {
+//        List<DevoteeInfo> allDev = devoteeInfoDao.findAll();
+//        try {
+//            allDev = (List<DevoteeInfo>) allDev.stream().map(oneDev -> {
+//                oneDev.setPrimaryPhone(CustomSecurity.decrypt(oneDev.getPrimaryPhone()));
+//                return oneDev;
+//            }).collect(Collectors.toList());
+//            return allDev;
+//        } catch (Exception e) {
+//            System.out.println("Failed to decrpyt the data");
+//            return new ArrayList();
+//
+//        }
+//    }
+//
+//    @PostMapping("/fetchAllDev")
+//    public List<DevoteeInfo> fetchAllDev() {
+//        List<DevoteeInfo> allDev = devoteeInfoDao.findAll();
+//        return allDev;
+//    }
+//
+//    @PostMapping("/fetchAllDevWithLimitedData")
+//    public List<GetIDFnameGender> fetchAllDevWithLimitedData() {
+//        List<GetIDFnameGender> allDev = devoteeInfoDao.findAllDev();
+//        return allDev;
+//    }
+//
+//    @PostMapping("/fetchSpecefic/{userId}")
+//    public DevoteeInfo fetchSpecefic(@PathVariable("userId") String userId) {
+//        return devoteeInfoDao.findOneById(userId);
+//    }
+//
+//    @DeleteMapping("/deleteInfo")
+//    private void deleteDevoteeInfo(@RequestBody DevoteeInfo devoteeInfo) {
+//         devoteeInfoDao.delete(devoteeInfo);
+//    }
 
 }

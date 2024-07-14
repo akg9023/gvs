@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.voice.dbRegistration.dao.PermittedUsersDao;
 
 
-@RestController
-@RequestMapping("/v1/hlzGlobalReg")
+//@RestController
+//@RequestMapping("/v1/hlzGlobalReg")
 @CrossOrigin(origins = "*")
 public class PermittedUsersRestController {
 
