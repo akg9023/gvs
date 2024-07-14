@@ -110,6 +110,7 @@ public class CustomOidcUserService implements OAuth2UserService<OidcUserRequest,
 
             }
             else {
+                //TODO Google OAUTH provides us name and other details. Add in UserAuth for session
                 user = new UserAuth();
                 user.setUserEmail(userRequest.getIdToken().getEmail());
             }

@@ -22,8 +22,8 @@ import com.voice.yatraRegistration.memberReg.model.Member;
 import com.voice.yatraRegistration.memberReg.model.RegisteredMember;
 import com.voice.yatraRegistration.memberReg.model.Status;
 
-@RestController
-@RequestMapping("/v1/memReg")
+//@RestController
+//@RequestMapping("/v1/memReg")
 @CrossOrigin("*")
 public class RegisteredMemController {
 

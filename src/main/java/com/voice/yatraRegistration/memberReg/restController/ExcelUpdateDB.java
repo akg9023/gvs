@@ -20,8 +20,8 @@ import com.voice.yatraRegistration.memberReg.dao.RegisterMemDao;
 import com.voice.yatraRegistration.memberReg.model.RegisteredMember;
 import com.voice.yatraRegistration.memberReg.model.Transaction;
 
-@RestController
-@RequestMapping("/v1/update/rpt/")
+//@RestController
+//@RequestMapping("/v1/update/rpt/")
 @CrossOrigin("*")
 public class ExcelUpdateDB {
 

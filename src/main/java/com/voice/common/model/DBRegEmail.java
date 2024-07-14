@@ -1,7 +1,6 @@
 package com.voice.common.model;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -9,13 +8,12 @@ import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 @Getter
 @Setter
-public class YatraRegEmail {
+public class DBRegEmail {
+    Logger logger = LoggerFactory.getLogger(DBRegEmail.class);
     private String devoteeId;
     private String name;
     private String dateOfBirth;
@@ -26,18 +24,12 @@ public class YatraRegEmail {
     private String registeredBy;
     private String contactRegisteredBy;
     private String registeredByEmail;
-    private String paidByEmail;
     private String currentCity;
 
-    //FOR ONLY TMP ID'S
-    private String accomEmail;
-    private String accomName;
-    private String accomPhone;
-    private String sendTMPIdEmailTo;
     @Getter(AccessLevel.NONE)
     private int calculatedAge;
 
-    public YatraRegEmail() {
+    public DBRegEmail() {
     }
     public int getCalculatedAge(){
         if(calculatedAge!=0) return calculatedAge;

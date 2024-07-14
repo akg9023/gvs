@@ -10,12 +10,15 @@ import java.util.Map;
 @Getter
 @Setter
 public class EmailMember {
-
-    private String id;
-    private String email;
-    private String userFname;
-    private String userLname;
+    //For Yatra Registration
+    private String paidByEmail;
+    //For DB Registration
+    private String registeredByEmail;
     private Map<String, YatraRegEmail> dbRegistrationMemberMap;
     private Map<String, YatraRegEmail> yatraRegistrationMemberMap;
+
+    //For TMP ID
+    private String tmpIdSendEmailTo;
+    private Map<String, YatraRegEmail> tmpIdRegistrationMemberMap;
 
 }
