@@ -32,7 +32,7 @@ public class DevoteeIdGenerator implements IdentifierGenerator {
         try {
             Statement statement = connection.createStatement();
 
-            ResultSet rs = statement.executeQuery("select max(devotee_id)from devotee_info");
+            ResultSet rs = statement.executeQuery("select max(devotee_id)from devotee_info where devotee_id < 'TMP%'");
 
             if (rs.next()) {
                 String idString;
