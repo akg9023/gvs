@@ -17,8 +17,8 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     @Value("${UI_LOGIN_SUCCESS}")
     private String UI_HOME;
 
-    @Value("${UI_BASE_DOMAIN}")
-    private String UI_PARENT_DOMAIN;
+    @Value("${UI_PARENT_DOMAIN}")
+    private String uiParentDomain;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
@@ -30,7 +30,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         sessionCookie.setHttpOnly(true);
         sessionCookie.setSecure(true); // Use true in production
         sessionCookie.setPath("/");
-        sessionCookie.setDomain(UI_PARENT_DOMAIN);  // Common domain
+        sessionCookie.setDomain(uiParentDomain);  // Common domain
         //sessionCookie.setDomain("localhost");
         sessionCookie.setMaxAge(60 * 60 * 24); // 24 hours
 
