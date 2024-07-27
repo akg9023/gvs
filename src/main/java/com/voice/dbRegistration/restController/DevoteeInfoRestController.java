@@ -44,7 +44,7 @@ public class DevoteeInfoRestController {
         if (!input.getDateOfBirth().isEmpty())
             input.setAge(Helper.calculateAge(input.getDateOfBirth()));
         // DevoteeInfo encrypted = encryptData(input);
-        if(input.getConnectedTo().isEmpty() && user.isPresent() && !user.get().getUserId().isEmpty()){
+        if(input.getConnectedTo().isEmpty() && user.isPresent() && user.get().getUserId() !=null && !user.get().getUserId().isEmpty()){
             input.setConnectedTo(user.get().getUserId());
         }
         DevoteeInfo devoteeInfo =  databaseService.saveInputAndSendMessage(input);
