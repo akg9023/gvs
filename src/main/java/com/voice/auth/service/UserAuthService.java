@@ -106,6 +106,7 @@ public class UserAuthService {
         try{
             UserAuth userAuth = new UserAuth();
             Role role = roleRepository.findByName("ROLE_USER");
+            userAuth.setUserId("");
             userAuth.setUserName("");
             userAuth.setUserEmail(email);
             userAuth.setVerified(false);
