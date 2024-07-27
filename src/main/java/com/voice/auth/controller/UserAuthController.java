@@ -48,7 +48,7 @@ public class UserAuthController {
     }
 
     @PostMapping("/userWithEmail")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")//hasRole is used so prefix ROLE_ not required
     public UserAuth saveUser(@RequestParam String email){
         return userAuthService.saveUserWithEmailOnly(email);
     }
