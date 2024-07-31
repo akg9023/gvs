@@ -115,11 +115,16 @@ public class DevoteeInfoRestController {
 //        return allDev;
 //    }
 //
-//    @PostMapping("/fetchAllDevWithLimitedData")
-//    public List<GetIDFnameGender> fetchAllDevWithLimitedData() {
-//        List<GetIDFnameGender> allDev = devoteeInfoDao.findAllDev();
-//        return allDev;
-//    }
+    @GetMapping("/fetchAllDevWithLimitedData")
+    public List<GetIDFnameGender> fetchAllDevWithLimitedData() {
+        List<GetIDFnameGender> allDev = devoteeInfoDao.findAllDev();
+        return allDev;
+    }
+    @GetMapping("/fetchDevWithLimitedData/{userId}")
+    public ResponseEntity<GetIDFnameGender> fetchADevWithLimitedData(@PathVariable("userId") String devId) {
+        GetIDFnameGender dev = devoteeInfoDao.findDev(devId);
+        return ResponseEntity.ok(dev);
+    }
 //
 //    @PostMapping("/fetchSpecefic/{userId}")
 //    public DevoteeInfo fetchSpecefic(@PathVariable("userId") String userId) {

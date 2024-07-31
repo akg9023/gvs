@@ -21,14 +21,18 @@ public interface DevoteeInfoDao extends JpaRepository<DevoteeInfo, String> {
     public DevoteeInfo findByEmailAndConnectedTo(String email, String connectedTo);
     public DevoteeInfo findOneById(String id);
 
+
     public void deleteAllByEmail(String email);
 
     boolean existsByEmail(String email);
 
     List<DevoteeInfo> findAllByConnectedTo(String Id);
 
-    @Query(value = "SELECT new com.voice.dbRegistration.model.GetIDFnameGender(d.id,d.fname,d.gender,d.age) FROM DevoteeInfo d")
+    @Query(value = "SELECT new com.voice.dbRegistration.model.GetIDFnameGender(d.id,d.fname,d.gender,d.dateOfBirth) FROM DevoteeInfo d")
     public List<GetIDFnameGender> findAllDev();
+
+    @Query(value = "SELECT new com.voice.dbRegistration.model.GetIDFnameGender(d.id,d.fname,d.gender,d.dateOfBirth) FROM DevoteeInfo d where d.id = :devId")
+    public GetIDFnameGender findDev(@Param("devId") String devId);
 
     @Query("SELECT di FROM DevoteeInfo di WHERE di.createdDateTime >= :startDate AND di.createdDateTime <= :endDate")
     List<DevoteeInfo> findAllByCreatedDateTimeBetween(

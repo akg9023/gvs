@@ -43,8 +43,9 @@ public class YatraPaymentService {
         int countChild = 0;
         int teens = 0;
         for (Map<String,Object> one : devoteeList) {
-            String temp = (String) one.get("age");
-            int devAge = Integer.parseInt(temp);
+         //   String temp = (String) one.get("age");
+        //    int devAge = Integer.parseInt(temp);
+            int devAge=(int) one.get("age");
             if(devAge<=exemptedAge)
                 countChild++;
             else if(devAge<=teenAge){
