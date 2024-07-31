@@ -1,13 +1,17 @@
 package com.voice.yatraRegistration.memberReg.restController;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.voice.auth.model.UserAuth;
 import com.voice.auth.service.UserAuthService;
+import com.voice.dbRegistration.restController.DevoteeInfoRestController;
+import com.voice.yatraRegistration.memberReg.dao.Member24Dao;
+import com.voice.yatraRegistration.memberReg.model.Member24;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -15,24 +19,25 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import com.voice.yatraRegistration.memberReg.dao.MemberDao;
 import com.voice.yatraRegistration.memberReg.dao.RegisterMemDao;
-import com.voice.yatraRegistration.memberReg.model.Member;
 import com.voice.yatraRegistration.memberReg.model.RegisteredMember;
 import com.voice.yatraRegistration.memberReg.model.Status;
 
-//@RestController
-//@RequestMapping("/v1/memReg")
+import static org.springframework.http.ResponseEntity.badRequest;
+
+@RestController
+@RequestMapping("/v1/memReg")
 @CrossOrigin("*")
 public class RegisteredMemController {
+    Logger logger = LoggerFactory.getLogger(RegisteredMemController.class);
+
 
     @Autowired
     private RegisterMemDao regMemDao;
 
 
     @Autowired
-    MemberDao memberDao;
+    Member24Dao member24Dao;
 
     @Autowired
     private UserAuthService userAuthService;
@@ -44,7 +49,25 @@ public class RegisteredMemController {
     @PostMapping("/saveInput")
     public ResponseEntity<RegisteredMember> insertDevoteeInfo(@RequestBody RegisteredMember input) {
 
-        RegisteredMember r=regMemDao.save(input);
+        List<Member24> memList=new ArrayList<>();
+
+
+        for(Member24 m: input.getMemberIdList()){
+
+            Member24 mem=member24Dao.findOneByDbDevId(m.getDbDevId());
+            memList.add((mem == null)? m:mem );
+
+        }
+        input.setMemberIdList(memList);
+
+        RegisteredMember r=null;
+        try {
+             r=regMemDao.save(input);
+        }
+        catch(Exception e){
+            logger.error("save Registered Member Payment Failed",input,e);
+            return ResponseEntity.internalServerError().build();
+        }
 
         return ResponseEntity.ok(r);
     }
@@ -68,16 +91,17 @@ public class RegisteredMemController {
     @GetMapping("/fetchRegMemId")
     public ResponseEntity<List<String>> getAllRegMemDBId() {
         List<String> result = new ArrayList();
-        List<RegisteredMember> allRegMem = regMemDao.findAll();
-        for (RegisteredMember one : allRegMem) {
-            if (one.getPaymentStatus().equalsIgnoreCase("success") ||
-                    one.getPaymentStatus().equalsIgnoreCase(Status.APPROVED.name())) {
-                List<Member> memList = one.getMemberIdList();
-                for (Member mem : memList) {
+        //List<RegisteredMember> allRegMem = regMemDao.findAll();findDistinctByPaymentStatus
+        List<RegisteredMember> allRegMem = regMemDao.findDistinctByPaymentStatusOrPaymentStatus(Status.SUCCESS.name().toLowerCase(),Status.PENDING.name().toLowerCase());
+        if(allRegMem!=null)
+         if(!allRegMem.isEmpty())
+          for (RegisteredMember one : allRegMem) {
+                List<Member24> memList = one.getMemberIdList();
+                for (Member24 mem : memList) {
                     result.add(mem.getDbDevId());
+
                 }
-            }
-        }
+         }
         return ResponseEntity.ok(result);
     }
 
@@ -87,8 +111,8 @@ public class RegisteredMemController {
     }
 
     @GetMapping("/successMembers")
-    public ResponseEntity<List<Member>> getByCreatedDateTime(){
-        return  ResponseEntity.ok(memberDao.getAllSuccessMemBeforeDate());
+    public ResponseEntity<List<Member24>> getByCreatedDateTime(){
+        return  ResponseEntity.ok(member24Dao.getAllSuccessMemBeforeDate());
     }
 
 }
