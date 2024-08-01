@@ -7,6 +7,8 @@ import java.util.stream.Stream;
 
 import com.voice.auth.model.UserAuth;
 import com.voice.auth.service.UserAuthService;
+import com.voice.dbRegistration.dao.DevoteeInfoDao;
+import com.voice.dbRegistration.model.GetIDFnameGender;
 import com.voice.dbRegistration.restController.DevoteeInfoRestController;
 import com.voice.yatraRegistration.memberReg.dao.Member24Dao;
 import com.voice.yatraRegistration.memberReg.model.Member24;
@@ -41,6 +43,10 @@ public class RegisteredMemController {
 
     @Autowired
     private UserAuthService userAuthService;
+
+    @Autowired
+    DevoteeInfoDao devoteeInfoDao;
+
 
     @Value("${reg.mem.before.created.dateTime}")
     @DateTimeFormat(iso=DateTimeFormat.ISO.DATE_TIME)
@@ -113,6 +119,12 @@ public class RegisteredMemController {
     @GetMapping("/successMembers")
     public ResponseEntity<List<Member24>> getByCreatedDateTime(){
         return  ResponseEntity.ok(member24Dao.getAllSuccessMemBeforeDate());
+    }
+
+    @GetMapping("/fetchDevWithLimitedData/{userId}")
+    public ResponseEntity<GetIDFnameGender> fetchADevWithLimitedData(@PathVariable("userId") String devId) {
+        GetIDFnameGender dev = devoteeInfoDao.findDev(devId);
+        return ResponseEntity.ok(dev);
     }
 
 }

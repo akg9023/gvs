@@ -38,7 +38,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         response.addCookie(sessionCookie);
 
         // Redirect or return success response
-        response.sendRedirect("http://localhost:3000");
+        response.sendRedirect("http://localhost:3000/login");
         //response.sendRedirect("http://localhost:3000/v1");
 
 //        this.setAlwaysUseDefaultTargetUrl(true);
