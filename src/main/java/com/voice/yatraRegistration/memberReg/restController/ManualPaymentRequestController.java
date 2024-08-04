@@ -47,9 +47,15 @@ public class ManualPaymentRequestController {
     @PostMapping("/memRegAmt")
     public ResponseEntity<String> calculateYatraMemRegPaymentAmt(@RequestBody Map<String,Object> input, Authentication auth){
         Optional<UserAuth> user=userAuthService.getUserAuthFromAuthentication(auth);
-        String userEmail = user.orElseThrow().getUserEmail();
-        List<Map<String,Object>> devoteeList = (List<Map<String, Object>>) input.get("devoteeList");
-        String amount = String.valueOf(yatraPayment.calculateAmount(userEmail, devoteeList));
+        String userEmail = user.get().getUserEmail();
+        String amount="";
+        try {
+            List<Map<String, Object>> devoteeList = (List<Map<String, Object>>) input.get("devoteeList");
+            amount = String.valueOf(yatraPayment.calculateAmount(userEmail, devoteeList));
+        }
+        catch(Exception e){
+            ResponseEntity.internalServerError().build();
+        }
         return ResponseEntity.ok(amount);
     }
 
