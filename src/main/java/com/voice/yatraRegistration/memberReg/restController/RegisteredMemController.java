@@ -51,7 +51,12 @@ public class RegisteredMemController {
 	private LocalDateTime regMemBeforeCreateDateTime;
 
     @PostMapping("/saveInput")
-    public ResponseEntity<RegisteredMember> insertDevoteeInfo(@RequestBody RegisteredMember input) {
+    public ResponseEntity<RegisteredMember> insertDevoteeInfo(@RequestBody RegisteredMember input,Authentication authentication) {
+
+        Optional<UserAuth> user=userAuthService.getUserAuthFromAuthentication(authentication);
+
+        input.setUserEmail(user.get().getUserEmail());
+        input.setCustomerEmail(user.get().getUserEmail());
 
         List<Member24> memList=new ArrayList<>();
 
@@ -120,7 +125,35 @@ public class RegisteredMemController {
     }
     @GetMapping("/fetchDevWithLimitedData/{userId}")
     public ResponseEntity<GetIDFnameGender> fetchADevWithLimitedData(@PathVariable("userId") String devId) {
-        GetIDFnameGender dev = devoteeInfoDao.findDev(devId);
+        GetIDFnameGender dev;
+
+        try {
+             dev = devoteeInfoDao.findDev(devId);
+        }
+        catch (Exception e){
+
+            return ResponseEntity.internalServerError().build();
+        }
+
+
+        return ResponseEntity.ok(dev);
+    }
+    @GetMapping("/fetchDependentsWithLimitedData")
+    public ResponseEntity<List<GetIDFnameGender>> fetchLoggedInUsersDependents(Authentication authentication) {
+
+        Optional<UserAuth> user=userAuthService.getUserAuthFromAuthentication(authentication);
+
+        List<GetIDFnameGender> dev;
+
+        try {
+            dev = devoteeInfoDao.findDevHavingConnectedTo(user.get().getUserId());
+        }
+        catch (Exception e){
+
+            return ResponseEntity.internalServerError().build();
+        }
+
+
         return ResponseEntity.ok(dev);
     }
 

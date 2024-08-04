@@ -33,6 +33,8 @@ public interface DevoteeInfoDao extends JpaRepository<DevoteeInfo, String> {
 
     @Query(value = "SELECT new com.voice.dbRegistration.model.GetIDFnameGender(d.id,d.fname,d.gender,d.dateOfBirth) FROM DevoteeInfo d where d.id = :devId")
     public GetIDFnameGender findDev(@Param("devId") String devId);
+    @Query(value = "SELECT new com.voice.dbRegistration.model.GetIDFnameGender(d.id,d.fname,d.gender,d.dateOfBirth) FROM DevoteeInfo d where d.connectedTo = :devId")
+    public List<GetIDFnameGender> findDevHavingConnectedTo(@Param("devId") String devId);
 
     @Query("SELECT di FROM DevoteeInfo di WHERE di.createdDateTime >= :startDate AND di.createdDateTime <= :endDate")
     List<DevoteeInfo> findAllByCreatedDateTimeBetween(
