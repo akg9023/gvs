@@ -57,7 +57,7 @@ public class RoomBookingController {
         return user.map(userAuth -> ResponseEntity.ok(bookingDao.findAllByCustomerEmail(userAuth.getUserEmail()))).orElseGet(()->ResponseEntity.internalServerError().build());
     }
 
-    @PostMapping("/fetchAll")
+    @GetMapping("/fetchAll")
     public List<RoomBooking> fetchAllBookings() {
         return bookingDao.findAll();
     }
@@ -132,22 +132,22 @@ public class RoomBookingController {
         return res;
     }
 
-    @PostMapping("/fetchAllPendingBookings")
+    @GetMapping("/fetchAllPendingBookings")
     public List<RoomBooking> getAllPendingBookings(){
         return bookingDao.findAllByPaymentStatus(Constants.PENDING);
     }
 
-    @PostMapping("/fetchAllApprovedBookings")
+    @GetMapping("/fetchAllApprovedBookings")
     public List<RoomBooking> getAllApprovedBookings(){
         return bookingDao.findAllByPaymentStatus(Constants.SUCCESS);
     }
 
-    @PostMapping("/fetchAllDeclineBookings")
+    @GetMapping("/fetchAllDeclineBookings")
     public List<RoomBooking> getAllDeclineBookings(){
         return bookingDao.findAllByPaymentStatusLike(Constants.DECLINE+"%");
     }
 
-    @PostMapping("/fetchAllPendingMembers")
+    @GetMapping("/fetchAllPendingMembers")
     public List<Member> getAllPendingMembers(){
         List<Member> pendingMem = new LinkedList<>();
         List<RoomBooking> pendingBook = bookingDao.findAllByPaymentStatus(Constants.PENDING);
@@ -160,7 +160,7 @@ public class RoomBookingController {
         return pendingMem;
     }
 
-     @PostMapping("/fetchAllApprovedMembers")
+     @GetMapping("/fetchAllApprovedMembers")
     public List<Member> getAllApprovedMembers(){
         List<Member> approvedMem = new LinkedList<>();
         List<RoomBooking> approvedBook = bookingDao.findAllByPaymentStatus(Constants.SUCCESS);
