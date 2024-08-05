@@ -31,9 +31,9 @@ public interface DevoteeInfoDao extends JpaRepository<DevoteeInfo, String> {
     @Query(value = "SELECT new com.voice.dbRegistration.model.GetIDFnameGender(d.id,d.fname,d.gender,d.dateOfBirth) FROM DevoteeInfo d")
     public List<GetIDFnameGender> findAllDev();
 
-    @Query(value = "SELECT new com.voice.dbRegistration.model.GetIDFnameGender(d.id,d.fname,d.gender,d.dateOfBirth) FROM DevoteeInfo d where d.id = :devId")
+    @Query(value = "SELECT new com.voice.dbRegistration.model.GetIDFnameGender(d.id,d.fname,d.gender,d.dateOfBirth) FROM DevoteeInfo d where d.id = :devId AND d.id < 'TMP'")
     public GetIDFnameGender findDev(@Param("devId") String devId);
-    @Query(value = "SELECT new com.voice.dbRegistration.model.GetIDFnameGender(d.id,d.fname,d.gender,d.dateOfBirth) FROM DevoteeInfo d where d.connectedTo = :devId")
+    @Query(value = "SELECT new com.voice.dbRegistration.model.GetIDFnameGender(d.id,d.fname,d.gender,d.dateOfBirth) FROM DevoteeInfo d where (d.connectedTo = :devId OR d.id = :devId) AND d.id < 'TMP'")
     public List<GetIDFnameGender> findDevHavingConnectedTo(@Param("devId") String devId);
 
     @Query("SELECT di FROM DevoteeInfo di WHERE di.createdDateTime >= :startDate AND di.createdDateTime <= :endDate")
