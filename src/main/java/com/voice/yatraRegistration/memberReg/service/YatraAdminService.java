@@ -48,7 +48,7 @@ public class YatraAdminService {
         }
         return Optional.empty();
     }
-    public Optional<List<DevoteeInfo>> getDevoteeInfoWithinDateRange(String startDateStr, String endDateStr){
+    public Optional<List<Object>> getDevoteeInfoWithinDateRange(String startDateStr, String endDateStr){
         try{
             LocalDate from = LocalDate.parse(startDateStr);
             LocalDate to = LocalDate.parse(endDateStr);
