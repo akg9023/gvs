@@ -3,7 +3,9 @@ package com.voice.yatraRegistration.memberReg.restController;
 
 import com.voice.auth.model.Role;
 import com.voice.dbRegistration.model.DevoteeInfo;
+import com.voice.yatraRegistration.memberReg.dao.RegisterMemDao;
 import com.voice.yatraRegistration.memberReg.model.EmailMember;
+import com.voice.yatraRegistration.memberReg.model.RegisteredMember;
 import com.voice.yatraRegistration.memberReg.service.YatraAdminService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +19,8 @@ import java.util.*;
 @RequestMapping("/yatra/admin")
 public class YatraAdminController {
     Logger logger = LoggerFactory.getLogger(YatraAdminController.class);
+    @Autowired
+    RegisterMemDao registerMemDao;
 
     @Autowired
     private YatraAdminService yatraAdminService;
@@ -39,8 +43,8 @@ public class YatraAdminController {
      * @return list of all db registrations within this period
      */
     @GetMapping("/dbRegWithin")
-    public ResponseEntity<List<DevoteeInfo>> getDevoteeInfoWithingDateRange( @RequestParam String startDate, @RequestParam String endDate){
-        Optional<List<DevoteeInfo>> result = yatraAdminService.getDevoteeInfoWithinDateRange(startDate, endDate);
+    public ResponseEntity<List<Object>> getDevoteeInfoWithingDateRange( @RequestParam String startDate, @RequestParam String endDate){
+        Optional<List<Object>> result = yatraAdminService.getDevoteeInfoWithinDateRange(startDate, endDate);
         return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.badRequest().build());
     }
     @PostMapping("/role")
@@ -50,5 +54,14 @@ public class YatraAdminController {
             return ResponseEntity.ok(result.get());
         }
         return ResponseEntity.badRequest().body("Either Role is null or Role prefix is not present ROLE_");
+    }
+
+    @GetMapping("/fetchYatraRegisteredmembers")
+    public ResponseEntity<?> fetchYatraRegisteredmembers(){
+        Optional<List<RegisteredMember>> result = Optional.of(registerMemDao.findAll());
+        if(result.isPresent()){
+            return ResponseEntity.ok(result.get());
+        }
+        return ResponseEntity.badRequest().body("Either Access is Denied or Session Expired");
     }
 }

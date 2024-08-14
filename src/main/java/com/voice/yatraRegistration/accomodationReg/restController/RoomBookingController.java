@@ -1,12 +1,11 @@
 package com.voice.yatraRegistration.accomodationReg.restController;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 //import org.apache.bcel.classfile.Constant;
+import com.voice.auth.model.UserAuth;
+import com.voice.auth.service.UserAuthService;
 import com.voice.yatraRegistration.accomodationReg.dao.RoomBookingDao;
 import com.voice.yatraRegistration.accomodationReg.dao.RoomDao;
 import com.voice.yatraRegistration.accomodationReg.model.RoomBooking;
@@ -16,21 +15,18 @@ import com.voice.yatraRegistration.accomodationReg.service.RoomBookingService;
 import com.voice.yatraRegistration.accomodationReg.utils.Constants;
 import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 import com.voice.dbRegistration.dao.DevoteeInfoDao;
 //import com.voice.dbRegistration.service.SendSmsService;
 import com.voice.yatraRegistration.memberReg.dao.MemberDao;
 import com.voice.yatraRegistration.memberReg.model.Member;
 
-//@RestController
-//@RequestMapping("/v1/room/bookings/")
+@RestController
+@RequestMapping("/v1/room/bookings")
 @CrossOrigin("*")
 @EnableAsync
 public class RoomBookingController {
@@ -52,14 +48,16 @@ public class RoomBookingController {
 
     @Autowired
     RoomBookingService roomBookingService;
+    @Autowired
+    private UserAuthService userAuthService;
 
-    @PostMapping("/fetchAllBookingsByEmail")
-    public List<RoomBooking> fetchAllByEmail(@RequestBody Map<String, String> input) {
-         String email = input.get("email");
-        return bookingDao.findAllByCustomerEmail(email);
+    @GetMapping("/fetchAllBookingsByEmail")
+    public ResponseEntity<List<RoomBooking>> fetchAllByEmail(Authentication  authentication) {
+        Optional<UserAuth> user=userAuthService.getUserAuthFromAuthentication(authentication);
+        return user.map(userAuth -> ResponseEntity.ok(bookingDao.findAllByCustomerEmail(userAuth.getUserEmail()))).orElseGet(()->ResponseEntity.internalServerError().build());
     }
 
-    @PostMapping("/fetchAll")
+    @GetMapping("/fetchAll")
     public List<RoomBooking> fetchAllBookings() {
         return bookingDao.findAll();
     }
@@ -134,22 +132,22 @@ public class RoomBookingController {
         return res;
     }
 
-    @PostMapping("/fetchAllPendingBookings")
+    @GetMapping("/fetchAllPendingBookings")
     public List<RoomBooking> getAllPendingBookings(){
         return bookingDao.findAllByPaymentStatus(Constants.PENDING);
     }
 
-    @PostMapping("/fetchAllApprovedBookings")
+    @GetMapping("/fetchAllApprovedBookings")
     public List<RoomBooking> getAllApprovedBookings(){
         return bookingDao.findAllByPaymentStatus(Constants.SUCCESS);
     }
 
-    @PostMapping("/fetchAllDeclineBookings")
+    @GetMapping("/fetchAllDeclineBookings")
     public List<RoomBooking> getAllDeclineBookings(){
         return bookingDao.findAllByPaymentStatusLike(Constants.DECLINE+"%");
     }
 
-    @PostMapping("/fetchAllPendingMembers")
+    @GetMapping("/fetchAllPendingMembers")
     public List<Member> getAllPendingMembers(){
         List<Member> pendingMem = new LinkedList<>();
         List<RoomBooking> pendingBook = bookingDao.findAllByPaymentStatus(Constants.PENDING);
@@ -162,7 +160,7 @@ public class RoomBookingController {
         return pendingMem;
     }
 
-     @PostMapping("/fetchAllApprovedMembers")
+     @GetMapping("/fetchAllApprovedMembers")
     public List<Member> getAllApprovedMembers(){
         List<Member> approvedMem = new LinkedList<>();
         List<RoomBooking> approvedBook = bookingDao.findAllByPaymentStatus(Constants.SUCCESS);

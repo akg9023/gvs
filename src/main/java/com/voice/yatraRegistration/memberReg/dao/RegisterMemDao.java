@@ -20,6 +20,7 @@ public interface RegisterMemDao extends JpaRepository<RegisteredMember, String> 
     public List<RegisteredMember> findAllByPaymentStatusNot(String paymentStatus);
 
     public List<RegisteredMember> findAllByCreatedDateTimeBefore(LocalDateTime createdDateTime);
+    public List<RegisteredMember> findDistinctByPaymentStatusOrPaymentStatus(String paymentStatus1,String paymentStatus2);
 
 
 

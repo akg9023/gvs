@@ -20,16 +20,16 @@ import com.voice.yatraRegistration.memberReg.dao.RegisterMemDao;
 import com.voice.yatraRegistration.memberReg.model.RegisteredMember;
 import com.voice.yatraRegistration.memberReg.model.Transaction;
 
-//@RestController
-//@RequestMapping("/v1/update/rpt/")
+@RestController
+@RequestMapping("/v1/update/rpt/")
 @CrossOrigin("*")
 public class ExcelUpdateDB {
 
     @Autowired
     RegisterMemDao regDao;
 
-    @Autowired
-    ManualPaymentRequestDao manualPaymentRequestDao;
+//    @Autowired
+//    ManualPaymentRequestDao manualPaymentRequestDao;
 
 //    @Autowired
 //    SendSmsService sendSmsService;
@@ -73,11 +73,11 @@ public class ExcelUpdateDB {
             regDao.save(temp);
 
             // send text message
-            ManualPaymentRequest cust = manualPaymentRequestDao.findByCustomerUTR(txnId);
-            String phoneNo = cust.getCustomerPhoneNo();
-            String message = "HareKrsna" + "\n"
-                    + "TxnId: " + txnId + "\n"
-                    + "Status: " + currentStatus;
+//            ManualPaymentRequest cust = manualPaymentRequestDao.findByCustomerUTR(txnId);
+//            String phoneNo = cust.getCustomerPhoneNo();
+//            String message = "HareKrsna" + "\n"
+//                    + "TxnId: " + txnId + "\n"
+//                    + "Status: " + currentStatus;
            // sendSmsService.sendSms(message, phoneNo);
         }
 
