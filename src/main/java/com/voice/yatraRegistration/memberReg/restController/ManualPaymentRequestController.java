@@ -3,22 +3,23 @@ package com.voice.yatraRegistration.memberReg.restController;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import com.voice.auth.model.UserAuth;
+import com.voice.auth.service.UserAuthService;
 import com.voice.yatraRegistration.memberReg.model.ManualPaymentRequest;
 import com.voice.yatraRegistration.memberReg.utils.common.YatraPaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 import com.voice.yatraRegistration.memberReg.dao.ManualPaymentRequestDao;
 import com.voice.yatraRegistration.memberReg.dao.RegisterMemDao;
 import com.voice.yatraRegistration.memberReg.model.RegisteredMember;
 
-//@RestController
-//@RequestMapping("/v1/manualPayment")
+@RestController
+@RequestMapping("/v1/manualPayment")
 @CrossOrigin("*")
 public class ManualPaymentRequestController {
 
@@ -30,6 +31,8 @@ public class ManualPaymentRequestController {
 
     @Autowired
     private RegisterMemDao registerMemDao;
+    @Autowired
+    private UserAuthService userAuthService;
 
     @PostMapping("/saveInput")
     public ManualPaymentRequest insertManualPaymentRequest(@RequestBody ManualPaymentRequest input) {
@@ -42,11 +45,18 @@ public class ManualPaymentRequestController {
     }
 
     @PostMapping("/memRegAmt")
-    public String calculateYatraMemRegPaymentAmt(@RequestBody Map<String,Object> input){
-        String userEmail = (String)input.get("userEmail");
-        List<Map<String,Object>> devoteeList = (List<Map<String, Object>>) input.get("devoteeList");
-        String amount = String.valueOf(yatraPayment.calculateAmount(userEmail, devoteeList));
-        return amount;
+    public ResponseEntity<String> calculateYatraMemRegPaymentAmt(@RequestBody Map<String,Object> input, Authentication auth){
+        Optional<UserAuth> user=userAuthService.getUserAuthFromAuthentication(auth);
+        String userEmail = user.get().getUserEmail();
+        String amount="";
+        try {
+            List<Map<String, Object>> devoteeList = (List<Map<String, Object>>) input.get("devoteeList");
+            amount = String.valueOf(yatraPayment.calculateAmount(userEmail, devoteeList));
+        }
+        catch(Exception e){
+            ResponseEntity.internalServerError().build();
+        }
+        return ResponseEntity.ok(amount);
     }
 
     @PostMapping("/updateRegMem")
