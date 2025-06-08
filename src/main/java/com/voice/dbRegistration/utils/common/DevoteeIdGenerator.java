@@ -38,13 +38,12 @@ public class DevoteeIdGenerator implements IdentifierGenerator {
                 String idString;
                 String temp = rs.getString(1);
                 int id;
-                if (temp == null)
+                if (temp == null || !temp.contains(String.valueOf(year)))
                     id = 1;
                 else
                     id = Integer.parseInt(temp.substring(5)) + 1;
                 idString = String.format("%04d", id);
                 String generatedId = prefix + String.valueOf(year) + idString;
-                System.out.println(generatedId);
                 return generatedId;
             }
 
