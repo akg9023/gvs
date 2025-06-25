@@ -35,7 +35,11 @@ pipeline {
                     
                     // Run the JAR
                     // sh "nohup java -jar ${jarFile} > /dev/null 2>&1 &"
-                    sh "java -jar ${jarFile}"
+                    // Combine sourcing and running in a single shell call
+                    sh """
+                        source ~/.bash_profile
+                        java -jar ${jarFile}
+                    """
                     
                 }
             }
