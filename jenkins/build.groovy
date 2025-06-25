@@ -2,6 +2,13 @@ pipeline {
     agent any
 
     stages {
+        stage('Clean Workspace') {
+            steps {
+                echo "Cleaning Jenkins workspace..."
+                deleteDir() // Deletes all files in the current workspace
+            }
+        }
+
         stage('Checkout') {
             steps {
                 // Code already checked out via SCM in Jenkins job
@@ -25,7 +32,8 @@ pipeline {
                     echo "Running JAR: ${jarFile}"
                     
                     // Run the JAR
-                    sh "nohup java -jar ${jarFile} > /dev/null 2>&1 &"
+                    // sh "nohup java -jar ${jarFile} > /dev/null 2>&1 &"
+                    sh "java -jar ${jarFile}"
                     
                 }
             }
