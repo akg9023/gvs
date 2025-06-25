@@ -16,9 +16,11 @@ pipeline {
             }
         }
 
-        stage('Build JAR with Gradle') {
+        stage('Build with Gradle') {
             steps {
+                // Go up from jenkins/ to project root
                 dir("${env.WORKSPACE}") {
+                    sh 'chmod +x ./gradlew'
                     sh './gradlew clean build'
                 }
             }
