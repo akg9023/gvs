@@ -2,10 +2,12 @@ pipeline {
     agent any
 
     stages {
-        stage('Hello World') {
+        stage('Build jar') {
             steps {
-                sh 'echo "Hello from Shell inside Jenkins!"'
+                sh 'mvn clean install"'
             }
         }
+
+        print 'build success.'
     }
 }
