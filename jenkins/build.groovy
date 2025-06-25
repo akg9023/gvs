@@ -37,6 +37,7 @@ pipeline {
                     // sh "nohup java -jar ${jarFile} > /dev/null 2>&1 &"
                     // Combine sourcing and running in a single shell call
                     sh """
+                        sudo su -
                         source ~/.bash_profile
                         java -jar ${jarFile}
                     """
