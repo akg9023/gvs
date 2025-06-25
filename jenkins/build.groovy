@@ -2,12 +2,12 @@ pipeline {
     agent any
 
     stages {
-        stage('Clean Workspace') {
-            steps {
-                echo "Cleaning Jenkins workspace..."
-                deleteDir() // Deletes all files in the current workspace
-            }
-        }
+        // stage('Clean Workspace') {
+        //     steps {
+        //         echo "Cleaning Jenkins workspace..."
+        //         deleteDir() // Deletes all files in the current workspace
+        //     }
+        // }
 
         stage('Checkout') {
             steps {
