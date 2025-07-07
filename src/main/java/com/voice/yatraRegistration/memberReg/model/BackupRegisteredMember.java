@@ -21,7 +21,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@Table(name="backup_yatra_aug_23_reg_mem")
+@Table(name="backup_yatra_aug_24_reg_mem")
 public class BackupRegisteredMember{
 
     //detail

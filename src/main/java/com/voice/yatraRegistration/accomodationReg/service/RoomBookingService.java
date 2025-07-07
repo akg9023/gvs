@@ -1,9 +1,6 @@
 package com.voice.yatraRegistration.accomodationReg.service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import com.voice.yatraRegistration.accomodationReg.dao.RoomBookingDao;
 import com.voice.yatraRegistration.accomodationReg.dao.RoomDao;
@@ -74,7 +71,7 @@ public class RoomBookingService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public Long reserveRoom(RoomBooking booking, String amount) throws Exception{
+    public Long reserveRoom(RoomBooking booking) throws Exception{
             // check room count and give error if not found
             List<RoomSet> rmSetList = booking.getRoomSet();
             Map<String,Integer> roomTypeMap = new HashMap<>();
@@ -93,7 +90,7 @@ public class RoomBookingService {
             }
 
             // save in db with INITIATED state
-            booking.setAmount(amount);
+//            booking.setAmount(amount);
             // booking.setUpiTxnId(UUID.randomUUID().toString()); //temp value
             booking.setPaymentStatus(Constants.INITIATED);
             RoomBooking bookedRoom = bookingDao.save(booking);
@@ -102,5 +99,20 @@ public class RoomBookingService {
             manageRoomCount(booking.getRoomSet(), false);
 
             return bookedRoom.getId();
+    }
+
+    public String saveResponseFromGateway(String bookingId,String gatewayTransactionId,String typeOfPayment,String paymentStatus) throws Exception{
+
+        RoomBooking rm = bookingDao.findOneById(Long.parseLong(bookingId.replaceAll("\"","")));
+        if (Objects.isNull(rm)) {
+            throw new Exception("BookingId doesnt found.");
+        }
+        else {
+            rm.setUpiTxnId(gatewayTransactionId);
+            rm.setCustomerVPA(typeOfPayment.replaceAll("\"",""));
+            rm.setPaymentStatus(paymentStatus.replaceAll("\"",""));
+            RoomBooking res = bookingDao.save(rm);
+            return res.getCustomerTxnId();
+        }
     }
 }

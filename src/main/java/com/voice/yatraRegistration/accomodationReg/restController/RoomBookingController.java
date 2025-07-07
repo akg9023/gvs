@@ -2,10 +2,10 @@ package com.voice.yatraRegistration.accomodationReg.restController;
 
 import java.util.*;
 
-
-//import org.apache.bcel.classfile.Constant;
 import com.voice.auth.model.UserAuth;
 import com.voice.auth.service.UserAuthService;
+import com.voice.payments.response.PaymentTokenResponse;
+import com.voice.payments.service.PaymentService;
 import com.voice.yatraRegistration.accomodationReg.dao.RoomBookingDao;
 import com.voice.yatraRegistration.accomodationReg.dao.RoomDao;
 import com.voice.yatraRegistration.accomodationReg.model.RoomBooking;
@@ -13,6 +13,7 @@ import com.voice.yatraRegistration.accomodationReg.model.RoomSet;
 import com.voice.yatraRegistration.accomodationReg.service.AsyncService;
 import com.voice.yatraRegistration.accomodationReg.service.RoomBookingService;
 import com.voice.yatraRegistration.accomodationReg.utils.Constants;
+import jakarta.servlet.http.HttpServletRequest;
 import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -51,6 +52,9 @@ public class RoomBookingController {
     @Autowired
     private UserAuthService userAuthService;
 
+    @Autowired
+    private PaymentService paymentService;
+
     @GetMapping("/fetchAllBookingsByEmail")
     public ResponseEntity<List<RoomBooking>> fetchAllByEmail(Authentication  authentication) {
         Optional<UserAuth> user=userAuthService.getUserAuthFromAuthentication(authentication);
@@ -68,28 +72,31 @@ public class RoomBookingController {
     }
 
     @PostMapping("/reserveRoomAndProceedForPayment")
-    public Map<String, String> reserveRoomAndProceedForPayment (@RequestBody RoomBooking booking) {
+    public ResponseEntity<PaymentTokenResponse> reserveRoomAndProceedForPayment (@RequestBody RoomBooking booking) {
 
-        HashMap<String, String> response = new HashMap<>();
+        //        HashMap<String, String> response = new HashMap<>();
 
         try {
              // calculate amount
             String amount = roomBookingService.validateCountAndCalculateAmount(booking.getRoomSet());
 
-            Long bookingId = roomBookingService.reserveRoom(booking, amount);
-
+            booking.setAmount(amount);
+            booking.setCustomerTxnId("GVS" + System.currentTimeMillis() + (int)(Math.random() * 1000));
+            booking.setTxnDate(String.valueOf(LocalDateTime.now()));
+            Long bookingId = roomBookingService.reserveRoom(booking);
             asyncService.waitAsync(bookingId);
+            paymentService.initiatePayment(booking);
 
-            System.out.println("Booking reserved for 5min. Please proceed for txn.");
-
-            response.put("bookingId",String.valueOf(bookingId));
-            response.put("amount",amount);
-            return response;
+            System.out.println("Booking reserved for 8 min. Please proceed for txn.");
+//
+//            response.put("bookingId",String.valueOf(bookingId));
+//            response.put("amount",amount);
+            return paymentService.initiatePayment(booking);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
 
-        return null;
+        return ResponseEntity.unprocessableEntity().build();
     }
 
     @PostMapping("/saveTxn")

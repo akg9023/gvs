@@ -11,11 +11,11 @@ import lombok.ToString;
 @Setter
 @ToString
 @NamedStoredProcedureQueries({
-        @NamedStoredProcedureQuery(name = "getRegisteredMembers24",
+        @NamedStoredProcedureQuery(name = "getRegisteredMembers25",
                 procedureName = "get_registered_members",
-                resultClasses = Member24.class)
+                resultClasses = Member25.class)
 })
-public class Member24 {
+public class Member25 {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

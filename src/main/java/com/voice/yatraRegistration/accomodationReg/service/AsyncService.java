@@ -23,7 +23,7 @@ public class AsyncService {
     @Async
     public void waitAsync(Long id) {
         try {
-            Thread.sleep(360000, 0);
+            Thread.sleep(480000, 0);
             RoomBooking asyncBookedRoom = bookingDao.findOneById(id);
 
             if (asyncBookedRoom.getPaymentStatus().equals(Constants.INITIATED)) {

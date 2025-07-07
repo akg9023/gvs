@@ -74,12 +74,12 @@ public class DevoteeInfo {
     private String servicesRendered="";
 
     // Professional Info
-    @Enumerated(EnumType.STRING)
-    private Education education= Education.NO_EDUCATION;
+//    @Enumerated(EnumType.STRING)
+    private String education= "";
     private String degreeSpecification="";
 
-    @Enumerated(EnumType.STRING)
-    private Occupation occupation=Occupation.UNEMPLOYED;
+//    @Enumerated(EnumType.STRING)
+    private String occupation="";
     private String presentDesignation="";
     private String skills="";
     private String currentCompany="";
