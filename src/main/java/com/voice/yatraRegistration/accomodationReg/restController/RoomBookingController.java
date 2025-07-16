@@ -73,10 +73,10 @@ public class RoomBookingController {
     @PostMapping("/reserveRoomAndProceedForPayment")
     public ResponseEntity<PaymentTokenResponse> reserveRoomAndProceedForPayment (@RequestBody RoomBooking booking) {
 
+
         try {
              // calculate amount
             String amount = roomBookingService.validateCountAndCalculateAmount(booking.getRoomSet());
-
             booking.setAmount(amount);
             booking.setCustomerTxnId("GVS" + System.currentTimeMillis() + (int)(Math.random() * 1000));
             booking.setTxnDate(String.valueOf(LocalDateTime.now()));
@@ -90,8 +90,8 @@ public class RoomBookingController {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-
         return ResponseEntity.unprocessableEntity().build();
+
     }
 
     @PostMapping("/saveTxn")

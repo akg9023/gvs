@@ -27,6 +27,7 @@ public class AsyncService {
             RoomBooking asyncBookedRoom = bookingDao.findOneById(id);
 
             if (!asyncBookedRoom.getPaymentStatus().equals(Constants.SUCCESS)) {
+
                 System.out.println("Pending status found!! for id " + asyncBookedRoom.getId()+"deleting...");
 
                 // increase the count after time lapse

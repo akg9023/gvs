@@ -74,6 +74,7 @@ public class RoomBookingService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Long reserveRoom(RoomBooking booking) throws Exception{
+
             // check room count and give error if not found
             List<RoomSet> rmSetList = booking.getRoomSet();
             Map<String,Integer> roomTypeMap = new HashMap<>();
@@ -93,6 +94,7 @@ public class RoomBookingService {
 
             // save in db with INITIATED state
 //            booking.setAmount(amount);
+
             // booking.setUpiTxnId(UUID.randomUUID().toString()); //temp value
             booking.setPaymentStatus(Constants.INITIATED);
             RoomBooking bookedRoom = bookingDao.save(booking);

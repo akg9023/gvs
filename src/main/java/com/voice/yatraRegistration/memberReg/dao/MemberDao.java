@@ -13,4 +13,5 @@ public interface MemberDao extends JpaRepository<Member,Long>,MemberDaoCustom {
 
     public Member findOneByDbDevId(String dbDevId);
 
+
 }

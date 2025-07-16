@@ -1,6 +1,5 @@
 package com.voice.yatraRegistration.memberReg.model;
 
-
 import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
@@ -15,6 +14,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @Table(name="backup_yatra_aug_24_reg_mem")
+
 public class BackupRegisteredMember{
 
     //detail

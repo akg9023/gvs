@@ -74,11 +74,9 @@ public class DevoteeInfo {
     private String servicesRendered="";
 
     // Professional Info
-//    @Enumerated(EnumType.STRING)
     private String education= "";
     private String degreeSpecification="";
 
-//    @Enumerated(EnumType.STRING)
     private String occupation="";
     private String presentDesignation="";
     private String skills="";

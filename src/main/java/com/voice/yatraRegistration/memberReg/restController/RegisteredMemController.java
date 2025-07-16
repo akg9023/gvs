@@ -2,7 +2,6 @@ package com.voice.yatraRegistration.memberReg.restController;
 
 import java.time.LocalDateTime;
 import java.util.*;
-
 import com.voice.auth.model.UserAuth;
 import com.voice.auth.service.UserAuthService;
 import com.voice.dbRegistration.dao.DevoteeInfoDao;
@@ -59,9 +58,6 @@ public class RegisteredMemController {
         for(Member m: input.getMemberIdList()){
 
             Member mem= memberDao.findOneByDbDevId(m.getDbDevId());
-            memList.add((mem == null)? m:mem );
-
-        }
         input.setMemberIdList(memList);
 
         RegisteredMember r=null;
@@ -100,6 +96,7 @@ public class RegisteredMemController {
         if(allRegMem!=null)
          if(!allRegMem.isEmpty())
           for (RegisteredMember one : allRegMem) {
+
                 List<Member> memList = one.getMemberIdList();
                 for (Member mem : memList) {
                     result.add(mem.getDbDevId());

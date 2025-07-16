@@ -32,6 +32,7 @@ public class RegisteredMember {
     @ManyToMany(cascade = CascadeType.ALL)
     private List<Member> memberIdList = new ArrayList<>();
 
+
     //transaction
     private String amount="";
     private String customerTxnId="";
