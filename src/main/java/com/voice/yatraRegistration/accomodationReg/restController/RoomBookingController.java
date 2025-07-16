@@ -13,7 +13,6 @@ import com.voice.yatraRegistration.accomodationReg.model.RoomSet;
 import com.voice.yatraRegistration.accomodationReg.service.AsyncService;
 import com.voice.yatraRegistration.accomodationReg.service.RoomBookingService;
 import com.voice.yatraRegistration.accomodationReg.utils.Constants;
-import jakarta.servlet.http.HttpServletRequest;
 import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -74,8 +73,6 @@ public class RoomBookingController {
     @PostMapping("/reserveRoomAndProceedForPayment")
     public ResponseEntity<PaymentTokenResponse> reserveRoomAndProceedForPayment (@RequestBody RoomBooking booking) {
 
-        //        HashMap<String, String> response = new HashMap<>();
-
         try {
              // calculate amount
             String amount = roomBookingService.validateCountAndCalculateAmount(booking.getRoomSet());
@@ -88,9 +85,7 @@ public class RoomBookingController {
             paymentService.initiatePayment(booking);
 
             System.out.println("Booking reserved for 8 min. Please proceed for txn.");
-//
-//            response.put("bookingId",String.valueOf(bookingId));
-//            response.put("amount",amount);
+
             return paymentService.initiatePayment(booking);
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -190,22 +185,6 @@ public class RoomBookingController {
 //        SendSmsService sendSmsService = new SendSmsService();
 //        sendSmsService.sendSms(Constants.SMS_APPROVED_MESSAGE,roomBooked.getCustomerPhoneNo());
         return roomBooked;
-    }
-
-    @PostMapping("/decline/{id}")
-    public RoomBooking declineBooking(@PathVariable("id") Long roomBookingId,@RequestBody Map<String,String> input){
-        String pStaus = input.get("paymentStatus");
-        RoomBooking rm = bookingDao.findOneById(roomBookingId);
-
-        //increase the room count
-        roomBookingService.manageRoomCount(rm.getRoomSet(), true);
-
-        //set status as decline
-        rm.setPaymentStatus(pStaus);
-        RoomBooking booked = bookingDao.save(rm);
-//        SendSmsService sendSmsService = new SendSmsService();
-//        sendSmsService.sendSms(Constants.SMS_DECLINE_MESSAGE,booked.getCustomerPhoneNo());
-        return booked;
     }
 
 }

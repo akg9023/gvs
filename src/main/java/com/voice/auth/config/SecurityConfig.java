@@ -115,7 +115,7 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("https://db.gaurangavedic.org.in","https://gaurangavedic.org.in","https://yatra.gaurangavedic.org.in","https://psa.atomtech.in","http://localhost:3000","https://payment1.atomtech.in/"));
+        configuration.setAllowedOrigins(List.of("https://db.gaurangavedic.org.in","https://gaurangavedic.org.in","https://yatra.gaurangavedic.org.in","https://psa.atomtech.in","https://payment1.atomtech.in/"));
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.setAllowCredentials(true);

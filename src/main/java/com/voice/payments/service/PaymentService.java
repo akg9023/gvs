@@ -65,10 +65,10 @@ public class PaymentService {
         String[] values={merchId,atomTxnId,Aipay.getValueFromJson(response,"merchTxnId"),Aipay.getValueFromJson(response,"totalAmount"),Aipay.getValueFromJson(response,"statusCode"),paymentMode,Aipay.getValueFromJson(response,"bankTxnId")};
 
         if(AtomSignature.generateSignature(hashKey,values).equals(Aipay.getValueFromJson(response,"signature").replaceAll("[\"]",""))){
-            System.out.println(roomBookingService.saveResponseFromGateway(bookingId,atomTxnId,paymentMode,status));
+             roomBookingService.saveResponseFromGateway(bookingId, atomTxnId, paymentMode, status);
         }
         else{
-            System.out.println(roomBookingService.saveResponseFromGateway(bookingId,atomTxnId,paymentMode,"SUSPICIOUS"));
+             roomBookingService.saveResponseFromGateway(bookingId,atomTxnId,paymentMode,"SUSPICIOUS");
         }
 
     }

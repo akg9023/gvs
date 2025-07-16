@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.voice.yatraRegistration.memberReg.dao.MemberDao;
 import com.voice.yatraRegistration.memberReg.model.Member;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
 public class RoomBookingService {
@@ -112,7 +114,13 @@ public class RoomBookingService {
             rm.setCustomerVPA(typeOfPayment.replaceAll("\"",""));
             rm.setPaymentStatus(paymentStatus.replaceAll("\"",""));
             RoomBooking res = bookingDao.save(rm);
+            if(res.getPaymentStatus().equals("FAILED")) {
+                manageRoomCount(res.getRoomSet(), true);
+                //        SendSmsService sendSmsService = new SendSmsService();
+//        sendSmsService.sendSms(Constants.SMS_DECLINE_MESSAGE,booked.getCustomerPhoneNo());
+            }
             return res.getCustomerTxnId();
         }
     }
+
 }
