@@ -44,9 +44,7 @@ pipeline {
                         echo "No process running on port 8443"
                         error("Pipeline terminated: No process running on port 8443")
                     }
-
                     sh "nohup java -jar ${jarFile} > /dev/null 2>&1 &"
-
                 }
             }
         }
