@@ -44,7 +44,7 @@ pipeline {
                     } else {
                         echo "No process running on port 8443"
                     }
-                    sh "env > /dev/null && java -jar ${jarFile}"
+                    sh "source /var/lib/jenkins/.bash_profile > /dev/null 2>&1 && export \$(cat /var/lib/jenkins/.bash_profile | xargs) && java -jar ${jarFile}"
                 }
             }
         }
