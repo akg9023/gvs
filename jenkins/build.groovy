@@ -45,12 +45,40 @@ pipeline {
                         echo "No process running on port 8443"
                     }
 
-                    // Start the application and monitor its output
+                    // Start the application and save logs to app.log
+                    sh "nohup bash -c 'source /var/lib/jenkins/app.env && java -jar ${jarFile}' > app.log 2>&1 &"
+                    echo "Application started successfully in the background. Monitoring logs..."
+
+                    // Monitor the log file for success or error
+                    def success = false
+                    def errorLine = null
                     try {
-                        sh "nohup bash -c 'source /var/lib/jenkins/app.env && java -jar ${jarFile}' > /dev/null 2>&1 &"
-                        echo "Application started successfully in the background."
+                        timeout(time: 120, unit: 'SECONDS') { // Set a timeout for monitoring
+                            waitUntil {
+                                def logContent = readFile('app.log')
+                                if (logContent.contains("Started HlzRegApplication")) {
+                                    success = true
+                                    return true
+                                }
+                                def errorMatch = logContent =~ /(?i)error/
+                                if (errorMatch) {
+                                    errorLine = errorMatch[0]
+                                    return true
+                                }
+                                return false
+                            }
+                        }
                     } catch (Exception e) {
-                        error "Application failed to start. Terminating Jenkins job."
+                        error "Timeout reached while monitoring logs."
+                    }
+
+                    // Handle success or error
+                    if (success) {
+                        echo "Application started successfully."
+                    } else if (errorLine) {
+                        error "Application failed with error: ${errorLine}"
+                    } else {
+                        error "Application did not start successfully."
                     }
                 }
             }
