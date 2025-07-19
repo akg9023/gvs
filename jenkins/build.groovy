@@ -36,15 +36,22 @@ pipeline {
 //                    sh 'source /var/lib/jenkins/app.env > /dev/null 2>&1' // Suppress output
 
                     // find the application and
-//                    def pid = sh(script: "lsof -i :8443 | awk 'NR==2 {print \$2}'", returnStdout: true).trim()
+                    def pid = sh(script: "lsof -i :8443 | awk 'NR==2 {print \$2}'", returnStdout: true).trim()
 //
-//                    if (pid) {
-//                        echo "Stopping process on port 8443 with PID: ${pid}"
-////                        sh "kill -9 ${pid}"
-//                    } else {
-//                        echo "No process running on port 8443"
-//                    }
-                    sh "source /var/lib/jenkins/app.env > /dev/null 2>&1 && java -jar ${jarFile}"
+                    if (pid) {
+                        echo "Stopping process on port 8443 with PID: ${pid}"
+//                        sh "kill -9 ${pid}"
+                    } else {
+                        echo "No process running on port 8443"
+                    }
+
+                    // Start the application and monitor its output
+                    try {
+                        sh "source /var/lib/jenkins/app.env > /dev/null 2>&1 && java -jar ${jarFile} | tee /dev/tty | grep -q 'Started HlzRegApplication'"
+                        echo "Application started successfully. Stopping Jenkins job with success."
+                    } catch (Exception e) {
+                        error "Application failed to start. Terminating Jenkins job."
+                    }
                 }
             }
         }
