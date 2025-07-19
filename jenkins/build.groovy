@@ -47,7 +47,7 @@ pipeline {
 
                     // Start the application and monitor its output
                     try {
-                        sh "source /var/lib/jenkins/app.env > /dev/null 2>&1 && java -jar ${jarFile} | grep -q 'Started HlzRegApplication'"
+                        sh "source /var/lib/jenkins/app.env > /dev/null 2>&1 && java -jar ${jarFile} | while read line; do echo \"\$line\"; if [[ \"\$line\" == *'Started HlzRegApplication'* ]]; then exit 0; fi; done || exit 1"
                         echo "Application started successfully. Stopping Jenkins job with success."
                     } catch (Exception e) {
                         error "Application failed to start. Terminating Jenkins job."
