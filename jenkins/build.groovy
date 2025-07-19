@@ -61,10 +61,9 @@ pipeline {
                                     success = true
                                     return true
                                 }
-                                def errorMatch = logContent =~ /(?i)error/
+                                def errorMatch = logContent =~ /(?i)Failed/
                                 if (errorMatch) {
                                     errorLine = errorMatch[0]
-                                    echo "Error detected: ${errorLine}" // Print the error line
                                     return true
                                 }
                                 return false
