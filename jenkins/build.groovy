@@ -47,8 +47,8 @@ pipeline {
 
                     // Start the application and monitor its output
                     try {
-                        sh "source /var/lib/jenkins/app.env > /dev/null 2>&1 && java -jar ${jarFile}  > /dev/null 2>&1"
-                        echo "Application started successfully. Stopping Jenkins job with success."
+                        sh "nohup bash -c 'source /var/lib/jenkins/app.env && java -jar ${jarFile}' > /dev/null 2>&1 &"
+                        echo "Application started successfully in the background."
                     } catch (Exception e) {
                         error "Application failed to start. Terminating Jenkins job."
                     }
