@@ -44,7 +44,7 @@ pipeline {
                     } else {
                         echo "No process running on port 8443"
                     }
-                    sh "java -jar ${jarFile}"
+                    sh "env && java -jar ${jarFile}"
                 }
             }
         }
