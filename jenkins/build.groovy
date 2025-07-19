@@ -46,7 +46,7 @@ pipeline {
                     }
 
                     // Start the application and save logs to app.log
-                    sh "nohup bash -c 'source /var/lib/jenkins/app.env && java -jar ${jarFile}' > app.log 2>&1 &"
+                    sh "source /var/lib/jenkins/app.env && nohup java -jar ${jarFile} > app.log 2>&1 &"
                     echo "Application started successfully in the background. Monitoring logs..."
 
                     // Monitor the log file for success or error
@@ -56,6 +56,7 @@ pipeline {
                         timeout(time: 120, unit: 'SECONDS') { // Set a timeout for monitoring
                             waitUntil {
                                 def logContent = readFile('app.log')
+                                echo logContent // Print the log content incrementally
                                 if (logContent.contains("Started HlzRegApplication")) {
                                     success = true
                                     return true
