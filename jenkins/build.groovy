@@ -33,7 +33,7 @@ pipeline {
 //                     Find the generated JAR file
                     def jarFile = sh(script: "ls build/libs/GVS-0.0.1-SNAPSHOT.jar", returnStdout: true).trim()
                     echo "Running JAR: ${jarFile}"
-                    sh  "source /var/lib/jenkins/.bash_profile"  // set env variable
+                    sh 'source /var/lib/jenkins/.bash_profile > /dev/null 2>&1' // Suppress output
 
                     // find the application and
                     def pid = sh(script: "lsof -i :8443 | awk 'NR==2 {print \$2}'", returnStdout: true).trim()
@@ -43,7 +43,6 @@ pipeline {
 //                        sh "kill -9 ${pid}"
                     } else {
                         echo "No process running on port 8443"
-                        error("Pipeline terminated: No process running on port 8443")
                     }
                     sh "java -jar ${jarFile}"
                 }
