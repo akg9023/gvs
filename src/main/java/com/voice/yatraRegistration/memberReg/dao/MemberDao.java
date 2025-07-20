@@ -11,6 +11,7 @@ public interface MemberDao extends JpaRepository<Member,Long>,MemberDaoCustom {
     @Query("SELECT mem FROM Member mem GROUP BY mem.dbDevId HAVING count(*)>1")
     public List<Member> findDuplicates();
 
-    public List<Member> findByDbDevId(String dbDevId);
+    public Member findOneByDbDevId(String dbDevId);
+
 
 }

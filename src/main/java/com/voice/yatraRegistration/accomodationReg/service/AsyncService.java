@@ -23,10 +23,11 @@ public class AsyncService {
     @Async
     public void waitAsync(Long id) {
         try {
-            Thread.sleep(360000, 0);
+            Thread.sleep(480000, 0);
             RoomBooking asyncBookedRoom = bookingDao.findOneById(id);
 
-            if (asyncBookedRoom.getPaymentStatus().equals(Constants.INITIATED)) {
+            if (!asyncBookedRoom.getPaymentStatus().equals(Constants.SUCCESS)) {
+
                 System.out.println("Pending status found!! for id " + asyncBookedRoom.getId()+"deleting...");
 
                 // increase the count after time lapse

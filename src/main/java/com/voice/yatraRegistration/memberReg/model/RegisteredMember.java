@@ -18,7 +18,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@Table(name="yatra_aug_24_reg_mem",uniqueConstraints = { @UniqueConstraint(columnNames = { "upiTxnId" }) })
+@Table(name="yatra_25_reg_mem",uniqueConstraints = { @UniqueConstraint(columnNames = { "upiTxnId" }) })
 public class RegisteredMember {
 
     //detail
@@ -27,11 +27,11 @@ public class RegisteredMember {
     @Column(name="yatra_mem_id")
     private Long id;
 
-    //who is filling the form
     private String userEmail="";
 
     @ManyToMany(cascade = CascadeType.ALL)
-    private List<Member24> memberIdList = new ArrayList<>();
+    private List<Member> memberIdList = new ArrayList<>();
+
 
     //transaction
     private String amount="";
