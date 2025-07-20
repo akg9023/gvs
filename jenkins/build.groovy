@@ -46,7 +46,7 @@ pipeline {
                     }
 
                     // Start the application and save logs to app.log
-                    sh "source /var/lib/jenkins/app.env && nohup java -jar ${jarFile} > app.log 2>&1 &"
+                    sh "source /var/lib/jenkins/app.env > /dev/null 2>&1 && nohup java -jar ${jarFile} > app.log 2>&1 & disown"
                     echo "Application started successfully in the background. Monitoring logs..."
 
                     // Monitor the log file for success or error
