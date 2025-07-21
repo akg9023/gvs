@@ -47,6 +47,12 @@ pipeline {
 
                     // Start the application and save logs to app.log
                     sh "source /var/lib/jenkins/app.env > /dev/null 2>&1 && setsid nohup java -jar ${jarFile} > app.log 2>&1 &"
+                    sh """
+                        sudo -u ec2-user bash -c '
+                        cd /home/ec2-user/gvs-server && \
+                        source .bash_profile > /dev/null 2>&1 && \
+                        java -jar GVS-0.0.1-SNAPSHOT.jar > app.log 2>&1 &'
+                    """
                     echo "Application started successfully in the background. Monitoring logs..."
 
                     // Monitor the log file for success or error
