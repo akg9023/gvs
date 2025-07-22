@@ -11,21 +11,10 @@ pipeline {
         stage('Run JAR as ec2-user using Python') {
             steps {
                 sh """
-        python3 -c '
-import os
-import subprocess
-
-# Switch to ec2-user
-os.setuid(1000)  # Replace 1001 with the UID of ec2-user
-
-# Navigate to ~/gvs-server
-os.chdir("/home/ec2-user/gvs-server")
-
-# Source .bash_profile
-subprocess.run(["bash", "-c", "source ~/.bash_profile"], check=True)
-
-# Run the Java application
-subprocess.run(["java", "-jar", "GVS-0.0.1-SNAPSHOT.jar"], check=True)
+        su - ec2-user -c '
+        cd /home/ec2-user/gvs-server
+        source ~/.bash_profile
+        java -jar GVS-0.0.1-SNAPSHOT.jar
         '
     """
             }
