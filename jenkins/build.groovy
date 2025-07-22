@@ -108,6 +108,7 @@ pipeline {
 
                     // Handle success or error
                     if (success) {
+                        sleep(time: 120, unit: 'SECONDS') // Wait for a few seconds to ensure the app is fully started
                         echo "Application started successfully."
                     } else if (errorLine) {
                         error "Application failed with error: ${errorLine}"
