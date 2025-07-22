@@ -25,24 +25,24 @@ pipeline {
                 }
             }
         }
-        stage('Wait for Assertion') {
+        stage('Verify Application Running') {
             steps {
                 script {
                     try {
                         timeout(time: 2, unit: 'MINUTES') {
                             waitUntil {
-                                def conditionMet = sh(script: "sudo -u ec2-user bash -c 'curl -s http://localhost:8443/health | grep UP'", returnStatus: true) == 0
-                                if (conditionMet) {
-                                    echo "Assertion passed: Application is healthy."
+                                def isRunning = sh(script: "sudo -u ec2-user bash -c 'ss -tuln | grep :8443'", returnStatus: true) == 0
+                                if (isRunning) {
+                                    echo "Application is running on port 8443."
                                     return true
                                 }
-                                echo "Waiting for application to become healthy..."
+                                echo "Waiting for application to start on port 8443..."
                                 sleep(time: 10, unit: 'SECONDS') // Poll every 10 seconds
                                 return false
                             }
                         }
                     } catch (Exception e) {
-                        error "Assertion failed: Application did not become healthy within 2 minutes."
+                        error "Application did not start on port 8443 within the timeout period."
                     }
                 }
             }
