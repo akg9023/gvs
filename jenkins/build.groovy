@@ -48,7 +48,7 @@ pipeline {
                         sudo -u ec2-user bash -c '
                         cd /home/ec2-user/gvs-server &&
                         source .bash_profile > /dev/null 2>&1 &&
-                        nohup java -jar GVS-0.0.1-SNAPSHOT.jar > /dev/null 2>&1 &'
+                        nohup java -jar GVS-0.0.1-SNAPSHOT.jar > application.log 2>&1 &'
                     """
                     echo "Application started successfully in the background."
                 }
@@ -60,21 +60,51 @@ pipeline {
                     try {
                         timeout(time: 2, unit: 'MINUTES') {
                             waitUntil {
-                                def isRunning = sh(script: "sudo -u ec2-user bash -c 'ss -tuln | grep :8443'", returnStatus: true) == 0
-                                if (isRunning) {
-                                    echo "Application is running on port 8443."
+                                // Print the last 15 lines of the log file
+                                sh "sudo -u ec2-user bash -c 'tail -n 15 /home/ec2-user/gvs-server/application.log'"
+
+                                // Check if the log contains the desired keyword
+                                def logContainsStarted = sh(script: "sudo -u ec2-user bash -c 'grep -q \"Started HlzRegApplication\" /home/ec2-user/gvs-server/application.log'", returnStatus: true) == 0
+                                if (logContainsStarted) {
+                                    echo "Application log contains 'Started HlzRegApplication'. Application is running successfully."
                                     return true
                                 }
-                                echo "Waiting for application to start on port 8443..."
+                                echo "Waiting for 'Started HlzRegApplication' message in application.log..."
                                 sleep(time: 10, unit: 'SECONDS') // Poll every 10 seconds
                                 return false
                             }
                         }
                     } catch (Exception e) {
-                        error "Application did not start on port 8443 within the timeout period."
+                        error "Application did not log 'Started HlzRegApplication' within the timeout period."
+                    } finally {
+                        // Delete the application.log file
+                        sh "sudo -u ec2-user bash -c 'rm -f /home/ec2-user/gvs-server/application.log'"
+                        echo "application.log file deleted."
                     }
                 }
             }
         }
+//        stage('Verify Application Running') {
+//            steps {
+//                script {
+//                    try {
+//                        timeout(time: 2, unit: 'MINUTES') {
+//                            waitUntil {
+//                                def isRunning = sh(script: "sudo -u ec2-user bash -c 'ss -tuln | grep :8443'", returnStatus: true) == 0
+//                                if (isRunning) {
+//                                    echo "Application is running on port 8443."
+//                                    return true
+//                                }
+//                                echo "Waiting for application to start on port 8443..."
+//                                sleep(time: 10, unit: 'SECONDS') // Poll every 10 seconds
+//                                return false
+//                            }
+//                        }
+//                    } catch (Exception e) {
+//                        error "Application did not start on port 8443 within the timeout period."
+//                    }
+//                }
+//            }
+//        }
     }
 }
