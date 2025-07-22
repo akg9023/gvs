@@ -3,10 +3,14 @@ pipeline {
 
     parameters {
         booleanParam(name: 'ROLLBACK', defaultValue: false, description: 'Rollback to previous deployment')
+        booleanParam(name: 'KEEP_BACKUP', defaultValue: true, description: 'Do you want to keep the backup?')
     }
 
     stages {
         stage('Build with Gradle') {
+            when {
+                expression { !params.ROLLBACK }
+            }
             steps {
                 sh 'chmod +x ./gradlew'
                 sh './gradlew clean build'
@@ -14,6 +18,9 @@ pipeline {
         }
 
         stage('Move JAR to ec2-user directory') {
+            when {
+                expression { !params.ROLLBACK }
+            }
             steps {
                 script {
                     def jarFile = sh(script: "ls build/libs/GVS-0.0.1-SNAPSHOT.jar", returnStdout: true).trim()
@@ -22,7 +29,7 @@ pipeline {
                     sh """
                         sudo -u ec2-user bash -c '
                     if [ -f /home/ec2-user/gvs-server/GVS-0.0.1-SNAPSHOT.jar ]; then
-                        sudo mv /home/ec2-user/gvs-server/GVS-0.0.1-SNAPSHOT.jar /home/ec2-user/gvs-server/GVS-0.0.1-SNAPSHOT-revoke.jar
+                        ${params.KEEP_BACKUP ? "sudo mv /home/ec2-user/gvs-server/GVS-0.0.1-SNAPSHOT.jar /home/ec2-user/gvs-server/GVS-0.0.1-SNAPSHOT-revoke.jar" : "sudo rm -f /home/ec2-user/gvs-server/GVS-0.0.1-SNAPSHOT.jar"}
                     fi
                         sudo mv "${env.WORKSPACE}/${jarFile}" /home/ec2-user/gvs-server/
                         sudo chown ec2-user:ec2-user /home/ec2-user/gvs-server/GVS-0.0.1-SNAPSHOT.jar'
@@ -33,10 +40,11 @@ pipeline {
         }
 
         stage('Kill Process on Port 8443') {
+
             steps {
                 script {
                     def pid = sh(
-                            script: "sudo -u ec2-user bash -c \"lsof -i :8443 | awk 'NR==2 {print \\\"\\\$2\\\"}'\"",
+                            script: "sudo -u ec2-user bash -c' lsof -i :8443 | awk 'NR==2 {print \$2}''",
                             returnStdout: true
                     ).trim()
 
@@ -52,6 +60,9 @@ pipeline {
         }
 
         stage('Run the JAR') {
+            when {
+                expression { !params.ROLLBACK }
+            }
             steps {
                 script {
 
@@ -65,10 +76,14 @@ pipeline {
                         nohup java -jar GVS-0.0.1-SNAPSHOT.jar > application.log 2>&1 &'
                     """
                     echo "Application started successfully in the background."
+
                 }
             }
         }
         stage('Verify Application Running') {
+            when {
+                expression { !params.ROLLBACK }
+            }
             steps {
                 script {
                     try {
