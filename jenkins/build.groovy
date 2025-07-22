@@ -1,11 +1,11 @@
 pipeline {
     agent any
 
-    environment {
-        JAR_NAME = 'GVS-0.0.1-SNAPSHOT.jar' // Update if your JAR name is different
-        WORKSPACE_JAR_PATH = "build/libs/${JAR_NAME}"
-        TARGET_DIR = '/home/ec2-user/gvs-server'
-    }
+//    environment {
+//        JAR_NAME = 'GVS-0.0.1-SNAPSHOT.jar' // Update if your JAR name is different
+//        WORKSPACE_JAR_PATH = "build/libs/${JAR_NAME}"
+//        TARGET_DIR = '/home/ec2-user/gvs-server'
+//    }
 
     stages {
         // stage('Clean Workspace') {
@@ -73,7 +73,14 @@ pipeline {
                     }
 
                     // Start the application and save logs to app.log
-                    sh "source /var/lib/jenkins/app.env > /dev/null 2>&1 && setsid nohup java -jar ${jarFile} > app.log 2>&1 & disown"
+//                    sh "source /var/lib/jenkins/app.env > /dev/null 2>&1 && setsid nohup java -jar ${jarFile} > app.log 2>&1 & disown"
+                    sh """
+                        screen -dmS gvs-server bash -c '
+                        source /var/lib/jenkins/app.env > /dev/null 2>&1
+                        java -jar ${jarFile} > app.log 2>&1
+                        '
+                    """
+
 //                    sh """
 //                        sudo -u ec2-user bash -c '
 //                        cd /home/ec2-user/gvs-server && \
