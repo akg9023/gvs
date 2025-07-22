@@ -2,12 +2,28 @@ pipeline {
     agent any
 
     stages {
-//        stage('Build with Gradle') {
-//            steps {
-//                sh 'chmod +x ./gradlew'
-//                sh './gradlew clean build'
-//            }
-//        }
+        stage('Build with Gradle') {
+            steps {
+                sh 'chmod +x ./gradlew'
+                sh './gradlew clean build'
+            }
+        }
+
+        stage('Move JAR to ec2-user directory') {
+            steps {
+                script {
+                    def jarFile = sh(script: "ls build/libs/GVS-0.0.1-SNAPSHOT.jar", returnStdout: true).trim()
+                    echo "Moving JAR: ${jarFile} to /home/ec2-user/gvs-server"
+
+                    sh """
+                        sudo -u ec2-user bash -c '
+                        cp ${env.WORKSPACE}/${jarFile} /home/ec2-user/gvs-server/
+                        chown ec2-user:ec2-user /home/ec2-user/gvs-server/${jarFile}'
+                    """
+                    echo "JAR moved successfully to /home/ec2-user/gvs-server"
+                }
+            }
+        }
 
         stage('Run the JAR') {
             steps {
