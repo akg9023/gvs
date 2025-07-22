@@ -2,12 +2,12 @@ pipeline {
     agent any
 
     stages {
-        stage('Build with Gradle') {
-            steps {
-                sh 'chmod +x ./gradlew'
-                sh './gradlew clean build'
-            }
-        }
+//        stage('Build with Gradle') {
+//            steps {
+//                sh 'chmod +x ./gradlew'
+//                sh './gradlew clean build'
+//            }
+//        }
 
         stage('Run the JAR') {
             steps {
@@ -22,12 +22,14 @@ pipeline {
                         echo "No process running on port 8443"
                     }
 
-                    sh """
-                        sudo -u ec2-user bash -c '
-                        cd /home/ec2-user/gvs-server && \
-                        source .bash_profile > /dev/null 2>&1 && \
-                        nohup java -jar GVS-0.0.1-SNAPSHOT.jar > app.log 2>&1 &'
-                    """
+                    steps {
+                        sh """
+                            sudo -u ec2-user bash -c '
+                            cd /home/ec2-user/gvs-server && \
+                            touch app.log && chmod 666 app.log && \
+                            nohup java -jar GVS-0.0.1-SNAPSHOT.jar > app.log 2>&1 &'
+                        """
+                    }
                     echo "Application started successfully in the background. Monitoring logs..."
 
                     def success = false
