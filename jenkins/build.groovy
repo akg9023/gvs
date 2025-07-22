@@ -7,12 +7,11 @@ pipeline {
     }
 
     stages {
-        stage('Set Build Name') {
+        stage('Init') {
             steps {
                 script {
-                    def user = env.BUILD_USER_ID ?: 'Unknown User'
-                    currentBuild.displayName = "${user}"
-                    echo "Build name set to: ${currentBuild.displayName}"
+                    def userId = currentBuild.rawBuild.getCause(hudson.model.Cause$UserIdCause)?.getUserId()
+                    currentBuild.displayName = "#${BUILD_NUMBER} by ${userId ?: 'System'}"
                 }
             }
         }
