@@ -25,7 +25,8 @@ pipeline {
 
                     sh """
                         sudo -u ec2-user bash -c '
-                        cd /home/ec2-user/gvs-server && \
+                        cd /home/ec2-user/gvs-server && 
+                        source .bash_profile > /dev/null 2>&1 &&
                         nohup java -jar GVS-0.0.1-SNAPSHOT.jar > /dev/null 2>&1 &'
                     """
                     sleep(time: 120, unit: 'SECONDS')
