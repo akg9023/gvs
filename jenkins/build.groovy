@@ -32,7 +32,9 @@ pipeline {
             steps {
                 script {
                     def pid = sh(
-                            script: "sudo -u ec2-user bash -c \"lsof -i :8443 | awk 'NR==2 {print \\\"\\\$2\\\"}'\"",
+                            script: """
+                                sudo -u ec2-user bash -c "lsof -i :8443 | awk 'NR==2 {print \\\"\\\$2\\\"}'"
+                             """,
                             returnStdout: true
                     ).trim()
 
