@@ -17,8 +17,8 @@ pipeline {
 
                     sh """
                         sudo -u ec2-user bash -c '
-                        cp "${env.WORKSPACE}/${jarFile}" /home/ec2-user/gvs-server/
-                        chown ec2-user:ec2-user /home/ec2-user/gvs-server/${jarFile}'
+                        sudo cp "${env.WORKSPACE}/${jarFile}" /home/ec2-user/gvs-server/
+                        sudo chown ec2-user:ec2-user /home/ec2-user/gvs-server/${jarFile}'
                     """
                     echo "JAR moved successfully to /home/ec2-user/gvs-server"
                 }
