@@ -73,7 +73,7 @@ pipeline {
                     }
 
                     // Start the application and save logs to app.log
-                    sh "source /var/lib/jenkins/app.env > /dev/null 2>&1 && setsid nohup java -jar ${jarFile} > app.log 2>&1 &"
+                    sh "source /var/lib/jenkins/app.env > /dev/null 2>&1 && setsid nohup java -jar ${jarFile} > app.log 2>&1 & disown"
 //                    sh """
 //                        sudo -u ec2-user bash -c '
 //                        cd /home/ec2-user/gvs-server && \
