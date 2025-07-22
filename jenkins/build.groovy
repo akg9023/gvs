@@ -27,7 +27,7 @@ pipeline {
                     try {
                         timeout(time: 2, unit: 'MINUTES') {
                             waitUntil {
-                                pid = sh(script: "lsof -i :8443 | awk 'NR==2 {print \$2}'", returnStdout: true).trim()
+                                pid = sh(script: "ssh ec2-user@3.228.158.146 lsof -i :8443 | awk 'NR==2 {print \$2}'", returnStdout: true).trim()
                                 if (pid) {
                                     echo "Application is running with PID: ${pid}"
                                     return true
