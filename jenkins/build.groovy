@@ -22,14 +22,14 @@ pipeline {
                         echo "No process running on port 8443"
                     }
 
-                    steps {
-                        sh """
-                            sudo -u ec2-user bash -c '
-                            cd /home/ec2-user/gvs-server && \
-                            touch app.log && chmod 666 app.log && \
-                            nohup java -jar GVS-0.0.1-SNAPSHOT.jar > app.log 2>&1 &'
-                        """
-                    }
+
+                    sh """
+                        sudo -u ec2-user bash -c '
+                        cd /home/ec2-user/gvs-server && \
+                        touch app.log && chmod 666 app.log && \
+                        nohup java -jar GVS-0.0.1-SNAPSHOT.jar > app.log 2>&1 & disown'
+                    """
+
                     echo "Application started successfully in the background. Monitoring logs..."
 
                     def success = false
