@@ -39,9 +39,9 @@ public interface RegisterMemDao extends JpaRepository<RegisteredMember, String> 
             "LEFT JOIN devotee_info cdi ON di.connected_to = cdi.devotee_id " +
             "JOIN (SELECT DISTINCT m.db_dev_id AS id, m.db_dev_name AS name, m.db_dev_age AS age, " +
             "m.db_dev_gender AS gender, yarm.user_email AS paid_by_email " +
-            "FROM prod.member m " +
-            "JOIN prod.yatra_aug_23_reg_mem_member_id_list yarmmil ON m.id = yarmmil.member_id_list_id " +
-            "JOIN prod.yatra_aug_23_reg_mem yarm ON yarm.yatra_mem_id = yarmmil.registered_member_yatra_mem_id) mi " +
+            "FROM prod.member25 m " +
+            "JOIN prod.yatra_25_reg_mem_member_id_list yarmmil ON m.id = yarmmil.member_id_list_id " +
+            "JOIN prod.yatra_25_reg_mem yarm ON yarm.yatra_mem_id = yarmmil.registered_member_yatra_mem_id) mi " +
             "ON di.devotee_id = mi.id " +
             "WHERE di.devotee_id NOT LIKE 'TMP23%'", nativeQuery = true)
     List<Object[]> findDevoteeDetailsRegisteredInYatraForEmail();
@@ -78,14 +78,14 @@ public interface RegisterMemDao extends JpaRepository<RegisteredMember, String> 
             "LEFT JOIN devotee_info cdi ON di.connected_to = cdi.devotee_id " +
             "LEFT JOIN (SELECT DISTINCT m.db_dev_id AS id, m.db_dev_name AS name, m.db_dev_age AS age, " +
             "                  m.db_dev_gender AS gender, yarm.user_email AS paid_by_email " +
-            "           FROM prod.member m " +
-            "           JOIN prod.yatra_aug_23_reg_mem_member_id_list yarmmil " +
+            "           FROM prod.member25 m " +
+            "           JOIN prod.yatra_25_reg_mem_member_id_list yarmmil " +
             "           ON m.id = yarmmil.member_id_list_id " +
-            "           JOIN prod.yatra_aug_23_reg_mem yarm " +
+            "           JOIN prod.yatra_25_reg_mem yarm " +
             "           ON yarm.yatra_mem_id = yarmmil.registered_member_yatra_mem_id " +
             "           ) mi ON di.devotee_id = mi.id " +
             "LEFT JOIN (SELECT m.db_dev_id AS id, rb.customer_email, rb.customer_phone_no, rb.customer_name " +
-            "           FROM prod.member m " +
+            "           FROM prod.member25 m " +
             "           JOIN prod.room_set_member rsm " +
             "           ON rsm.member_id = m.id " +
             "           JOIN prod.room_booking_room_set rbrs " +

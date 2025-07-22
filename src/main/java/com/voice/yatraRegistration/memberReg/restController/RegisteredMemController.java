@@ -2,16 +2,12 @@ package com.voice.yatraRegistration.memberReg.restController;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import com.voice.auth.model.UserAuth;
 import com.voice.auth.service.UserAuthService;
 import com.voice.dbRegistration.dao.DevoteeInfoDao;
 import com.voice.dbRegistration.model.GetIDFnameGender;
-import com.voice.dbRegistration.restController.DevoteeInfoRestController;
-import com.voice.yatraRegistration.memberReg.dao.Member24Dao;
-import com.voice.yatraRegistration.memberReg.model.Member24;
+import com.voice.yatraRegistration.memberReg.dao.MemberDao;
+import com.voice.yatraRegistration.memberReg.model.Member;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +21,6 @@ import com.voice.yatraRegistration.memberReg.dao.RegisterMemDao;
 import com.voice.yatraRegistration.memberReg.model.RegisteredMember;
 import com.voice.yatraRegistration.memberReg.model.Status;
 
-import static org.springframework.http.ResponseEntity.badRequest;
-
 @RestController
 @RequestMapping("/v1/memReg")
 @CrossOrigin("*")
@@ -39,7 +33,7 @@ public class RegisteredMemController {
 
 
     @Autowired
-    Member24Dao member24Dao;
+    MemberDao memberDao;
 
     @Autowired
     private UserAuthService userAuthService;
@@ -58,15 +52,12 @@ public class RegisteredMemController {
         input.setUserEmail(user.get().getUserEmail());
         input.setCustomerEmail(user.get().getUserEmail());
 
-        List<Member24> memList=new ArrayList<>();
+        List<Member> memList=new ArrayList<>();
 
 
-        for(Member24 m: input.getMemberIdList()){
+        for(Member m: input.getMemberIdList()){
 
-            Member24 mem=member24Dao.findOneByDbDevId(m.getDbDevId());
-            memList.add((mem == null)? m:mem );
-
-        }
+            Member mem= memberDao.findOneByDbDevId(m.getDbDevId());
         input.setMemberIdList(memList);
 
         RegisteredMember r=null;
@@ -105,8 +96,9 @@ public class RegisteredMemController {
         if(allRegMem!=null)
          if(!allRegMem.isEmpty())
           for (RegisteredMember one : allRegMem) {
-                List<Member24> memList = one.getMemberIdList();
-                for (Member24 mem : memList) {
+
+                List<Member> memList = one.getMemberIdList();
+                for (Member mem : memList) {
                     result.add(mem.getDbDevId());
 
                 }
@@ -120,8 +112,8 @@ public class RegisteredMemController {
     }
 
     @GetMapping("/successMembers")
-    public ResponseEntity<List<Member24>> getByCreatedDateTime(){
-        return  ResponseEntity.ok(member24Dao.getAllSuccessMemBeforeDate());
+    public ResponseEntity<List<Member>> getByCreatedDateTime(){
+        return  ResponseEntity.ok(memberDao.getAllSuccessMemBeforeDate());
     }
     @GetMapping("/fetchDevWithLimitedData/{userId}")
     public ResponseEntity<GetIDFnameGender> fetchADevWithLimitedData(@PathVariable("userId") String devId) {
@@ -152,7 +144,6 @@ public class RegisteredMemController {
 
             return ResponseEntity.internalServerError().build();
         }
-
 
         return ResponseEntity.ok(dev);
     }

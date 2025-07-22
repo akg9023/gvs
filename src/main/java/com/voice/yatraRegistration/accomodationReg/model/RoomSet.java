@@ -2,7 +2,6 @@ package com.voice.yatraRegistration.accomodationReg.model;
 
 import java.util.List;
 
-
 import jakarta.persistence.*;
 
 import com.voice.yatraRegistration.memberReg.model.Member;

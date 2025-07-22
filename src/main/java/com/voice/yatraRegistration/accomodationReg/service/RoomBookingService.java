@@ -1,9 +1,6 @@
 package com.voice.yatraRegistration.accomodationReg.service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import com.voice.yatraRegistration.accomodationReg.dao.RoomBookingDao;
 import com.voice.yatraRegistration.accomodationReg.dao.RoomDao;
@@ -18,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.voice.yatraRegistration.memberReg.dao.MemberDao;
 import com.voice.yatraRegistration.memberReg.model.Member;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
 public class RoomBookingService {
@@ -74,7 +73,8 @@ public class RoomBookingService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public Long reserveRoom(RoomBooking booking, String amount) throws Exception{
+    public Long reserveRoom(RoomBooking booking) throws Exception{
+
             // check room count and give error if not found
             List<RoomSet> rmSetList = booking.getRoomSet();
             Map<String,Integer> roomTypeMap = new HashMap<>();
@@ -93,7 +93,8 @@ public class RoomBookingService {
             }
 
             // save in db with INITIATED state
-            booking.setAmount(amount);
+//            booking.setAmount(amount);
+
             // booking.setUpiTxnId(UUID.randomUUID().toString()); //temp value
             booking.setPaymentStatus(Constants.INITIATED);
             RoomBooking bookedRoom = bookingDao.save(booking);
@@ -103,4 +104,25 @@ public class RoomBookingService {
 
             return bookedRoom.getId();
     }
+
+    public String saveResponseFromGateway(String bookingId,String gatewayTransactionId,String typeOfPayment,String paymentStatus) throws Exception{
+
+        RoomBooking rm = bookingDao.findOneById(Long.parseLong(bookingId.replaceAll("\"","")));
+        if (Objects.isNull(rm)) {
+            throw new Exception("BookingId doesnt found.");
+        }
+        else {
+            rm.setUpiTxnId(gatewayTransactionId);
+            rm.setCustomerVPA(typeOfPayment.replaceAll("\"",""));
+            rm.setPaymentStatus(paymentStatus.replaceAll("\"",""));
+            RoomBooking res = bookingDao.save(rm);
+            if(res.getPaymentStatus().equals("FAILED")) {
+                manageRoomCount(res.getRoomSet(), true);
+                //        SendSmsService sendSmsService = new SendSmsService();
+//        sendSmsService.sendSms(Constants.SMS_DECLINE_MESSAGE,booked.getCustomerPhoneNo());
+            }
+            return res.getCustomerTxnId();
+        }
+    }
+
 }
