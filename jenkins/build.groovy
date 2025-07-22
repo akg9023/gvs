@@ -28,7 +28,7 @@ pipeline {
         stage('Kill Process on Port 8443') {
             steps {
                 script {
-                    def pid = sh(script: 'sudo -u ec2-user bash -c "lsof -i :8443 | awk \'NR==2 {print $2}\'"', returnStdout: true).trim()
+                    def pid = sh(script: "sudo -u ec2-user bash -c 'lsof -i :8443 | awk \\\"NR==2 {print \\\$2}\\\"'", returnStdout: true).trim()
                     if (pid) {
                         echo "Stopping process on port 8443 with PID: ${pid}"
                         sh "sudo -u ec2-user bash -c 'kill -9 ${pid}'"
