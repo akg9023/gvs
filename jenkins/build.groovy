@@ -49,6 +49,8 @@ pipeline {
                         cd /home/ec2-user/gvs-server &&
                         source .bash_profile > /dev/null 2>&1 &&
                         [ ! -f application.log ] && sudo touch application.log &&
+                        sudo chmod 666 application.log &&
+                        sudo chmod 755 /home/ec2-user/gvs-server &&
                         nohup java -jar GVS-0.0.1-SNAPSHOT.jar > application.log 2>&1 &'
                     """
                     echo "Application started successfully in the background."
