@@ -11,33 +11,32 @@ pipeline {
         stage('Run JAR as ec2-user using Python') {
             steps {
                 sh """
-                python3 -c '
-                import os
-                import subprocess
-                
-                # Switch to ec2-user
-                os.setuid(1000)  # Replace 1001 with the UID of ec2-user
-                
-                # Navigate to ~/gvs-server
-                os.chdir("/home/ec2-user/gvs-server")
-                
-                # Source .bash_profile
-                subprocess.run(["bash", "-c", "source ~/.bash_profile"], check=True)
-                
-                # Run the Java application
-                subprocess.run(["java", "-jar", "GVS-0.0.1-SNAPSHOT.jar"], check=True)
-                            '
-                """
-                }
+        python3 -c '
+import os
+import subprocess
+
+# Switch to ec2-user
+os.setuid(1000)  # Replace 1001 with the UID of ec2-user
+
+# Navigate to ~/gvs-server
+os.chdir("/home/ec2-user/gvs-server")
+
+# Source .bash_profile
+subprocess.run(["bash", "-c", "source ~/.bash_profile"], check=True)
+
+# Run the Java application
+subprocess.run(["java", "-jar", "GVS-0.0.1-SNAPSHOT.jar"], check=True)
+        '
+    """
             }
 
 
-        // stage('Clean Workspace') {
-        //     steps {
-        //         echo "Cleaning Jenkins workspace..."
-        //         deleteDir() // Deletes all files in the current workspace
-        //     }
-        // }
+            // stage('Clean Workspace') {
+            //     steps {
+            //         echo "Cleaning Jenkins workspace..."
+            //         deleteDir() // Deletes all files in the current workspace
+            //     }
+            // }
 
 //        stage('Checkout') {
 //            steps {
@@ -150,10 +149,11 @@ pipeline {
 //            }
 //        }
 
-        // stage('Archive JAR') {
-        //     steps {
-        //         archiveArtifacts artifacts: 'build/libs/*.jar', fingerprint: true
-        //     }
-        // }
+            // stage('Archive JAR') {
+            //     steps {
+            //         archiveArtifacts artifacts: 'build/libs/*.jar', fingerprint: true
+            //     }
+            // }
+        }
     }
 }
