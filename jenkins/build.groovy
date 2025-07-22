@@ -10,7 +10,7 @@ pipeline {
         stage('Set Build Name') {
             steps {
                 script {
-                    def user = env.BUILD_USER ?: 'Unknown User'
+                    def user = env.BUILD_USER_ID ?: 'Unknown User'
                     currentBuild.displayName = "${user}"
                     echo "Build name set to: ${currentBuild.displayName}"
                 }
