@@ -26,10 +26,10 @@ pipeline {
                     sh """
                         sudo -u ec2-user bash -c '
                         cd /home/ec2-user/gvs-server && \
-                        touch app.log && chmod 666 app.log && \
+                        sudo touch app.log && chmod 666 app.log && \
                         nohup java -jar GVS-0.0.1-SNAPSHOT.jar > app.log 2>&1 & disown'
                     """
-
+                    sleep(time: 120, unit: 'SECONDS') // Allow some time for the process to start
                     echo "Application started successfully in the background. Monitoring logs..."
 
                     def success = false
