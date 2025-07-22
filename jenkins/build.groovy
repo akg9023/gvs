@@ -17,7 +17,7 @@ pipeline {
 
                     sh """
                         sudo -u ec2-user bash -c '
-                        sudo cp "${env.WORKSPACE}/${jarFile}" /home/ec2-user/gvs-server/
+                        sudo mv "${env.WORKSPACE}/${jarFile}" /home/ec2-user/gvs-server/
                         sudo chown ec2-user:ec2-user /home/ec2-user/gvs-server/GVS-0.0.1-SNAPSHOT.jar'
                     """
                     echo "JAR moved successfully to /home/ec2-user/gvs-server"
@@ -81,7 +81,7 @@ pipeline {
                         error "Application did not log 'Started HlzRegApplication' within the timeout period."
                     } finally {
                         // Delete the application.log file
-                        sh "sudo -u ec2-user bash -c 'rm -f /home/ec2-user/gvs-server/application.log'"
+                        sh "sudo -u ec2-user bash -c 'sudo rm -f /home/ec2-user/gvs-server/application.log'"
                         echo "application.log file deleted."
                     }
                 }
