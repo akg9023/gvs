@@ -11,7 +11,7 @@ pipeline {
         stage('Run JAR as ec2-user using Python') {
             steps {
                 sh """
-        su - ec2-user -c '
+        sudo -u ec2-user bash -c '
         cd /home/ec2-user/gvs-server
         source ~/.bash_profile
         java -jar GVS-0.0.1-SNAPSHOT.jar
