@@ -17,6 +17,9 @@ pipeline {
 
                     sh """
                         sudo -u ec2-user bash -c '
+                    if [ -f /home/ec2-user/gvs-server/GVS-0.0.1-SNAPSHOT.jar ]; then
+                        sudo mv /home/ec2-user/gvs-server/GVS-0.0.1-SNAPSHOT.jar /home/ec2-user/gvs-server/GVS-0.0.1-SNAPSHOT-revoke.jar
+                    fi
                         sudo mv "${env.WORKSPACE}/${jarFile}" /home/ec2-user/gvs-server/
                         sudo chown ec2-user:ec2-user /home/ec2-user/gvs-server/GVS-0.0.1-SNAPSHOT.jar'
                     """
@@ -28,7 +31,7 @@ pipeline {
         stage('Kill Process on Port 8443') {
             steps {
                 script {
-                    def pid = sh(script: "sudo -u ec2-user bash -c 'lsof -i :8443 | awk \\\"NR==2 {print \\\$2}\\\"'", returnStdout: true).trim()
+                    def pid = sh(script: "sudo -u ec2-user bash -c 'lsof -i :8443 | awk '\\''NR==2 {print \$2}'\\'''", returnStdout: true).trim()
                     if (pid) {
                         echo "Stopping process on port 8443 with PID: ${pid}"
                         sh "sudo -u ec2-user bash -c 'kill -9 ${pid}'"
