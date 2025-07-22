@@ -22,30 +22,27 @@ pipeline {
                         nohup java -jar GVS-0.0.1-SNAPSHOT.jar > /dev/null 2>&1 &'
                     """
                     echo "Application started successfully in the background."
-
-                    def pid = null
+                }
+            }
+        }
+        stage('Wait for Assertion') {
+            steps {
+                script {
                     try {
                         timeout(time: 2, unit: 'MINUTES') {
                             waitUntil {
-                                pid = sh(script: "ssh ec2-user@3.228.158.146 lsof -i :8443 | awk 'NR==2 {print \$2}'", returnStdout: true).trim()
-                                if (pid) {
-                                    echo "Application is running with PID: ${pid}"
+                                def conditionMet = sh(script: "sudo -u ec2-user bash -c 'curl -s http://localhost:8443/health | grep UP'", returnStatus: true) == 0
+                                if (conditionMet) {
+                                    echo "Assertion passed: Application is healthy."
                                     return true
                                 }
-                                echo "Waiting for application to start..."
+                                echo "Waiting for application to become healthy..."
                                 sleep(time: 10, unit: 'SECONDS') // Poll every 10 seconds
                                 return false
                             }
                         }
                     } catch (Exception e) {
-                        error "Application did not start within the timeout period."
-                    }
-
-                    if (pid) {
-                        echo "Application started successfully with PID: ${pid}. Terminating Jenkins job."
-                        currentBuild.result = 'SUCCESS'
-                    } else {
-                        error "Application failed to start."
+                        error "Assertion failed: Application did not become healthy within 2 minutes."
                     }
                 }
             }
