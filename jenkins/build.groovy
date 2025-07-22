@@ -7,6 +7,16 @@ pipeline {
     }
 
     stages {
+        stage('Set Build Name') {
+            steps {
+                script {
+                    def user = env.BUILD_USER ?: 'Unknown User'
+                    currentBuild.displayName = "${user}"
+                    echo "Build name set to: ${currentBuild.displayName}"
+                }
+            }
+        }
+
         stage('Build with Gradle') {
             when {
                 expression { !params.ROLLBACK }
