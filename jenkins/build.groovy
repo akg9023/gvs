@@ -11,7 +11,7 @@ pipeline {
             steps {
                 script {
                     def userId = currentBuild.rawBuild.getCause(hudson.model.Cause$UserIdCause)?.getUserId()
-                    currentBuild.displayName = "${userId ?: 'System'} - #${BUILD_NUMBER} "
+                    currentBuild.displayName = "#${BUILD_NUMBER} - ${userId ?: 'System'}"
                 }
             }
         }
