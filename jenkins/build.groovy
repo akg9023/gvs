@@ -78,10 +78,28 @@ pipeline {
                 }
             }
         }
-        stage('Verify Application Running') {
+
+
+        stage('Rollback to Previous Deployment') {
             when {
-                expression { !params.ROLLBACK }
+                expression { params.ROLLBACK }
             }
+            steps {
+                script {
+                    sh """
+                        sudo -u ec2-user bash -c '
+                        cd /home/ec2-user/gvs-server &&
+                        source .bash_profile > /dev/null 2>&1 &&
+                        [ ! -f application.log ] && sudo touch application.log &&
+                        sudo chmod 666 application.log &&
+                        sudo chmod 755 /home/ec2-user/gvs-server &&
+                        nohup java -jar GVS-0.0.1-SNAPSHOT-revoke.jar > application.log 2>&1 &'
+                    """
+                    echo "Rollback deployment started successfully in the background."
+                }
+            }
+        }
+        stage('Verify Application Running') {
             steps {
                 script {
                     try {
@@ -108,26 +126,6 @@ pipeline {
                         sh "sudo -u ec2-user bash -c 'sudo rm -f /home/ec2-user/gvs-server/application.log'"
                         echo "application.log file deleted."
                     }
-                }
-            }
-        }
-
-        stage('Rollback to Previous Deployment') {
-            when {
-                expression { params.ROLLBACK }
-            }
-            steps {
-                script {
-                    sh """
-                        sudo -u ec2-user bash -c '
-                        cd /home/ec2-user/gvs-server &&
-                        source .bash_profile > /dev/null 2>&1 &&
-                        [ ! -f application.log ] && sudo touch application.log &&
-                        sudo chmod 666 application.log &&
-                        sudo chmod 755 /home/ec2-user/gvs-server &&
-                        nohup java -jar GVS-0.0.1-SNAPSHOT-revoke.jar > application.log 2>&1 &'
-                    """
-                    echo "Rollback deployment started successfully in the background."
                 }
             }
         }
