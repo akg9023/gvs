@@ -33,8 +33,10 @@ pipeline {
         stage('Move JAR to ec2-user directory') {
             steps {
                 sh """
-                    sudo cp ${WORKSPACE_JAR_PATH} ${TARGET_DIR}/
-                    sudo chown ec2-user:ec2-user ${TARGET_DIR}/${JAR_NAME}
+                    su - ec2-user -c '
+                     cp ${WORKSPACE_JAR_PATH} ${TARGET_DIR}/
+                     chown ec2-user:ec2-user ${TARGET_DIR}/${JAR_NAME}
+                    '
                 """
             }
         }
@@ -42,11 +44,11 @@ pipeline {
         stage('Run JAR as ec2-user') {
             steps {
                 sh """
-                    sudo su - ec2-user << 'EOF'
+                    su - ec2-user -c '
                     cd ${TARGET_DIR}
                     source ~/.bash_profile
                     nohup java -jar ${JAR_NAME} > app.log 2>&1 &
-                    EOF
+                    '
                 """
             }
         }
