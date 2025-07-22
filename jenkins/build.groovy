@@ -42,19 +42,20 @@ pipeline {
         stage('Kill Process on Port 8443') {
             steps {
                 script {
-                    def pid = sh(
-                            script: "sudo -u ec2-user bash -c 'fuser -k 8443/tcp'",
-                            returnStdout: true
-                    ).trim()
+                    def result = sh(
+                            script: "sudo -u ec2-user fuser -k 8443/tcp || true",
+                            returnStatus: true
+                    )
 
-                    if (pid) {
-                        echo "Process on port 8443 killed successfully."
+                    if (result == 0) {
+                        echo "Process on port 8443 killed successfully (or nothing running)."
                     } else {
-                        echo "No process running on port 8443."
+                        echo "No process running or failed to kill process on port 8443."
                     }
                 }
             }
         }
+
 
         stage('Run the JAR') {
             when {
