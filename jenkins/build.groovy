@@ -48,7 +48,8 @@ pipeline {
                         sudo -u ec2-user bash -c '
                         cd /home/ec2-user/gvs-server &&
                         source .bash_profile > /dev/null 2>&1 &&
-                        sudo nohup java -jar GVS-0.0.1-SNAPSHOT.jar > application.log 2>&1 &'
+                        [ ! -f application.log ] && touch application.log &&
+                        nohup java -jar GVS-0.0.1-SNAPSHOT.jar > application.log 2>&1 &'
                     """
                     echo "Application started successfully in the background."
                 }
