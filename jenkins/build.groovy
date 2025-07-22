@@ -18,7 +18,7 @@ pipeline {
                     sh """
                         sudo -u ec2-user bash -c '
                         sudo cp "${env.WORKSPACE}/${jarFile}" /home/ec2-user/gvs-server/
-                        sudo chown ec2-user:ec2-user /home/ec2-user/gvs-server/${jarFile}'
+                        sudo chown ec2-user:ec2-user /home/ec2-user/gvs-server/GVS-0.0.1-SNAPSHOT.jar'
                     """
                     echo "JAR moved successfully to /home/ec2-user/gvs-server"
                 }
@@ -28,8 +28,6 @@ pipeline {
         stage('Run the JAR') {
             steps {
                 script {
-                    def jarFile = sh(script: "ls build/libs/GVS-0.0.1-SNAPSHOT.jar", returnStdout: true).trim()
-                    echo "Running JAR: ${jarFile}"
 
                     sh """
                         sudo -u ec2-user bash -c '
