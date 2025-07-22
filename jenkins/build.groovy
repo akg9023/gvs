@@ -122,33 +122,14 @@ pipeline {
                         sudo -u ec2-user bash -c '
                         cd /home/ec2-user/gvs-server &&
                         source .bash_profile > /dev/null 2>&1 &&
+                        [ ! -f application.log ] && sudo touch application.log &&
+                        sudo chmod 666 application.log &&
+                        sudo chmod 755 /home/ec2-user/gvs-server &&
                         nohup java -jar GVS-0.0.1-SNAPSHOT-revoke.jar > application.log 2>&1 &'
                     """
                     echo "Rollback deployment started successfully in the background."
                 }
             }
         }
-//        stage('Verify Application Running') {
-//            steps {
-//                script {
-//                    try {
-//                        timeout(time: 2, unit: 'MINUTES') {
-//                            waitUntil {
-//                                def isRunning = sh(script: "sudo -u ec2-user bash -c 'ss -tuln | grep :8443'", returnStatus: true) == 0
-//                                if (isRunning) {
-//                                    echo "Application is running on port 8443."
-//                                    return true
-//                                }
-//                                echo "Waiting for application to start on port 8443..."
-//                                sleep(time: 10, unit: 'SECONDS') // Poll every 10 seconds
-//                                return false
-//                            }
-//                        }
-//                    } catch (Exception e) {
-//                        error "Application did not start on port 8443 within the timeout period."
-//                    }
-//                }
-//            }
-//        }
     }
 }
