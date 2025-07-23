@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProperty name="LOGTAIL_TOKEN" source="logtail.source.token" />
+    <springProperty name="LOGTAIL_URL" source="logtail.ingest.url" />
+    <appender name="Logtail" class="com.logtail.logback.LogtailAppender">
+        <appName>GVS</appName>
+        <sourceToken>${LOGTAIL_TOKEN}</sourceToken>
+        <ingestUrl>${LOGTAIL_URL}</ingestUrl >
+        <mdcFields>requestId,requestTime</mdcFields>
+        <mdcTypes>string,int</mdcTypes>
+    </appender>
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %msg%n</pattern>
+        </encoder>
+    </appender>
+    <root level="INFO">
+        <appender-ref ref="Logtail" />
+        <appender-ref ref="Console" />
+    </root>
+</configuration>

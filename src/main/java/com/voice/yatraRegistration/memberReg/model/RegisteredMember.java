@@ -29,6 +29,8 @@ public class RegisteredMember {
 
     private String userEmail="";
 
+    private String payeeName;
+
     @ManyToMany(cascade = CascadeType.ALL)
     private List<Member> memberIdList = new ArrayList<>();
 
@@ -41,7 +43,6 @@ public class RegisteredMember {
     private String upiTxnId="";
     private String paymentStatus="";
     private String txnDate="";
-
     @Column(nullable = false, updatable = false)
     @CreationTimestamp
     private LocalDateTime createdDateTime;
@@ -49,4 +50,5 @@ public class RegisteredMember {
     @Column(nullable = false)
     @UpdateTimestamp
     private LocalDateTime updatedDateTime;
+    private String phoneNo;
 }
