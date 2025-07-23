@@ -21,7 +21,6 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(unique = true)
     private String dbDevId;
     private String dbDevName;
     private String dbDevGender;
