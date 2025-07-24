@@ -28,9 +28,9 @@ pipeline {
                                 fi
                                 source .bash_profile
                                 if env | grep -q "^${key}=${value}"; then
-                                        echo "Success: Environment variable \\\\$key=\\\\$value has been added."
+                                        echo "Success: Environment variable \$key=\$value has been added."
                                 else
-                                    echo "Failure: Environment variable \\\\$key=\\\\$value was not added."
+                                    echo "Failure: Environment variable \$key=\$value was not added."
                                     exit 1
                                 fi
                             done
