@@ -15,6 +15,4 @@ public class PendingMembersDto {
         this.customerEmail = customerEmail;
         this.phoneNo = phoneNo;
     }
-
-    // Getters and setters (or use Lombok's @Data)
 }

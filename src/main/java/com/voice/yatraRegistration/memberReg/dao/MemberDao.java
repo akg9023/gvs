@@ -15,7 +15,7 @@ public interface MemberDao extends JpaRepository<Member,Long>,MemberDaoCustom {
     public Member findOneByDbDevId(String dbDevId);
 
     @Query("""
-    SELECT m,rm.payeeName,rm.customerEmail,rm.phoneNo FROM RegisteredMember rm 
+    SELECT new com.voice.yatraRegistration.memberReg.model.PendingMembersDto(m,rm.payeeName,rm.customerEmail,rm.phoneNo) FROM RegisteredMember rm 
     JOIN rm.memberIdList m 
     WHERE rm.paymentStatus = 'success'
     AND (
