@@ -7,7 +7,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import lombok.Getter;
@@ -29,8 +28,8 @@ public class RoomType {
     private Integer count;
     private Integer memberCount;
     private Integer minMemberCount;
-    private String checkInTime; //24Hrs
-    private String checkOutTime; //24Hrs
+    private String checkInTime;
+    private String checkOutTime;
 
 
     @Column(nullable = false, updatable = false)

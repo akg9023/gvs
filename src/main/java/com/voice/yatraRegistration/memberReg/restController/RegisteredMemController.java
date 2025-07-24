@@ -57,19 +57,22 @@ public class RegisteredMemController {
 
         for(Member m: input.getMemberIdList()) {
 
-            Member mem = memberDao.findOneByDbDevId(m.getDbDevId());
-            input.setMemberIdList(memList);
+            Member mem=memberDao.findOneByDbDevId(m.getDbDevId());
+            memList.add((mem == null)? m:mem );
 
-            RegisteredMember r = null;
-            try {
-                r = regMemDao.save(input);
-            } catch (Exception e) {
-                logger.error("save Registered Member Payment Failed", input, e);
-                return ResponseEntity.internalServerError().build();
-            }
-            return ResponseEntity.ok(r);
         }
-        return null;
+        input.setMemberIdList(memList);
+
+        RegisteredMember r=null;
+        try {
+             r=regMemDao.save(input);
+        }
+        catch(Exception e){
+            logger.error("save Registered Member Payment Failed",input,e);
+            return ResponseEntity.internalServerError().build();
+        }
+
+        return ResponseEntity.ok(r);
     }
 
     @GetMapping("/fetchAll")

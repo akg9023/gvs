@@ -2,9 +2,11 @@ package com.voice.yatraRegistration.memberReg.restController;
 
 
 import com.voice.auth.model.Role;
-import com.voice.dbRegistration.model.DevoteeInfo;
+import com.voice.yatraRegistration.accomodationReg.dao.RoomBookingDao;
+import com.voice.yatraRegistration.accomodationReg.model.RoomBooking;
+import com.voice.yatraRegistration.memberReg.dao.MemberDao;
 import com.voice.yatraRegistration.memberReg.dao.RegisterMemDao;
-import com.voice.yatraRegistration.memberReg.model.EmailMember;
+import com.voice.yatraRegistration.memberReg.model.PendingMembersDto;
 import com.voice.yatraRegistration.memberReg.model.RegisteredMember;
 import com.voice.yatraRegistration.memberReg.service.YatraAdminService;
 import org.slf4j.Logger;
@@ -21,6 +23,12 @@ public class YatraAdminController {
     Logger logger = LoggerFactory.getLogger(YatraAdminController.class);
     @Autowired
     RegisterMemDao registerMemDao;
+
+    @Autowired
+    RoomBookingDao bookingDao;
+
+    @Autowired
+    MemberDao memberDao;
 
     @Autowired
     private YatraAdminService yatraAdminService;
@@ -64,4 +72,16 @@ public class YatraAdminController {
         }
         return ResponseEntity.badRequest().body("Either Access is Denied or Session Expired");
     }
+
+    @GetMapping("/fetchAllBookedMembers")
+    public ResponseEntity<List<RoomBooking>> getAllBookedMembers(){
+        return ResponseEntity.ok(bookingDao.findAll());
+    }
+
+    @GetMapping("/fetchAllPendingMembersForRoomBooking")
+    public ResponseEntity<List<PendingMembersDto>> getAllPendingMembersForRoomBooking() {
+      return  ResponseEntity.ok(memberDao.findRegisteredMembersWithNoRoomOrNonSuccessBooking());
+
+    }
+
 }

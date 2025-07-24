@@ -60,11 +60,6 @@ public class RoomBookingController {
         return user.map(userAuth -> ResponseEntity.ok(bookingDao.findAllByCustomerEmail(userAuth.getUserEmail()))).orElseGet(()->ResponseEntity.internalServerError().build());
     }
 
-    @GetMapping("/fetchAll")
-    public List<RoomBooking> fetchAllBookings() {
-        return bookingDao.findAll();
-    }
-
     @PostMapping("/saveBooking")
     public RoomBooking saveRoom(@RequestBody RoomBooking booking) {
         return bookingDao.save(booking);
