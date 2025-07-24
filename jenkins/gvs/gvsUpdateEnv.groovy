@@ -19,7 +19,7 @@ pipeline {
                                 key=\$(echo \$pair | cut -d= -f1)
                                 value=\$(echo \$pair | cut -d= -f2)
                                 if grep -q "^export \$key=" .bash_profile; then
-                                    sed -i "s|^export \$key=.*|export \$key=\$value|" .bash_profile
+                                    sudo sed -i "s|^export \$key=.*|export \$key=\$value|" .bash_profile
                                 else
                                     echo "export \$key=\$value" >> .bash_profile
                                 fi
