@@ -26,14 +26,15 @@ pipeline {
                                     echo "Adding \$key to env"
                                     echo "export \$key=\$value" | sudo tee -a .bash_profile > /dev/null
                                 fi
+                                source .bash_profile
+                                if env | grep -q "^${key}=${value}"; then
+                                        echo "Success: Environment variable \\\\$key=\\\\$value has been added."
+                                else
+                                    echo "Failure: Environment variable \\\\$key=\\\\$value was not added."
+                                    exit 1
+                                fi
                             done
-                            source .bash_profile
-                            if env | grep -q "^${key}=${value}"; then
-                                    echo "Success: Environment variable \\$key=\\$value has been added."
-                            else
-                                echo "Failure: Environment variable \\$key=\\$value was not added."
-                                exit 1
-                            fi
+                            
                             '
                         """
                         sh updateScript
