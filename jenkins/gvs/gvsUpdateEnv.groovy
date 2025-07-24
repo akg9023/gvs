@@ -14,14 +14,15 @@ pipeline {
                         def updateScript = """
                             sudo su ec2-user -c '
                             cd /home/ec2-user/gvs-server
-                            sudo touch .bash_profile
+                            [ -f .bash_profile ] || sudo touch .bash_profile
+                            sudo chmod u+w .bash_profile
                             for pair in ${envVars.join(' ')}; do
                                 key=\$(echo \$pair | cut -d= -f1)
                                 value=\$(echo \$pair | cut -d= -f2)
                                 if grep -q "^export \$key=" .bash_profile; then
                                     sudo sed -i "s|^export \$key=.*|export \$key=\$value|" .bash_profile
                                 else
-                                    echo "export \$key=\$value" >> .bash_profile
+                                    echo "export \$key=\$value" | sudo tee -a .bash_profile > /dev/null
                                 fi
                             done
                             source .bash_profile
