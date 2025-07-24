@@ -55,16 +55,13 @@ pipeline {
 
                     } else {
                         echo "No environment variables provided. Skipping update."
-                        def envOutput = sh(
-                                script: """
-                                        sudo su ec2-user -c '
-                                           cd /home/ec2-user/gvs-server &&
-                                           source .bash_profile > /dev/null 2>&1 &&
-                                           env
-                                    """,
-                                returnStatus: true
+                        sh(
+                            script: """
+                                    sudo su ec2-user -c '
+                                       cd /home/ec2-user/gvs-server &&
+                                       source .bash_profile
+                                """
                         )
-                        echo "Current environment variables:\n${envOutput}"
                     }
                 }
             }
