@@ -20,24 +20,39 @@ pipeline {
                                 key=\$(echo \$pair | cut -d= -f1)
                                 value=\$(echo \$pair | cut -d= -f2)
                                 if grep -q "^export \$key=" .bash_profile; then
-                                    echo "Updating \$key in env"
+                                    echo "Updating \$key in evn"
                                     sudo sed -i "s|^export \$key=.*|export \$key=\$value|" .bash_profile
                                 else
                                     echo "Adding \$key to env"
                                     echo "export \$key=\$value" | sudo tee -a .bash_profile > /dev/null
                                 fi
                                 source .bash_profile
-                                # Validate the environment variable
-                                if env | grep -q "^${key}=${value}"; then
-                                    echo "Success: Environment variable \\$key=\\$value has been set."
-                                else
-                                    echo "Failure: Environment variable \\$key=\\$value was not set."
-                                    exit 1
-                                fi
+                              
                             done
                             '
                         """
-                        sh(updateScript)
+                        sh updateScript
+
+                        // Validate each key-value pair
+                        envVars.each { pair ->
+                            def key = pair.split('=')[0]
+                            def value = pair.split('=')[1]
+                            def result = sh(
+                                    script: """
+                                        sudo su ec2-user -c '
+                                           cd /home/ec2-user/gvs-server &&
+                                           source .bash_profile > /dev/null 2>&1 &&
+                                           env | grep "^${key}=${value}"'
+                                    """,
+                                    returnStatus: true
+                            )
+                            if (result == 0) {
+                                echo "Success: Environment variable ${key}=${value} has been added."
+                            } else {
+                                echo "Failure: Environment variable ${key}=${value} was not added."
+                            }
+                        }
+
                     } else {
                         echo "No environment variables provided. Skipping update."
                     }
