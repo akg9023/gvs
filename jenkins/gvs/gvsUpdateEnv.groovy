@@ -59,7 +59,8 @@ pipeline {
                             script: """
                                     sudo su ec2-user -c '
                                        cd /home/ec2-user/gvs-server &&
-                                       source .bash_profile
+                                       source .bash_profile &&
+                                       env'
                                 """
                         )
                     }
