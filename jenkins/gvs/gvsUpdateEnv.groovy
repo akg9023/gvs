@@ -14,7 +14,7 @@ pipeline {
                         def updateScript = """
                             sudo su ec2-user -c '
                             cd /home/ec2-user/gvs-server
-                            touch .bash_profile
+                            sudo touch .bash_profile
                             for pair in ${envVars.join(' ')}; do
                                 key=\$(echo \$pair | cut -d= -f1)
                                 value=\$(echo \$pair | cut -d= -f2)
