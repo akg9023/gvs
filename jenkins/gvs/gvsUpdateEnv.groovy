@@ -29,6 +29,22 @@ pipeline {
                             '
                         """
                         sh updateScript
+
+                        // Validate each key-value pair
+                        envVars.each { pair ->
+                            def key = pair.split('=')[0]
+                            def value = pair.split('=')[1]
+                            def result = sh(
+                                    script: "sudo su ec2-user -c 'env | grep \"^${key}=${value}\"'",
+                                    returnStatus: true
+                            )
+                            if (result == 0) {
+                                echo "Success: Environment variable ${key}=${value} has been added."
+                            } else {
+                                echo "Failure: Environment variable ${key}=${value} was not added."
+                            }
+                        }
+
                     } else {
                         echo "No environment variables provided. Skipping update."
                     }
