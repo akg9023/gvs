@@ -1,6 +1,8 @@
 package com.voice;
 
 import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -13,10 +15,11 @@ import java.util.TimeZone;
 // @EnableScheduling
 @EnableAsync
 public class HlzRegApplication {
+	private static final Logger log= LoggerFactory.getLogger(HlzRegApplication.class);
 
 	public static void main(String[] args) {
+		log.info("Starting GVS application");
 		SpringApplication.run(HlzRegApplication.class, args);
-
 
 	}
 
