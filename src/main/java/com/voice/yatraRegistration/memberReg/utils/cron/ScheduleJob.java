@@ -29,7 +29,7 @@ public class ScheduleJob {
     private BackupRegisterMemDao backupRegisterMemDao;
 
     // 30min
-    @Scheduled(fixedDelay = 1800000)
+//    @Scheduled(fixedDelay = 1800000)
     public void distributeReports() throws InterruptedException {
         int count = 0;
         log.info("Backup pending request :::::");
