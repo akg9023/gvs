@@ -1,7 +1,7 @@
 package com.voice.attendance.restController;
 
-import com.voice.attendance.dao.JapaAttendanceDao;
-import com.voice.attendance.dao.JapaParticipantsDao;
+import com.voice.attendance.dao.AlumniClassAttendanceDao;
+import com.voice.attendance.models.AlumniClassAttendance;
 import com.voice.attendance.models.JapaAttendance;
 import com.voice.attendance.models.Status;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,33 +15,30 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/v1/attendance/japa")
+@RequestMapping("/v1/attendance/alumniClass")
 @CrossOrigin(origins = "*")
-public class JapaAttendanceRestController {
+public class AlumniClassAttendanceRestController {
     @Autowired
-    JapaAttendanceDao attendanceDao;
-
-    @Autowired
-    JapaParticipantsDao devDao;
+    AlumniClassAttendanceDao attendanceDao;
 
     @PostMapping("/monthlyDetail")
-    public List<JapaAttendance> fetchAll(@RequestParam String email,
-                                         @RequestParam int month, @RequestParam int year) {
+    public List<AlumniClassAttendance> fetchAll(@RequestParam String email,
+                                                @RequestParam int month, @RequestParam int year) {
 
-        List<JapaAttendance> presentAttendanceByEmail = attendanceDao.findAllByParticipantsIdWithSpecifcMonth(email, month, year);
+        List<AlumniClassAttendance> presentAttendanceByEmail = attendanceDao.findAllByParticipantsIdWithSpecifcMonth(email, month, year);
         List<LocalDate> availableAttendanceDate = attendanceDao.findAvailableAttendanceDates()
                 .stream()
                 .map(java.sql.Date::toLocalDate)
                 .toList();
 
-        List<JapaAttendance> fullMonthAttendanceByEmail = new ArrayList<>(presentAttendanceByEmail);
+        List<AlumniClassAttendance> fullMonthAttendanceByEmail = new ArrayList<>(presentAttendanceByEmail);
 
         Set<LocalDate> presentDates = presentAttendanceByEmail.stream()
-                .collect(Collectors.groupingBy(JapaAttendance::getDate)).keySet();
+                .collect(Collectors.groupingBy(AlumniClassAttendance::getDate)).keySet();
 
         availableAttendanceDate.forEach(a -> {
             if (!presentDates.contains(a)) {
-                fullMonthAttendanceByEmail.add(new JapaAttendance(a, Status.ABSENT));
+                fullMonthAttendanceByEmail.add(new AlumniClassAttendance(a, Status.ABSENT));
             }
         });
 
