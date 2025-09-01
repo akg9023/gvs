@@ -26,7 +26,7 @@ public class AlumniClassAttendanceRestController {
                                                 @RequestParam int month, @RequestParam int year) {
 
         List<AlumniClassAttendance> presentAttendanceByEmail = attendanceDao.findAllByParticipantsIdWithSpecifcMonth(email, month, year);
-        List<LocalDate> availableAttendanceDate = attendanceDao.findAvailableAttendanceDates()
+        List<LocalDate> availableAttendanceDate = attendanceDao.findAvailableAttendanceDates(month, year)
                 .stream()
                 .map(java.sql.Date::toLocalDate)
                 .toList();

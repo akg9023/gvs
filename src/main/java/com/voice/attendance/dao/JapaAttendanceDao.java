@@ -21,6 +21,6 @@ public interface JapaAttendanceDao extends JpaRepository<JapaAttendance,Long> {
      List<JapaAttendance> findAllByParticipantsIdWithSpecifcMonth(@Param("email") String email ,
                                 @Param("month") int month, @Param("year") int year);
 
-    @Query(value = "SELECT DISTINCT DATE(a.date) FROM JapaAttendance a")
-    List<java.sql.Date> findAvailableAttendanceDates();
+    @Query(value = "SELECT DISTINCT DATE(a.date) FROM JapaAttendance a WHERE MONTH(a.date) = :month AND YEAR(a.date) = :year")
+    List<java.sql.Date> findAvailableAttendanceDates(@Param("month") int month, @Param("year") int year);
 }
