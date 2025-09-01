@@ -22,6 +22,6 @@ public interface AlumniClassAttendanceDao extends JpaRepository<AlumniClassAtten
     List<AlumniClassAttendance> findAllByParticipantsIdWithSpecifcMonth(@Param("email") String email ,
                                                                  @Param("month") int month, @Param("year") int year);
 
-    @Query(value = "SELECT DISTINCT DATE(a.date) FROM AlumniClassAttendance a")
-    List<java.sql.Date> findAvailableAttendanceDates();
+    @Query(value = "SELECT DISTINCT DATE(a.date) FROM AlumniClassAttendance a WHERE MONTH(a.date) = :month AND YEAR(a.date) = :year")
+    List<java.sql.Date> findAvailableAttendanceDates(@Param("month") int month, @Param("year") int year);
 }
