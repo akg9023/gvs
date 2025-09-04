@@ -48,6 +48,11 @@ public class JapaAttendanceRestController {
         return fullMonthAttendanceByEmail;
     }
 
+    @PostMapping("/saveAbsentReason")
+    public JapaAttendance saveAbsentWithReason(@RequestBody JapaAttendance absentAttendaceWithReason) {
+        return attendanceDao.save(absentAttendaceWithReason);
+    }
+
     @PostMapping("/fetchAll")
     public List<JapaAttendance> fetchAll(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         return attendanceDao.findAllByDate(date);

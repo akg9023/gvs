@@ -45,6 +45,12 @@ public class AlumniClassAttendanceRestController {
         return fullMonthAttendanceByEmail;
     }
 
+    @PostMapping("/saveAbsentReason")
+    public AlumniClassAttendance saveAbsentWithReason(@RequestBody AlumniClassAttendance absentAttendaceWithReason) {
+        return attendanceDao.save(absentAttendaceWithReason);
+    }
+
+
     @PostMapping("/fetchAll")
     public List<JapaAttendance> fetchAll(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         return attendanceDao.findAllByDate(date);
